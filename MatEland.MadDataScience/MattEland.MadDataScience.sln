@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatEland.MadDataScience", "MatEland.MadDataScience\MatEland.MadDataScience.csproj", "{F36378C1-A596-4DD6-8EF6-7E9A0B84006F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MattEland.MadDataScience", "MattEland.MadDataScience\MattEland.MadDataScience.csproj", "{F36378C1-A596-4DD6-8EF6-7E9A0B84006F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

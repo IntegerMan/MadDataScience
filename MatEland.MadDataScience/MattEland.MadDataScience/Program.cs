@@ -1,4 +1,4 @@
-using MatEland.MadDataScience.Components;
+using MattEland.MadDataScience.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 

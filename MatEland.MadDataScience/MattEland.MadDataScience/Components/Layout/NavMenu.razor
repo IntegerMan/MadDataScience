@@ -1,187 +1,48 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Mad Data Science</a>
-    </div>
-</div>
+﻿@rendermode InteractiveServer
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler"/>
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-group machine-learning-group px-3 mt-3">
-            <div class="nav-group-header">
-                <span class="group-title">Overview</span>
-            </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                    <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Welcome
-                </NavLink>
-            </div>
-
-            @*<div class="nav-item px-3">
-                <NavLink class="nav-link" href="counter">
-                    <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-                </NavLink>
-            </div>
-
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="weather">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-                </NavLink>
-            </div>*@
-            
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="Intro/AboutMatt">
-                    <span class="bi bi-magic" aria-hidden="true"></span> Who is this man?
-                </NavLink>
-            </div>      
-            
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="projects">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Projects
-                </NavLink>
-            </div>      
-            
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="whatisai">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> What is AI?
-                </NavLink>
-            </div>            
-        </div>
-        <div class="nav-group machine-learning-group px-3">
-            <div class="nav-group-header">
-                <span class="group-title">Machine Learning</span>
-            </div>
-            <div class="nav-item">
-                <NavLink class="nav-link" href="trainingdata">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Training Data
-                </NavLink>
-            </div>
-            <div class="nav-item">
-                <NavLink class="nav-link" href="train">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Training a Model
-                </NavLink>
-            </div>
-            <div class="nav-item">
-                <NavLink class="nav-link" href="predict">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Making Predictions
-                </NavLink>
-            </div>
-        </div>
-        <div class="nav-group machine-learning-group px-3">
-            <div class="nav-group-header">
-                <span class="group-title">Speech</span>
-            </div>
-            <div class="nav-item">
-                <NavLink class="nav-link" href="whatiscomputervision">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Speech Recognition
-                </NavLink>
-            </div>
-            <div class="nav-item">
-                <NavLink class="nav-link" href="captioning">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Speech Synthesis
-                </NavLink>
-            </div>
-        </div>
-        <div class="nav-group machine-learning-group px-3">
-            <div class="nav-group-header">
-                <span class="group-title">Computer Vision</span>
-            </div>
-            <div class="nav-item">
-                <NavLink class="nav-link" href="whatiscomputervision">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Computer Vision 101
-                </NavLink>
-            </div>
-            <div class="nav-item">
-                <NavLink class="nav-link" href="captioning">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Captioning
-                </NavLink>
-            </div>
-            <div class="nav-item">
-                <NavLink class="nav-link" href="objectdetection">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Object Detection
-                </NavLink>
-            </div>            
-            <div class="nav-item">
-                <NavLink class="nav-link" href="densecaptioning">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Dense Captioning
-                </NavLink>
-            </div>
-        </div>
-        <div class="nav-group machine-learning-group px-3">
-            <div class="nav-group-header">
-                <span class="group-title">Generative AI</span>
-            </div>
-            <div class="nav-item">
-                <NavLink class="nav-link" href="whatisgenai">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Generative AI 101
-                </NavLink>
-            </div>
-            <div class="nav-item">
-                <NavLink class="nav-link" href="textcompletions">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Text Completions
-                </NavLink>
-            </div>
-            <div class="nav-item">
-                <NavLink class="nav-link" href="chatcompletions">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Chat Completions
-                </NavLink>
-            </div>            
-            <div class="nav-item">
-                <NavLink class="nav-link" href="imagecompletions">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Image Generation
-                </NavLink>
-            </div>            
-            <div class="nav-item">
-                <NavLink class="nav-link" href="imagecompletions">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> A TALKING DOG!!!
-                </NavLink>
-            </div>
-        </div>
-        <div class="nav-group machine-learning-group px-3">
-            <div class="nav-group-header">
-                <span class="group-title">Reinforcement Learning</span>
-            </div>
-            <div class="nav-item">
-                <NavLink class="nav-link" href="whatisrl">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Reinforcement Learning 101
-                </NavLink>
-            </div>            
-            <div class="nav-item">
-                <NavLink class="nav-link" href="rlinreallife">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> RL in Action
-                </NavLink>
-            </div>
-            <div class="nav-item">
-                <NavLink class="nav-link" href="squirrelsim">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> A squirrel simulator
-                </NavLink>
-            </div>
-            <div class="nav-item">
-                <NavLink class="nav-link" href="earlysquirrels">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Early squirrels
-                </NavLink>
-            </div>
-            <div class="nav-item">
-                <NavLink class="nav-link" href="winningsquirrels">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Solving Squirrels
-                </NavLink>
-            </div>            
-            <div class="nav-item">
-                <NavLink class="nav-link" href="killersquirrels">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Killer Squirrels
-                </NavLink>
-            </div>
-        </div>        
-        <div class="nav-group machine-learning-group px-3">
-            <div class="nav-group-header">
-                <span class="group-title">Conclusion</span>
-            </div>
-            <div class="nav-item">
-                <NavLink class="nav-link" href="whatisrl">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Learn More
-                </NavLink>
-            </div> 
-        </div>
-    </nav>
-</div>
+<MudPaper Width="250px" Class="py-3" Elevation="0">
+    <MudNavMenu>
+        <MudText Typo="Typo.h6" Class="px-4">Mad Data Science</MudText>
+        <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">KidzMash 2025</MudText>
+        <MudDivider Class="my-2"/>
+        <MudNavGroup Title="Intro" Expanded="true">
+            <MudNavLink Href="/Welcome">Welcome</MudNavLink>
+            <MudNavLink Href="/AboutMatt">Who is this person?</MudNavLink>
+            <MudNavLink Href="/WhatIsAI" Disabled="true">What is AI?</MudNavLink>
+            <MudNavLink Href="/Projects" Disabled="true">Projects Covered</MudNavLink>
+        </MudNavGroup>        
+        <MudNavGroup Title="Machine Learning" Expanded="true">
+            <MudNavLink Href="/ML/Intro">Machine Learning</MudNavLink>
+            <MudNavLink Href="/ML/DataSet">Our Training Data</MudNavLink>
+            <MudNavLink Href="/ML/Train">Training our Model</MudNavLink>
+            <MudNavLink Href="/ML/Predict">Predicting Game Sales</MudNavLink>
+        </MudNavGroup>        
+        <MudNavGroup Title="Speech" Expanded="true">
+            <MudNavLink Href="/Speech/Overview">Computers and Speech</MudNavLink>
+            <MudNavLink Href="/Speech/SpeechToText">Speech Recognition</MudNavLink>
+            <MudNavLink Href="/Speech/TextToSpeech">Text to Speech</MudNavLink>
+        </MudNavGroup>
+        <MudNavGroup Title="Generative AI" Expanded="true">
+            <MudNavLink Href="/GenAI/Overview">Generative AI</MudNavLink>
+            <MudNavLink Href="/GenAI/Text">Text Completion</MudNavLink>
+            <MudNavLink Href="/GenAI/Chat">Conversational AI</MudNavLink>
+            <MudNavLink Href="/GenAI/DogOS">A TALKING DOG!!!</MudNavLink>
+        </MudNavGroup>
+        <MudNavGroup Title="Vision" Expanded="true">
+            <MudNavLink Href="/Vision/Overview">Computer Vision</MudNavLink>
+            <MudNavLink Href="/Vision/ImageCaptioning">Image Captioning</MudNavLink>
+            <MudNavLink Href="/Vision/ObjectDetection">Object Detection</MudNavLink>
+            <MudNavLink Href="/Vision/DenseCaptioning">Dense Captioning</MudNavLink>
+            <MudNavLink Href="/GenAI/Vision">Interpreting Images</MudNavLink>
+            <MudNavLink Href="/GenAI/Images">Image Generation</MudNavLink>
+        </MudNavGroup>
+        <MudNavGroup Title="Reinforcement Learning" Expanded="true">
+            <MudNavLink Href="/RL/Overview">Computer Vision</MudNavLink>
+            <MudNavLink Href="/RL/Manual">Our Squirrel</MudNavLink>
+            <MudNavLink Href="/RL/SettingValues">AI Squirrel</MudNavLink>
+            <MudNavLink Href="/RL/Learning">Learning Squirrels</MudNavLink>
+            <MudNavLink Href="/RL/KillerSquirrels">Killer Squirrels</MudNavLink>
+        </MudNavGroup>
+        <MudNavLink Href="/about">Conclusion</MudNavLink>
+    </MudNavMenu>
+</MudPaper>

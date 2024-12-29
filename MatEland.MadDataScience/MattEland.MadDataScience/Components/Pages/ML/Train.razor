@@ -1,0 +1,21 @@
+@page "/ML/Train"
+@rendermode InteractiveServer
+
+@using MattEland.MadDataScience.Services
+@inject MachineLearningService MachineLearningService
+
+<h3>Train</h3>
+
+<button @onclick="HandleTrainClick">Train Model</button>
+
+@code {
+
+    private Task HandleTrainClick()
+    {
+        Console.WriteLine("Training Model");
+        MachineLearningService.TrainModel();
+        
+        return Task.CompletedTask;
+    }
+
+}

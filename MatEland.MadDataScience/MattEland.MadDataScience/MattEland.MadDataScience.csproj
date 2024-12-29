@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>MattEland.MadDataScience</RootNamespace>
+        <UserSecretsId>1b974e37-56b2-412d-a54a-5dbadcd49aec</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -14,6 +15,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.42.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.0" />
       <PackageReference Include="MudBlazor" Version="7.15.0" />
     </ItemGroup>
 

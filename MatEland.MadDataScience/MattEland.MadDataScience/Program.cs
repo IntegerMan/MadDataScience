@@ -1,4 +1,6 @@
 using MattEland.MadDataScience.Components;
+using MattEland.MadDataScience.Models;
+using MattEland.MadDataScience.Services;
 using MudBlazor.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,9 @@ builder.Services
     .AddInteractiveServerComponents();
 
 builder.Services.AddMudServices();
+
+builder.Services.AddScoped<SpeechService>();
+builder.Services.Configure<AzureAiServicesConfig>(builder.Configuration.GetSection("AzureAiServices"));
 
 WebApplication app = builder.Build();
 

@@ -1,0 +1,21 @@
+@page "/Speech/TextToSpeech"
+@rendermode InteractiveServer
+
+@using MattEland.MadDataScience.Services
+
+@inject SpeechService SpeechService
+
+<h3>TextToSpeech</h3>
+
+<form @onsubmit="HandleSubmit">
+    <input type="text" placeholder="Enter a message" >
+    <button type="submit">Speak</button>
+</form>
+
+@code {
+    private async Task HandleSubmit()
+    {
+        Console.WriteLine("Handling Submit");
+        await SpeechService.SpeakAsync("Hello, World!");
+    }
+}

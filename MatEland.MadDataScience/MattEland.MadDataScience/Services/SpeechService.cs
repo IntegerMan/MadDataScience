@@ -21,4 +21,17 @@ public class SpeechService(IOptionsSnapshot<AzureAiServicesConfig> options)
 
         return synth.SpeakTextAsync(text);
     }
+
+    public async Task<string> ListenAsync()
+    {
+        SpeechConfig config = SpeechConfig.FromSubscription(_options.SubscriptionKey, _options.Region);
+        
+        SpeechRecognizer recognizer = new(config);
+
+        SpeechRecognitionResult? result = await recognizer.RecognizeOnceAsync();
+        
+        Console.WriteLine("Recognized: " + result?.Text + " with status " + result?.Reason ?? "No result");
+        
+        return result?.Text ?? "No text recognized";
+    }
 }

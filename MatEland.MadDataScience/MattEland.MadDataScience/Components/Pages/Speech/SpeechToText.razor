@@ -1,0 +1,27 @@
+@page "/Speech/SpeechToText"
+@rendermode InteractiveServer
+
+@using MattEland.MadDataScience.Services
+@inject SpeechService speechService
+
+<h3>SpeechToText</h3>
+
+<form @onsubmit="HandleSubmit">
+    <button type="submit">Start Listening</button>
+</form>
+
+<span>@Heard</span>
+
+@code {
+
+    public string? Heard { get; set; }
+    
+    private async Task HandleSubmit()
+    {
+        Console.WriteLine("Handling Submit");
+        string result = await speechService.ListenAsync();
+        
+        Heard = result;
+    }
+
+}

@@ -5,17 +5,27 @@
 
 @inject SpeechService SpeechService
 
-<h3>TextToSpeech</h3>
+<h3>Text to Speech (Speech Synthesis)</h3>
 
 <form @onsubmit="HandleSubmit">
-    <input type="text" placeholder="Enter a message" >
-    <button type="submit">Speak</button>
+    <MudTextField @bind-Value="Message" Label="Message" Variant="Variant.Text" />
+    
+    @* TODO: Add a voice selection box *@
+    
+    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">Speak</MudButton>
 </form>
 
 @code {
+    public string? Message { get; set; }
+    
     private async Task HandleSubmit()
     {
-        Console.WriteLine("Handling Submit");
-        await SpeechService.SpeakAsync("Hello, World!");
+        if (Message == null)
+        {
+            return;
+        }
+        
+        Console.WriteLine("Sending message to speech service: " + Message);
+        await SpeechService.SpeakAsync(Message);
     }
 }

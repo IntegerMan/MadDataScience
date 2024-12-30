@@ -3,14 +3,13 @@
 
 @using MattEland.MadDataScience.Services
 @inject VisionService VisionService
-@inject IWebHostEnvironment WebHostEnvironment
 
 <h3>Image Captioning</h3>
 
 <img src="@ImageSource" alt="Sample Image" class="img-fluid" />
 <span>@Caption</span>
 
-<MudButton @onclick="HandleCaptionClick">Caption This</MudButton>
+<MudButton @onclick="HandleCaptionClick" Variant="Variant.Filled" Color="Color.Primary">Caption This</MudButton>
 
 @code {
     public string ImageSource { get; set; } = "CodeMash.jpg";

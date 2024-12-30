@@ -1,48 +1,75 @@
 ﻿@rendermode InteractiveServer
 
 <MudPaper Width="250px" Class="py-3" Elevation="0">
-    <MudNavMenu>
+    <MudNavMenu Dense="true">
         <MudText Typo="Typo.h6" Class="px-4">Mad Data Science</MudText>
         <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">KidzMash 2025</MudText>
         <MudDivider Class="my-2"/>
         <MudNavGroup Title="Intro" Expanded="true">
-            <MudNavLink Href="/Welcome">Welcome</MudNavLink>
-            <MudNavLink Href="/AboutMatt">Who is this person?</MudNavLink>
-            <MudNavLink Href="/WhatIsAI" Disabled="true">What is AI?</MudNavLink>
-            <MudNavLink Href="/Projects" Disabled="true">Projects Covered</MudNavLink>
+            <MudNavLink Href="/Intro/Welcome" 
+                        Icon="@Icons.Material.Filled.Slideshow">Welcome</MudNavLink>
+            <MudNavLink Href="/Intro/AboutMatt"
+                        Icon="@Icons.Material.Filled.Person">Who is this person?</MudNavLink>
+            <MudNavLink Href="/Intro/WhatIsAI"
+                        Icon="@Icons.Material.Filled.DeveloperBoard">What is AI?</MudNavLink>
+            <MudNavLink Href="/Intro/Projects"
+                        Icon="@Icons.Material.Filled.AccountTree">Projects Covered</MudNavLink>
         </MudNavGroup>        
         <MudNavGroup Title="Machine Learning" Expanded="true">
-            <MudNavLink Href="/ML/Intro">Machine Learning</MudNavLink>
-            <MudNavLink Href="/ML/DataSet">Our Training Data</MudNavLink>
-            <MudNavLink Href="/ML/Train">Training our Model</MudNavLink>
-            <MudNavLink Href="/ML/Predict">Predicting Game Sales</MudNavLink>
+            <MudNavLink Href="/ML/Intro"
+                        Icon="@Icons.Material.Filled.School">Machine Learning</MudNavLink>
+            <MudNavLink Href="/ML/DataSet"
+                        Icon="@Icons.Material.Filled.BackupTable">Our Training Data</MudNavLink>
+            <MudNavLink Href="/ML/Train"
+                        Icon="@Icons.Material.Filled.Psychology">Training our Model</MudNavLink>
+            <MudNavLink Href="/ML/Predict"
+                        Icon="@Icons.Material.Filled.VideogameAsset">Predicting Game Sales</MudNavLink>
         </MudNavGroup>        
         <MudNavGroup Title="Speech" Expanded="true">
-            <MudNavLink Href="/Speech/Overview">Computers and Speech</MudNavLink>
-            <MudNavLink Href="/Speech/TextToSpeech">Text to Speech</MudNavLink>
-            <MudNavLink Href="/Speech/SpeechToText">Speech Recognition</MudNavLink>
+            <MudNavLink Href="/Speech/Overview"
+                        Icon="@Icons.Material.Filled.RecordVoiceOver">Computers and Speech</MudNavLink>
+            <MudNavLink Href="/Speech/TextToSpeech" 
+                        Icon="@Icons.Material.Filled.VolumeUp">Text to Speech</MudNavLink>
+            <MudNavLink Href="/Speech/SpeechToText"
+                        Icon="@Icons.Material.Filled.Mic">Speech to Text</MudNavLink>
         </MudNavGroup>
         <MudNavGroup Title="Generative AI" Expanded="true">
-            <MudNavLink Href="/GenAI/Overview">Generative AI</MudNavLink>
-            <MudNavLink Href="/GenAI/Text">Text Completion</MudNavLink>
-            <MudNavLink Href="/GenAI/Chat">Conversational AI</MudNavLink>
-            <MudNavLink Href="/GenAI/DogOS">A TALKING DOG!!!</MudNavLink>
+            <MudNavLink Href="/GenAI/Overview"
+                        Icon="@Icons.Material.Filled.AutoFixHigh">Generative AI</MudNavLink>
+            <MudNavLink Href="/GenAI/Text"
+                        Icon="@Icons.Material.Filled.Chat">Text Completion</MudNavLink>
+            <MudNavLink Href="/GenAI/Chat"
+                        Icon="@Icons.Material.Filled.Forum">Conversational AI</MudNavLink>
+            <MudNavLink Href="/GenAI/DogOS"
+                        Icon="@Icons.Material.Filled.Pets">A TALKING DOG!!!</MudNavLink>
         </MudNavGroup>
         <MudNavGroup Title="Vision" Expanded="true">
-            <MudNavLink Href="/Vision/Overview">Computer Vision</MudNavLink>
-            <MudNavLink Href="/Vision/ImageCaptioning">Image Captioning</MudNavLink>
-            <MudNavLink Href="/Vision/ObjectDetection">Object Detection</MudNavLink>
-            <MudNavLink Href="/Vision/DenseCaptioning">Dense Captioning</MudNavLink>
-            <MudNavLink Href="/GenAI/Vision">Interpreting Images</MudNavLink>
-            <MudNavLink Href="/GenAI/Images">Image Generation</MudNavLink>
+            <MudNavLink Href="/Vision/Overview"
+                        Icon="@Icons.Material.Filled.RemoveRedEye">Computer Vision</MudNavLink>
+            <MudNavLink Href="/Vision/ImageCaptioning"
+                        Icon="@Icons.Material.Filled.Image">Image Captioning</MudNavLink>
+            <MudNavLink Href="/Vision/ObjectDetection"
+                        Icon="@Icons.Material.Filled.CenterFocusWeak">Object Detection</MudNavLink>
+            <MudNavLink Href="/Vision/DenseCaptioning"
+                        Icon="@Icons.Material.Filled.CenterFocusStrong">Dense Captioning</MudNavLink>
+            <MudNavLink Href="/GenAI/Vision"
+                        Icon="@Icons.Material.Filled.Mms">Interpreting Images</MudNavLink>
+            <MudNavLink Href="/GenAI/Images"
+                        Icon="@Icons.Material.Filled.Palette">Image Generation</MudNavLink>
         </MudNavGroup>
         <MudNavGroup Title="Reinforcement Learning" Expanded="true">
-            <MudNavLink Href="/RL/Overview">Computer Vision</MudNavLink>
-            <MudNavLink Href="/RL/Manual">Our Squirrel</MudNavLink>
-            <MudNavLink Href="/RL/SettingValues">AI Squirrel</MudNavLink>
-            <MudNavLink Href="/RL/Learning">Learning Squirrels</MudNavLink>
-            <MudNavLink Href="/RL/KillerSquirrels">Killer Squirrels</MudNavLink>
+            <MudNavLink Href="/RL/Overview" 
+                        Icon="@Icons.Material.Filled.Lightbulb">Reinforcement Learning</MudNavLink>
+            <MudNavLink Href="/RL/Manual"
+                        Icon="@Icons.Material.Filled.Gamepad">Our Squirrel</MudNavLink>
+            <MudNavLink Href="/RL/SettingValues"
+                        Icon="@Icons.Material.Filled.PsychologyAlt">AI Squirrel</MudNavLink>
+            <MudNavLink Href="/RL/Learning"
+                        Icon="@Icons.Material.Filled.LocalLibrary">Learning Squirrels</MudNavLink>
+            <MudNavLink Href="/RL/KillerSquirrels"
+                        Icon="@Icons.Material.Filled.Warning">Killer Squirrels</MudNavLink>
         </MudNavGroup>
-        <MudNavLink Href="/about">Conclusion</MudNavLink>
+        <MudNavLink Href="/about"
+                    Icon="@Icons.Material.Filled.Science">Conclusion</MudNavLink>
     </MudNavMenu>
 </MudPaper>

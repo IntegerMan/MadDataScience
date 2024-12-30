@@ -1,10 +1,135 @@
 @page "/GenAI/Chat"
-<h3>Chat</h3>
+@using Markdig
+@using OpenAI.Chat
+@inject ILogger<Chat> Logger
+@inject AzureOpenAiChatService ChatService
+@rendermode InteractiveServer
 
-@* TODO: Allow the user to select a template *@
+<div id="ChatContainer">
+    <section id="PageHeader">
+        <MudText Typo="Typo.h4">Chat</MudText>
+        <MudText Typo="Typo.subtitle1" Class="mb-8">
+            A step up from text completions, chat completions includes the conversation history as a series of messages.
+        </MudText>
+    </section>
+    
+    <section id="SystemPrompt">
+        <MudTextField Lines="1"
+                      AutoGrow
+                      @bind-Value="SystemPrompt"
+                      Variant="Variant.Filled"
+                      Class="mb-4"
+                      Label="System Prompt"
+                      HelperText="The System Prompt governs how the AI agent responds"/>
+    </section>
 
-@* TODO: Chat Region *@
+    <div id="ChatMessages">
+        @foreach (var item in ChatMessages)
+        {
+            @if (item is UserChatMessage ucm)
+            {
+                <div class="chat user">
+                    <div class="chat-participant-name">
+                        <b>You</b>
+                    </div>
+                    <div class="chat-message">
+                        @foreach (var part in ucm.Content)
+                        {
+                            <span>@part.Text</span>
+                        }
+                    </div>
+                </div>
+            }
+
+            @if (item is AssistantChatMessage acm)
+            {
+                <div class="chat assistant">
+                    <div class="chat-participant-name">
+                        <b>AI Agent</b>
+                    </div>
+                    <div class="chat-message">
+                        @foreach (var part in acm.Content)
+                        {
+                            <span>@((MarkupString)Markdown.ToHtml(part.Text))</span>
+                        }
+                    </div>
+                </div>
+            }
+        }
+
+        @if (IsBusy)
+        {
+            <div class="chat assistant">
+                <div class="chat-participant-name">
+                    <b>AI Agent</b>
+                </div>
+                <div class="chat-message">
+                    <em>Retrieving response...</em>
+                    <br />
+                    <MudProgressLinear Indeterminate="true" Color="Color.Default" Class="mt-2" />
+                </div>
+            </div>
+        }
+        @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+        {
+            <div class="chat error">
+                <div class="chat-participant-name">
+                    <b>Error</b>
+                </div>
+                <div class="chat-message">
+                    @ErrorMessage
+                </div>
+            </div>
+        }
+
+    </div>
+    
+    <MudDivider Class="mt-4 mb-4" />
+
+    <form @onsubmit="SendChatAsync" id="UserTextEntry" class="mb-4">
+        <MudTextField @bind-Value="Prompt" 
+                      Variant="Variant.Text" 
+                      Class="mr-4"
+                      Immediate="true"
+                      TextUpdateSuppression="false"
+                      Label="Enter your message"/>
+        <MudButton ButtonType="ButtonType.Submit"
+                   Disabled="IsBusy"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary">
+            Send
+        </MudButton>
+    </form>
+</div>
 
 @code {
-    
+    public bool IsBusy { get; set; }
+    public string ErrorMessage { get; set; } = string.Empty;
+    public string SystemPrompt { get; set; } = "You are a silly but helpful AI chatbot at the KidzMash part of the CodeMash 2025 conference. Keep your answers short and friendly.";
+    public string Prompt { get; set; } = string.Empty;
+
+    public List<ChatMessage> ChatMessages { get; set; } = new()
+    {
+        new AssistantChatMessage("Hello! I'm the KidzMash AI Assistant. How can I help you today?")
+    };
+
+    private async Task SendChatAsync()
+    {
+        string message = Prompt;
+        Logger.LogInformation("Sending Chat Message: {Message}", message);
+
+        // Indicate we're busy
+        ChatMessages.Add(new UserChatMessage(message));
+        Prompt = string.Empty;
+        IsBusy = true;
+        ErrorMessage = string.Empty;
+        StateHasChanged();
+        
+        string response = await ChatService.ChatAsync(SystemPrompt, ChatMessages);
+        ChatMessages.Add(new AssistantChatMessage(response));
+        
+        IsBusy = false;
+        StateHasChanged();
+    }
+
 }

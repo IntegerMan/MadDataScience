@@ -40,4 +40,21 @@ public class AzureOpenAiChatService
         
         return result.Value?.Content.FirstOrDefault()?.Text ?? "The system did not generate a response";
     }
+
+    public async Task<string> ChatAsync(string systemPrompt, IEnumerable<ChatMessage> chatMessages)
+    {
+        _logger.LogDebug("Generating chat completions with prompt: {Prompt} using model {Model}", systemPrompt, _modelName);
+
+        List<ChatMessage> history = [new SystemChatMessage(systemPrompt)];
+        foreach (var chatMessage in chatMessages)
+        {
+            _logger.LogDebug("Chat message: {Message}", chatMessage.Content);
+            history.Add(chatMessage);
+        }
+        
+        ChatClient chatClient = _client.GetChatClient(_modelName);
+        ClientResult<ChatCompletion> result = await chatClient.CompleteChatAsync(history);
+        
+        return result.Value?.Content.FirstOrDefault()?.Text ?? "The system did not generate a response";
+    }
 }

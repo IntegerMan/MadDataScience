@@ -65,3 +65,37 @@ h1:focus {
     margin-bottom: 0.5rem;
     color: #258cfb;
 }
+
+
+.chat {
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    padding: 1rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 25px;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-participant-name {
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.chat.assistant {
+    background-color: #00B2E3;
+    margin-right: 5rem;
+}
+
+.chat.error {
+    background-color: coral;
+    margin-right: 5rem;
+}
+
+.chat.user {
+    background-color: #00A887;
+    margin-left: 5rem;
+    align-content: flex-end;
+}

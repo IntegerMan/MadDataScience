@@ -4,6 +4,7 @@ using MattEland.MadDataScience.Services;
 using MudBlazor.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddEnvironmentVariables("MADDATASCIENCE_");
 
 // Add services to the container.
 builder.Services
@@ -29,7 +30,6 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 
 app.UseAntiforgery();
 

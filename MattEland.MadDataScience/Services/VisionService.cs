@@ -17,7 +17,7 @@ public class VisionService
     {
         _webHostEnvironment = webHostEnvironment;
         _endpoint = new Uri(config.Value.Endpoint);
-        _credential = new AzureKeyCredential(config.Value.SubscriptionKey);
+        _credential = new AzureKeyCredential(config.Value.Key);
         _client = new ImageAnalysisClient(_endpoint, _credential);
     }
 

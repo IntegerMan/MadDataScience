@@ -1,27 +1,48 @@
 @page "/Vision/ImageCaptioning"
 @rendermode InteractiveServer
-
-@using MattEland.MadDataScience.Services
 @inject VisionService VisionService
+@inject ILogger<Captioning> Logger
 
-<h3>Image Captioning</h3>
 
-<img src="@ImageSource" alt="Sample Image" class="img-fluid" />
-<span>@Caption</span>
+<MudText Typo="Typo.h4">Image Captioning</MudText>
+<MudText Typo="Typo.subtitle1" Class="mb-8">
+    Describe the contents of an image
+</MudText>
 
-<MudButton @onclick="HandleCaptionClick" Variant="Variant.Filled" Color="Color.Primary">Caption This</MudButton>
+<img src="@ImageSource" alt="Sample Image" class="img-fluid"/>
+<br/>
+
+<MudText Typo="Typo.caption">@Caption</MudText>
+<br/>
+
+@if (IsBusy)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary"/>
+}
+
+<MudButton Class="mt-4" Disabled="IsBusy" @onclick="HandleCaptionClick" Variant="Variant.Filled" Color="Color.Primary">
+    Caption This
+</MudButton>
 
 @code {
     public string ImageSource { get; set; } = "CodeMash.jpg";
     public string? Caption { get; set; }
+    public bool IsBusy { get; set; }
 
     private async Task HandleCaptionClick()
     {
         BinaryData data = await VisionService.LoadImageDataAsync(ImageSource);
-        
-        Console.WriteLine("Captioning Image"); 
+
+        Logger.LogDebug("Captioning Image");
+
+        Caption = "Generating caption...";
+        IsBusy = true;
+        StateHasChanged();
+
         Caption = await VisionService.GetImageCaptionAsync(data);
-        
-        Console.WriteLine($"Captioned Image {ImageSource} as {Caption}");
+        IsBusy = false;
+
+        Logger.LogInformation("Captioned Image {ImageSource} as {Caption}", ImageSource, Caption);
     }
+
 }

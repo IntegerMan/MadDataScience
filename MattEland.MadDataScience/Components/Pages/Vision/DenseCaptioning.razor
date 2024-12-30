@@ -1,19 +1,30 @@
 @page "/Vision/DenseCaptioning"
 @rendermode InteractiveServer
-
-@using MattEland.MadDataScience.Models
-@using MattEland.MadDataScience.Services
 @inject VisionService VisionService
+@inject ILogger<DenseCaptioning> Logger
 
-<h3>Dense Captioning</h3>
+<MudText Typo="Typo.h4">Dense Captioning</MudText>
+<MudText Typo="Typo.subtitle1" Class="mb-8">
+    Detect and describe objects inside of an image
+</MudText>
 
 <img src="@ImageSource" alt="Sample Image" class="img-fluid" />
 
-<MudButton @onclick="HandleCaptionClick" Variant="Variant.Filled" Color="Color.Primary">Caption Objects</MudButton>
+<br />
+<MudButton Disabled="IsBusy" Class="mt-4 mb-4" @onclick="HandleCaptionClick" Variant="Variant.Filled" Color="Color.Primary">
+    Detect Objects
+</MudButton>
+
+<br />
+@if (IsBusy)
+{
+    <MudProgressLinear class="mt-4" Indeterminate="true" Color="Color.Primary"/>
+}
 
 @* TODO: Overlay rectangles on the image *@
 @if (Objects.Any())
 {
+    <MudText Typo="Typo.h6">Objects Detected</MudText>
     <ul>
         @foreach (var obj in Objects)
         {
@@ -25,12 +36,18 @@
 @code {
     public string ImageSource { get; set; } = "CodeMash.jpg";
     List<ObjectDetectionResult> Objects { get; set; } = new();
+    public bool IsBusy { get; set; }
 
     private async Task HandleCaptionClick()
     {
         BinaryData data = await VisionService.LoadImageDataAsync(ImageSource);
         
-        Console.WriteLine("Captioning Objects"); 
+        Logger.LogDebug("Dense Captioning Image {Image}", ImageSource);
+        
+        IsBusy = true;
+        StateHasChanged();
+        
         Objects = await VisionService.CaptionObjectsAsync(data);
+        IsBusy = false;
     }
 }

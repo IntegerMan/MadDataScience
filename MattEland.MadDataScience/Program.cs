@@ -13,11 +13,15 @@ builder.Services
 
 builder.Services.AddMudServices();
 
+// NOTE: Interfaces could be a thing here as well, but I don't think we need the complexity for a non-code demo
 builder.Services.AddScoped<VisionService>();
 builder.Services.AddScoped<SpeechService>();
+builder.Services.AddScoped<AzureOpenAiImageService>();
 builder.Services.AddScoped<MachineLearningService>();
 
 builder.Services.Configure<AzureAiServicesConfig>(builder.Configuration.GetSection("AzureAiServices"));
+builder.Services.Configure<AzureOpenAiConfig>("Images", builder.Configuration.GetSection("AzureOpenAi:Images"));
+builder.Services.Configure<AzureOpenAiConfig>("Chat", builder.Configuration.GetSection("AzureOpenAi:Chat"));
 
 WebApplication app = builder.Build();
 

@@ -14,7 +14,7 @@ public class SpeechService(IOptionsSnapshot<AzureAiServicesConfig> options)
         
         Console.WriteLine($"Speaking: {text} as {voiceName}");
 
-        SpeechConfig config = SpeechConfig.FromSubscription(_options.SubscriptionKey, _options.Region);
+        SpeechConfig config = SpeechConfig.FromSubscription(_options.Key, _options.Region);
         config.SpeechSynthesisVoiceName = voiceName;
         
         SpeechSynthesizer synth = new(config);
@@ -24,7 +24,7 @@ public class SpeechService(IOptionsSnapshot<AzureAiServicesConfig> options)
 
     public async Task<string> ListenAsync()
     {
-        SpeechConfig config = SpeechConfig.FromSubscription(_options.SubscriptionKey, _options.Region);
+        SpeechConfig config = SpeechConfig.FromSubscription(_options.Key, _options.Region);
         
         SpeechRecognizer recognizer = new(config);
 

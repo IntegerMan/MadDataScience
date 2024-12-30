@@ -1,12 +1,60 @@
 @page "/Vision/ImageGeneration"
-<h3>Image Generation</h3>
+@using System.Text
+@rendermode InteractiveServer
+@inject AzureOpenAiImageService ImageImageService
+@inject ILogger<ImageGeneration> Logger
 
-@* TODO: Add a prompt area *@
+<MudText Typo="Typo.h4">Image Generation</MudText>
+<MudText Typo="Typo.subtitle1" Class="mb-8">
+    Generate an image from a prompt
+</MudText>
 
-@* TODO: Add a button to generate an image *@
+<form @onsubmit="GenerateImage">
+    <MudTextField Label="Prompt" 
+                  Variant="Variant.Text" 
+                  Lines="3"
+                  AutoGrow
+                  AutoFocus="true"
+                  HelperText="Describe the image you'd like to generate"
+                  @bind-Value="Prompt" />
+        
+    <MudButton Disabled="IsBusy" Class="mt-4" Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Generate</MudButton>
+</form>
 
-@* TODO: Render the image here *@
+@if (IsBusy)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-4"/>
+}
+
+@if (ImageSource != null)
+{
+    <img class="mt-4" src="@ImageSource.ToString()" alt="Image" style="width: 800px; height: auto;">
+    <br />
+    <MudText Typo="Typo.caption" Class="mb-4">@Caption</MudText>
+    <br />
+}
 
 @code {
-    
+
+    private async Task GenerateImage()
+    {
+        Logger.LogInformation("Generating Image from prompt {Prompt}", Prompt);
+
+        IsBusy = true;
+        StateHasChanged();
+        
+        ImageGenerationResult result = await ImageImageService.GenerateImageAsync(Prompt);
+        ImageSource = result.ImageUri;
+        Caption = result.Caption;
+        IsBusy = false;
+        
+        Logger.LogInformation("Generated Image from prompt {Prompt} at {ImageSource}", Caption, ImageSource);
+    }
+
+    public string? Caption { get; set; }
+    public bool IsBusy { get; set; }
+
+    public Uri? ImageSource { get; set; }
+    public string Prompt { get; set; } = String.Empty;
+
 }

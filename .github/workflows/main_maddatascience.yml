@@ -21,9 +21,6 @@ jobs:
         with:
           dotnet-version: '9.x'
 
-      - name: Restore workloads
-        run: dotnet workload restore
-
       - name: Build with dotnet
         run: dotnet build --configuration Release
 

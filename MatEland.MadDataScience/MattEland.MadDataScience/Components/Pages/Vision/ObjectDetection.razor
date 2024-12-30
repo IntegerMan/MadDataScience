@@ -1,0 +1,34 @@
+@page "/Vision/ObjectDetection"
+@rendermode InteractiveServer
+
+@using MattEland.MadDataScience.Models
+@using MattEland.MadDataScience.Services
+@inject VisionService VisionService
+<h3>Object Detection</h3>
+
+<img src="@ImageSource" alt="Sample Image" class="img-fluid" />
+
+<MudButton @onclick="HandleCaptionClick">Detect Objects</MudButton>
+
+@if (Objects.Any())
+{
+    <ul>
+        @foreach (var obj in Objects)
+        {
+            <li>@obj</li>
+        }
+    </ul>
+}
+
+@code {
+    public string ImageSource { get; set; } = "CodeMash.jpg";
+    List<ObjectDetectionResult> Objects { get; set; } = new();
+
+    private async Task HandleCaptionClick()
+    {
+        BinaryData data = await VisionService.LoadImageDataAsync(ImageSource);
+        
+        Console.WriteLine("Detecting Objects"); 
+        Objects = await VisionService.DetectObjectsAsync(data);
+    }
+}

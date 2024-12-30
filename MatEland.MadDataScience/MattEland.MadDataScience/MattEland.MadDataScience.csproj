@@ -15,12 +15,25 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Azure.AI.Vision.ImageAnalysis" Version="1.0.0" />
       <PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.42.0" />
       <PackageReference Include="Microsoft.Data.Analysis" Version="0.22.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.0" />
       <PackageReference Include="Microsoft.ML" Version="4.0.0" />
       <PackageReference Include="Microsoft.ML.AutoML" Version="0.22.0" />
       <PackageReference Include="MudBlazor" Version="7.15.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="wwwroot\CodeMash.jpg">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Include="wwwroot\model.zip">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Include="wwwroot\video_game_reviews.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

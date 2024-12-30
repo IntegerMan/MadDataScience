@@ -12,8 +12,10 @@ builder.Services
 
 builder.Services.AddMudServices();
 
+builder.Services.AddScoped<VisionService>();
 builder.Services.AddScoped<SpeechService>();
 builder.Services.AddScoped<MachineLearningService>();
+
 builder.Services.Configure<AzureAiServicesConfig>(builder.Configuration.GetSection("AzureAiServices"));
 
 WebApplication app = builder.Build();

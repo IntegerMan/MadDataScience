@@ -1,10 +1,164 @@
 @page "/GenAI/DogOS"
-<h3>DogOS (Web Edition)</h3>
+@using Markdig
+@using OpenAI.Chat
+@inject ILogger<DogOS> Logger
+@inject AzureOpenAiChatService ChatService
+@inject SpeechService SpeechService
+@rendermode InteractiveServer
 
-@* TODO: Chat Region *@
-@* TODO: Azure Text to Speech *@
-@* TODO: Azure Speech to Text *@
+<div id="ChatContainer">
+    <section id="PageHeader">
+        <MudText Typo="Typo.h4">DogOS</MudText>
+        <MudText Typo="Typo.subtitle1" Class="mb-8">
+            DogOS combines chatting and speaking with a dog-themed AI assistant.
+        </MudText>
+    </section>
+    
+    <section id="SystemPrompt">
+        <MudTextField Lines="1"
+                      AutoGrow
+                      @bind-Value="SystemPrompt"
+                      Variant="Variant.Filled"
+                      Class="mb-4"
+                      Label="System Prompt"
+                      HelperText="The System Prompt governs how the AI agent responds"/>
+    </section>
+
+    <div id="ChatMessages">
+        @foreach (var item in ChatMessages)
+        {
+            @if (item is UserChatMessage ucm)
+            {
+                <div class="chat user">
+                    <div class="chat-participant-name">
+                        <b>You</b>
+                    </div>
+                    <div class="chat-message">
+                        @foreach (var part in ucm.Content)
+                        {
+                            <span>@part.Text</span>
+                        }
+                    </div>
+                </div>
+            }
+
+            @if (item is AssistantChatMessage acm)
+            {
+                <div class="chat assistant">
+                    <div class="chat-participant-name">
+                        <b>AI Agent</b>
+                    </div>
+                    <div class="chat-message">
+                        @foreach (var part in acm.Content)
+                        {
+                            <span>@((MarkupString)Markdown.ToHtml(part.Text))</span>
+                        }
+                    </div>
+                </div>
+            }
+        }
+        
+        @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+        {
+            <div class="chat error">
+                <div class="chat-participant-name">
+                    <b>Error</b>
+                </div>
+                <div class="chat-message">
+                    @ErrorMessage
+                </div>
+            </div>
+        }
+
+    </div>
+    
+    @if (IsBusy)
+    {
+        <MudProgressLinear Indeterminate="true" Color="Color.Default" Class="mt-2 mb-2" />
+    }
+    
+    <MudDivider Class="mt-4 mb-4" />
+
+    <form @onsubmit="SendChatAsync" id="UserTextEntry" class="mb-4">
+        <MudTextField @bind-Value="Prompt" 
+                      Variant="Variant.Text" 
+                      Class="mr-4"
+                      Immediate="true"
+                      TextUpdateSuppression="false"
+                      Label="Enter your message"/>
+        <MudButton ButtonType="ButtonType.Submit"
+                   Disabled="IsBusy"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary">
+            Send
+        </MudButton>        
+        <MudButton @onclick="ListenAsync"
+                   ButtonType="ButtonType.Button"
+                   Disabled="IsBusy"
+                   Class="ml-4"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary">
+            Listen
+        </MudButton>
+    </form>
+</div>
 
 @code {
-    
+    public bool IsBusy { get; set; }
+    public string ErrorMessage { get; set; } = string.Empty;
+    public string SystemPrompt { get; set; } = "You are DogOS, a digital AI assistant that thinks it is a dog as part of a 'Mad Data Science' presentation Matt Eland and Sam Gomez are giving. You are at the KidzMash conference at CodeMash 2025 in the Kalahari convention center in Sandusky Ohio. The date is January 17th, 2025 and it's just after 1 PM. Be friendly and use simple sentences and words. Keep your answers short and friendly and make jokes occasionally. Don't use emojis.";
+    public string Prompt { get; set; } = string.Empty;
+    public string VoiceName { get; set; } = "en-US-GuyNeural";
+
+    public List<ChatMessage> ChatMessages { get; set; } = new()
+    {
+        new AssistantChatMessage("Hello! I'm DogOS! It's great to see you kids here at KidzMash!")
+    };
+
+    private async Task SendChatAsync()
+    {
+        string message = Prompt;
+        if (string.IsNullOrWhiteSpace(message)) return;
+        
+        Logger.LogInformation("Sending Chat Message: {Message}", message);
+
+        // Indicate we're busy
+        ChatMessages.Add(new UserChatMessage(message));
+        Prompt = string.Empty;
+        IsBusy = true;
+        ErrorMessage = string.Empty;
+        StateHasChanged();
+        
+        string response = await ChatService.ChatAsync(SystemPrompt, ChatMessages);
+        ChatMessages.Add(new AssistantChatMessage(response));
+
+        // Fire and forget speech synthesis
+        Logger.LogDebug("Speaking response: {Response}", response);
+        _ = SpeechService.SpeakAsync(response, VoiceName);
+        
+        IsBusy = false;
+        StateHasChanged();
+    }
+
+    private async Task ListenAsync()
+    {
+        IsBusy = true;
+        ErrorMessage = string.Empty;
+        StateHasChanged();
+        
+        string? input = await SpeechService.ListenAsync();
+        IsBusy = false;
+        Logger.LogDebug("Heard: {Input}", input);
+        
+        if (!string.IsNullOrWhiteSpace(input))
+        {
+            Prompt = input;
+            await SendChatAsync();
+        }
+        else
+        {
+            _ = SpeechService.SpeakAsync("I'm sorry, I didn't catch that. Please try again.", VoiceName);
+        }
+    }
+
 }

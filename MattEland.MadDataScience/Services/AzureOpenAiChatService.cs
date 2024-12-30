@@ -22,8 +22,6 @@ public class AzureOpenAiChatService
 
         Uri endpoint = new(chatConfig.Endpoint);
         
-        _logger.LogDebug("Creating Azure OpenAI Chat client with endpoint {Endpoint}", endpoint);
-        
         AzureKeyCredential credential = new(chatConfig.Key);
         _client = new AzureOpenAIClient(endpoint, credential);
 

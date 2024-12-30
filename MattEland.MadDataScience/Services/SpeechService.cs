@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace MattEland.MadDataScience.Services;
 
-public class SpeechService(IOptionsSnapshot<AzureAiServicesConfig> options)
+public class SpeechService(IOptionsSnapshot<AzureAiServicesConfig> options, ILogger<SpeechService> logger)
 {
     private readonly AzureAiServicesConfig _options = options.Value;
 
@@ -12,7 +12,7 @@ public class SpeechService(IOptionsSnapshot<AzureAiServicesConfig> options)
     {
         voiceName ??= _options.SpeechVoiceName;
         
-        Console.WriteLine($"Speaking: {text} as {voiceName}");
+        logger.LogInformation("Speaking: {Text} with voice {Voice}", text, voiceName);
 
         SpeechConfig config = SpeechConfig.FromSubscription(_options.Key, _options.Region);
         config.SpeechSynthesisVoiceName = voiceName;
@@ -22,16 +22,18 @@ public class SpeechService(IOptionsSnapshot<AzureAiServicesConfig> options)
         return synth.SpeakTextAsync(text);
     }
 
-    public async Task<string> ListenAsync()
+    public async Task<string?> ListenAsync()
     {
         SpeechConfig config = SpeechConfig.FromSubscription(_options.Key, _options.Region);
         
         SpeechRecognizer recognizer = new(config);
 
+        logger.LogDebug("Listening for speech...");
         SpeechRecognitionResult? result = await recognizer.RecognizeOnceAsync();
+        logger.LogDebug("Speech recognition complete");
         
-        Console.WriteLine("Recognized: " + result?.Text + " with status " + result?.Reason ?? "No result");
+        logger.LogInformation("Recognized: {Text} with status {Status}", result?.Text,result?.Reason);
         
-        return result?.Text ?? "No text recognized";
+        return result?.Text;
     }
 }

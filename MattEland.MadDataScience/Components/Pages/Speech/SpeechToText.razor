@@ -17,7 +17,7 @@
     private async Task HandleSubmit()
     {
         Console.WriteLine("Handling Submit");
-        string result = await speechService.ListenAsync();
+        string result = await speechService.ListenAsync() ?? "No text recognized";
         
         Heard = result;
     }

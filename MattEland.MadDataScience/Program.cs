@@ -16,6 +16,7 @@ builder.Services.AddMudServices();
 // NOTE: Interfaces could be a thing here as well, but I don't think we need the complexity for a non-code demo
 builder.Services.AddScoped<VisionService>();
 builder.Services.AddScoped<SpeechService>();
+builder.Services.AddScoped<AzureOpenAiChatService>();
 builder.Services.AddScoped<AzureOpenAiImageService>();
 builder.Services.AddScoped<MachineLearningService>();
 

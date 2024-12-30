@@ -1,16 +1,106 @@
 @page "/GenAI/TextCompletions"
-<h3>Text Completions</h3>
+@using Markdig
+@inject ILogger<TextCompletions> Logger
+@inject AzureOpenAiChatService ChatService
+@rendermode InteractiveServer
 
-@* TODO: Allow the user to select a template *@
+<MudText Typo="Typo.h4">Text Completions</MudText>
+<MudText Typo="Typo.subtitle1" Class="mb-8">
+    The building blocks for Generative AI. Given a prompt, generate a response.
+</MudText>
 
-@* TODO: Text Area for user input *@
+<form @onsubmit="HandleSubmit">
+    <MudSelect Label="Select a starting template"
+               T="string"
+               ValueChanged="v => OnTemplateChanged(v)"
+               Variant="Variant.Text"
+               HelperText="Changing this will set the text area below with an example prompt.">
+        @foreach (var template in Templates)
+        {
+            <MudSelectItem Value="@template">@template</MudSelectItem>
+        }
+    </MudSelect>
+    <br />
 
-@* TODO: Button to generate text *@
+    <MudTextField Lines="3" AutoGrow 
+                  Class="mt-4 mb-4"
+                  Label="Prompt Instructions"
+                  Variant="Variant.Filled"
+                  @bind-Value="Prompt"
+                  HelperText="This is what the Large Language Model (LLM) will respond to"/>
+    
+    <br />
+    
+    <MudButton Disabled="IsBusy" ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+        Generate
+    </MudButton>
+</form>
 
-@* TODO: Progress Bar *@
+@if (IsBusy)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-4"/>
+}
 
-@* TODO: Display generated text *@
+@if (!string.IsNullOrWhiteSpace(Preview))
+{
+    <MudText Typo="Typo.h6" Class="mt-4">
+        Generated Text
+    </MudText>
+    <MudText Typo="Typo.body1">
+        @((MarkupString) Preview)
+    </MudText>
+}
 
 @code {
+    public bool IsBusy { get; set; }
+    public string Prompt { get; set; } = string.Empty;
+    public string GeneratedText { get; set; } = string.Empty;
     
+    public string Email => "Write a polite email to your boss at work protesting the lack of dogs in the workplace and suggesting an office doggo policy.";
+    public string Batman => "Pretend you are Batman. Write a 5 sentence monologue about fighting crime at the KidzMash conference at CodeMash 2025. The crime fighting should occur at the Kalahari resort's water park.";
+    public string Joke => "Tell me a kid-friendly joke that will make me laugh. Bonus points if it involves a dog, squirrel, gorilla, or programming.";
+    public string Story => "Tell me a 3 paragraph short story about a mad data scientist at a conference who accidentally creates a talking dog.";
+    public string Code => "Generate some simple code that will print 'Hello, World!' to the console using C#.";
+
+    private string[] Templates =>
+    [
+        "Email",
+        "Batman",
+        "Joke",
+        "Story",
+        "Code"
+    ];
+    
+    private async Task HandleSubmit()
+    {
+        Logger.LogDebug("Generating text from prompt {Prompt}", Prompt);
+        
+        IsBusy = true;
+        StateHasChanged();
+        
+        GeneratedText = await ChatService.GetTextCompletionsAsync(Prompt);
+        Preview = Markdown.ToHtml(GeneratedText);
+
+        IsBusy = false;
+        Logger.LogInformation("Generated text {Text} from prompt {Prompt}", GeneratedText, Prompt);
+    }
+
+    public string? Preview { get; set; }
+
+    private void OnTemplateChanged(string? template)
+    {
+        Logger.LogDebug("Template changed to {Template}", template);
+        
+        Prompt = template switch
+        {
+            "Email" => Email,
+            "Batman" => Batman,
+            "Joke" => Joke,
+            "Story" => Story,
+            "Code" => Code,
+            _ => Prompt
+        };
+        Logger.LogDebug("Prompt set to {Prompt}", Prompt);
+    }
+
 }

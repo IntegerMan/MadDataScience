@@ -1,11 +1,12 @@
 ﻿@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
 
 <MudPaper Width="250px" Class="py-3" Elevation="0">
-    <MudNavMenu Dense="true">
+    <MudNavMenu Dense="false">
         <MudText Typo="Typo.h6" Class="px-4">Mad Data Science</MudText>
         <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">KidzMash 2025</MudText>
         <MudDivider Class="my-2"/>
-        <MudNavGroup Title="Intro" Expanded="true">
+        <MudNavGroup Title="Intro" Expanded="@(PathContains("/Intro") || IsSiteRoot())">
             <MudNavLink Href="/Intro/Welcome" 
                         Icon="@Icons.Material.Filled.Slideshow">Welcome</MudNavLink>
             <MudNavLink Href="/Intro/AboutMatt"
@@ -15,17 +16,17 @@
             <MudNavLink Href="/Intro/Projects"
                         Icon="@Icons.Material.Filled.AccountTree">Projects Covered</MudNavLink>
         </MudNavGroup>        
-        <MudNavGroup Title="Machine Learning" Expanded="true">
+        <MudNavGroup Title="Machine Learning" Expanded="@PathContains("/ML")">
             <MudNavLink Href="/ML/Intro"
                         Icon="@Icons.Material.Filled.School">Machine Learning</MudNavLink>
-            <MudNavLink Href="/ML/DataSet"
+            <MudNavLink Href="/ML/Dataset"
                         Icon="@Icons.Material.Filled.BackupTable">Our Training Data</MudNavLink>
             <MudNavLink Href="/ML/Train"
                         Icon="@Icons.Material.Filled.Psychology">Training our Model</MudNavLink>
             <MudNavLink Href="/ML/Predict"
                         Icon="@Icons.Material.Filled.VideogameAsset">Predicting Game Sales</MudNavLink>
         </MudNavGroup>        
-        <MudNavGroup Title="Speech" Expanded="true">
+        <MudNavGroup Title="Speech" Expanded="@PathContains("/Speech")">
             <MudNavLink Href="/Speech/Overview"
                         Icon="@Icons.Material.Filled.RecordVoiceOver">Computers and Speech</MudNavLink>
             <MudNavLink Href="/Speech/TextToSpeech" 
@@ -33,17 +34,17 @@
             <MudNavLink Href="/Speech/SpeechToText"
                         Icon="@Icons.Material.Filled.Mic">Speech to Text</MudNavLink>
         </MudNavGroup>
-        <MudNavGroup Title="Generative AI" Expanded="true">
+        <MudNavGroup Title="Generative AI" Expanded="@PathContains("/GenAI")">
             <MudNavLink Href="/GenAI/Overview"
                         Icon="@Icons.Material.Filled.AutoFixHigh">Generative AI</MudNavLink>
-            <MudNavLink Href="/GenAI/Text"
+            <MudNavLink Href="/GenAI/TextCompletions"
                         Icon="@Icons.Material.Filled.Chat">Text Completion</MudNavLink>
             <MudNavLink Href="/GenAI/Chat"
                         Icon="@Icons.Material.Filled.Forum">Conversational AI</MudNavLink>
             <MudNavLink Href="/GenAI/DogOS"
                         Icon="@Icons.Material.Filled.Pets">A TALKING DOG!!!</MudNavLink>
         </MudNavGroup>
-        <MudNavGroup Title="Vision" Expanded="true">
+        <MudNavGroup Title="Vision" Expanded="@PathContains("/Vision")">
             <MudNavLink Href="/Vision/Overview"
                         Icon="@Icons.Material.Filled.RemoveRedEye">Computer Vision</MudNavLink>
             <MudNavLink Href="/Vision/ImageCaptioning"
@@ -52,12 +53,12 @@
                         Icon="@Icons.Material.Filled.CenterFocusWeak">Object Detection</MudNavLink>
             <MudNavLink Href="/Vision/DenseCaptioning"
                         Icon="@Icons.Material.Filled.CenterFocusStrong">Dense Captioning</MudNavLink>
-            <MudNavLink Href="/GenAI/Vision"
+            <MudNavLink Href="/Vision/GenAIVision"
                         Icon="@Icons.Material.Filled.Mms">Interpreting Images</MudNavLink>
-            <MudNavLink Href="/GenAI/Images"
+            <MudNavLink Href="/Vision/ImageGeneration"
                         Icon="@Icons.Material.Filled.Palette">Image Generation</MudNavLink>
         </MudNavGroup>
-        <MudNavGroup Title="Reinforcement Learning" Expanded="true">
+        <MudNavGroup Title="Reinforcement Learning" Expanded="@PathContains("/RL")">
             <MudNavLink Href="/RL/Overview" 
                         Icon="@Icons.Material.Filled.Lightbulb">Reinforcement Learning</MudNavLink>
             <MudNavLink Href="/RL/Manual"
@@ -66,10 +67,28 @@
                         Icon="@Icons.Material.Filled.PsychologyAlt">AI Squirrel</MudNavLink>
             <MudNavLink Href="/RL/Learning"
                         Icon="@Icons.Material.Filled.LocalLibrary">Learning Squirrels</MudNavLink>
-            <MudNavLink Href="/RL/KillerSquirrels"
+            <MudNavLink Href="/RL/KillerSquirrel"
                         Icon="@Icons.Material.Filled.Warning">Killer Squirrels</MudNavLink>
         </MudNavGroup>
-        <MudNavLink Href="/about"
+        <MudNavLink Href="/Conclusion"
                     Icon="@Icons.Material.Filled.Science">Conclusion</MudNavLink>
     </MudNavMenu>
 </MudPaper>
+
+@code {
+
+    public bool IsSiteRoot()
+    {
+        // Get the relative path from the base URI
+        var relativePath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+
+        // Check if the relative path is empty or equal to "/"
+        return string.IsNullOrEmpty(relativePath) || relativePath == "/";
+    }
+
+    public bool PathContains(string path)
+    {
+        return NavigationManager.Uri.Contains(path);
+    }
+
+} 

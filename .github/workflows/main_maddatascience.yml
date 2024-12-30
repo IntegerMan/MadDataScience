@@ -22,7 +22,7 @@ jobs:
           dotnet-version: '9.x'
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build MattEland.MadDataScience/MattEland.MadDataScience.sln --configuration Release
 
       - name: dotnet publish
         run: dotnet publish MattEland.MadDataScience/MattEland.MadDataScience.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp

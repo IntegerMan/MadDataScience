@@ -31,4 +31,29 @@ public class SquirrelSimulationService(ILogger<SquirrelSimulationService> logger
 
         return world;
     }
+
+    public void HandlePlayerMove(GameWorld gameWorld, GameDirection direction)
+    {
+        var squirrel = gameWorld.Objects.OfType<Squirrel>().FirstOrDefault();
+        if (squirrel == null)
+        {
+            logger.LogWarning("No squirrel found in the world");
+            return;
+        }
+
+        WorldPosition newPosition = squirrel.Position.Move(direction);
+        if (!gameWorld.IsValidPosition(newPosition))
+        {
+            logger.LogWarning("Invalid move attempted");
+        }
+        else
+        {
+            // TODO: Handle collisions
+            
+            logger.LogDebug("Moving squirrel from {0} to {1}", squirrel.Position, newPosition);
+            squirrel.Position = newPosition;
+        }
+        
+        // TODO: Simulate other actors
+    }
 }

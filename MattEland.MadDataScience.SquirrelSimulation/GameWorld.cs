@@ -14,13 +14,10 @@ public class GameWorld(int width, int height)
     public void AddObject(GameObject gameObject)
     {
         // Ensure within bounds of the world
-        if (gameObject.Position.X < 0 || gameObject.Position.X >= width)
+        if (!IsValidPosition(gameObject.Position))
         {
-            throw new ArgumentOutOfRangeException(nameof(gameObject.Position.X));
-        }
-        if (gameObject.Position.Y < 0 || gameObject.Position.Y >= height)
-        {
-            throw new ArgumentOutOfRangeException(nameof(gameObject.Position.Y));
+            throw new ArgumentOutOfRangeException(nameof(gameObject.Position), 
+                $"Position {gameObject.Position} is outside the bounds of the world");
         }
         if (IsOccupied(gameObject.Position))
         {
@@ -32,4 +29,8 @@ public class GameWorld(int width, int height)
 
     private bool IsOccupied(WorldPosition position) 
         => _objects.Any(o => o.Position == position);
+
+    public bool IsValidPosition(WorldPosition pos) 
+        => pos.X >= 0 && pos.X < width && 
+           pos.Y >= 0 && pos.Y < height;
 }

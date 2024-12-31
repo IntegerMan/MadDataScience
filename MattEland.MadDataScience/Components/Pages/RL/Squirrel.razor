@@ -10,16 +10,29 @@
 </MudAlert>
 
 <GameWorldDisplay GameWorld="GameWorld" />
-<ManualSquirrelControl GameWorld="GameWorld" />
+<ManualSquirrelControl GameWorld="GameWorld" PlayerMoveExecuted="OnGameWorldChanged" />
 
 @code {
+    public ILogger<SquirrelSimulationService> Logger { get; }
 
     public Squirrel(SquirrelSimulationService squirrelService, ILogger<SquirrelSimulationService> logger)
     {
-        logger.LogDebug("Building test world for squirrel simulation");
+        Logger = logger;
+        
+        Logger.LogDebug("Building test world for squirrel simulation");
         
         GameWorld = squirrelService.BuildTestWorld();
     }
 
     public GameWorld GameWorld { get; set; }
+
+    private void OnGameWorldChanged(GameWorld world)
+    {
+        Logger.LogTrace("Game world changed");
+        
+        // This should be the same world, but calling state changed tells the UI to update on the game display
+        GameWorld = world;
+        StateHasChanged();
+    }
+
 }

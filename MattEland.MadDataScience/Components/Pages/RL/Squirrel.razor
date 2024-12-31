@@ -21,7 +21,7 @@
         
         Logger.LogDebug("Building test world for squirrel simulation");
         
-        GameWorld = squirrelService.BuildTestWorld();
+        GameWorld = squirrelService.BuildTestWorld(assumeDirectControl: true);
     }
 
     public GameWorld GameWorld { get; set; }

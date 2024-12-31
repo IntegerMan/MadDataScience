@@ -17,4 +17,13 @@ public record WorldPosition(int X, int Y)
             GameDirection.DownRight => new WorldPosition(X + 1, Y + 1),
             _ => this
         };
+    
+    public WorldPosition Move(int x, int y) => new(X + x, Y + y);
+
+    public float DistanceTo(WorldPosition other)
+    {
+        int xDiff = X - other.X;
+        int yDiff = Y - other.Y;
+        return MathF.Sqrt((xDiff * xDiff) + (yDiff * yDiff)); // Pythagorean theorem
+    }
 }

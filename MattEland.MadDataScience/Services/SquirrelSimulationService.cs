@@ -4,9 +4,13 @@ namespace MattEland.MadDataScience.Services;
 
 public class SquirrelSimulationService(ILogger<SquirrelSimulationService> logger)
 {
-    public GameWorld BuildTestWorld()
+    public GameWorld BuildTestWorld(bool assumeDirectControl)
     {
-        var world = new GameWorld(11, 11, 50, logger);
+        GameWorld world = new(11, 11, 50)
+        {
+            Logger = logger,
+            UseManualSquirrelControl = assumeDirectControl
+        };
 
         world.AddObject(new Squirrel
         {

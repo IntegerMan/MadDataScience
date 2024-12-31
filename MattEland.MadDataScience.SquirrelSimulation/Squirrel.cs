@@ -1,9 +1,12 @@
+using MattEland.MadDataScience.SquirrelSimulation.Brains;
 using Microsoft.Extensions.Logging;
 
 namespace MattEland.MadDataScience.SquirrelSimulation;
 
-public class Squirrel : GameObject, IGameActor
+public class Squirrel: GameObject, IGameActor
 {
+    public required IBrain Brain { get; init; }
+
     public bool HasAcorn { get; set; }
     
     public override string Name => "Squirrel";

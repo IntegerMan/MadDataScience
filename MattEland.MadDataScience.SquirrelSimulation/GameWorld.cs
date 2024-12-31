@@ -11,8 +11,6 @@ public class GameWorld(int width, int height, int maxTurns)
     public int Height => height;
     
     public ILogger? Logger { get; set; }
-
-    public bool UseManualSquirrelControl { get; set; }
     
     public int TurnsLeft { get; private set; } = maxTurns;
     public GameStatus State { get; internal set; } = GameStatus.InProgress;
@@ -43,65 +41,12 @@ public class GameWorld(int width, int height, int maxTurns)
         => pos.X >= 0 && pos.X < width &&
            pos.Y >= 0 && pos.Y < height;
 
-
-    public void HandleSquirrelMove(Squirrel squirrel, WorldPosition newPosition)
-    {
-        if (State != GameStatus.InProgress)
-        {
-            Logger?.LogWarning("Game is not in progress");
-            return;
-        }
-        
-        if (!IsValidPosition(newPosition))
-        {
-            Logger?.LogWarning("Invalid move attempted");
-        }
-        else if (IsBlocked(squirrel, newPosition))
-        {
-            Logger?.LogWarning("Squirrel was blocked at {Pos}", newPosition);
-        }
-        else
-        {
-            Logger?.LogDebug("Moving squirrel from {Old} to {New}", squirrel.Position, newPosition);
-            squirrel.Position = newPosition;
-            
-            // TODO: Handle collisions
-            GameObject? otherObject = Objects.FirstOrDefault(o => o.Position == newPosition);
-            if (otherObject is not null)
-            {
-                squirrel.HandleCollision(otherObject, this);
-            }
-            
-            if (otherObject is Acorn a)
-            {
-                Logger?.LogDebug("Squirrel found an acorn at {Pos}", newPosition);
-                squirrel.Position = newPosition;
-                squirrel.HasAcorn = true;
-
-                // Remove the acorn from the world
-                _objects.Remove(a);
-            }
-            else if (otherObject is Tree && squirrel.HasAcorn)
-            {
-                Logger?.LogInformation("Game ended: Squirrel reached the tree with an acorn");
-                State = GameStatus.Won;
-            }
-            else if (otherObject is null)
-            {
-
-                squirrel.Position = newPosition;
-            }
-        }
-
-        // Simulate other actors
-        SimulateGameTurn();
-    }
-
     private bool IsBlocked(IGameActor actor, WorldPosition newPosition) 
         => Objects.Any(o => o != actor && o.Position == newPosition && o.Blocks(actor));
 
-    private void SimulateGameTurn()
+    public void SimulateGameTurn()
     {
+        // Ensure game is in progress
         if (State != GameStatus.InProgress)
         {
             Logger?.LogWarning("Game is not in progress");
@@ -113,8 +58,9 @@ public class GameWorld(int width, int height, int maxTurns)
         {
             List<TilePerceptions> perceptions = BuildTilePerceptions(actor);
 
-            WorldPosition desiredPos = actor.GetGameMove(perceptions, Random);
-            Logger?.LogDebug("{Actor} wants to move to {Pos}", actor.Name, desiredPos);
+            WorldPosition desiredPos = actor.Brain.GetGameMove(actor, perceptions, Random);
+ 
+            HandleActorMove(actor, desiredPos);
         }
         
         // Maintain game state
@@ -131,6 +77,40 @@ public class GameWorld(int width, int height, int maxTurns)
         }
     }
 
+    private void HandleActorMove(IGameActor actor, WorldPosition desiredPos)
+    {
+        if (desiredPos == actor.Position)
+        {
+            Logger?.LogTrace("{Actor} is staying put", actor.Name);
+        }
+        else
+        {
+            Logger?.LogDebug("{Actor} wants to move to {Pos}", actor.Name, desiredPos);
+
+            if (IsBlocked(actor, desiredPos))
+            {
+                Logger?.LogWarning("{Actor} was blocked trying to move to {Pos}", actor.Name, desiredPos);
+            }
+            else if (!IsValidPosition(desiredPos))
+            {
+                Logger?.LogWarning("{Actor} tried to move to an invalid position {Pos}", actor.Name, desiredPos);
+            }
+            else
+            {
+                // This is necessary since we may be removing the objects from the Objects collection during iteration
+                List<GameObject> collidedObjects = Objects.Where(o => o.Position == desiredPos).ToList();
+                foreach (var obj in collidedObjects)
+                {
+                    Logger?.LogDebug("{Actor} collided with {Obj}", actor.Name, obj.Name);
+                    actor.HandleCollision(obj, this);
+                }
+                    
+                actor.Position = desiredPos;
+                Logger?.LogDebug("{Actor} moved to {Pos}", actor.Name, desiredPos);
+            }
+        }
+    }
+
     public Random Random { get; set; } = new();
 
     private List<TilePerceptions> BuildTilePerceptions(IGameActor actor)
@@ -144,8 +124,8 @@ public class GameWorld(int width, int height, int maxTurns)
                 if (!IsValidPosition(newPosition)) continue;
                     
                 if (IsBlocked(actor, newPosition)) continue;
-                    
-                TilePerceptions perception = new()
+
+                perceptions.Add(new TilePerceptions
                 {
                     Position = newPosition,
                     SmellOfDoggo = CalculateTileSmell(newPosition, typeof(Doggo)),
@@ -153,8 +133,7 @@ public class GameWorld(int width, int height, int maxTurns)
                     SmellOfSquirrel = CalculateTileSmell(newPosition, typeof(Squirrel)),
                     SmellOfTree = CalculateTileSmell(newPosition, typeof(Tree)),
                     SmellOfRabbit = CalculateTileSmell(newPosition, typeof(Rabbit))
-                };
-                perceptions.Add(perception);
+                });
             }
         }
 

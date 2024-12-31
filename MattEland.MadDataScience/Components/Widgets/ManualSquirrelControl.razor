@@ -1,3 +1,4 @@
+@using MattEland.MadDataScience.SquirrelSimulation.Brains
 @inject SquirrelSimulationService SquirrelService
 @inject ILogger<ManualSquirrelControl> Logger
 
@@ -44,11 +45,16 @@
 @code {
     [Parameter]
     public required GameWorld GameWorld { get; set; }
+    
+    [Parameter]
+    public required ManualSquirrelBrain Brain { get; set; }
 
     private void HandlePlayerInput(GameDirection direction)
     {
         Logger.LogInformation("Handling player input for direction {Direction}", direction);
-        SquirrelService.HandlePlayerMove(GameWorld, direction);
+        Brain.RequestedDirection = direction;
+        
+        GameWorld.SimulateGameTurn();
         
         PlayerMoveExecuted.InvokeAsync(GameWorld);
     }

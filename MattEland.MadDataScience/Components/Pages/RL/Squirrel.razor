@@ -1,27 +1,60 @@
 @page "/RL/Manual"
+@using MattEland.MadDataScience.SquirrelSimulation.Brains
 
 <MudText Typo="Typo.h4">Squirrel Simulation</MudText>
 <MudText Typo="Typo.subtitle1" Class="mb-4">
     We'll be training a squirrel to solve a game, but first let's see what the game looks like.
 </MudText>
 
-<MudAlert Severity="Severity.Info" Class="mb-4" Style="max-width: 800px;">
+<MudAlert Variant="Variant.Filled" Severity="Severity.Info" Class="mb-4" Style="max-width: 800px;">
     The object of the game is for the squirrel to get to the acorn and then to the tree before the time runs out. The rabbit wanders randomly but will block the squirrel if they try to enter its tile. The dog stays put but will eat the squirrel or rabbit if they enter the adjacent tile.
 </MudAlert>
 
 <GameWorldDisplay GameWorld="GameWorld" />
-<ManualSquirrelControl GameWorld="GameWorld" PlayerMoveExecuted="OnGameWorldChanged" />
+
+@switch (GameWorld.State)
+{
+    case GameStatus.InProgress:
+        <ManualSquirrelControl GameWorld="GameWorld" Brain="Brain" PlayerMoveExecuted="OnGameWorldChanged"/>
+        break;
+        
+    case GameStatus.Killed:
+        <MudAlert Variant="Variant.Filled" Severity="Severity.Error" Class="mt-4">
+            The squirrel was eaten by the dog. Game over.
+        </MudAlert>
+        break;       
+        
+    case GameStatus.OutOfTime:
+        <MudAlert Variant="Variant.Filled" Severity="Severity.Warning" Class="mt-4">
+            You ran out of time. Game over.
+        </MudAlert>
+        break;
+        
+    case GameStatus.Won:
+        <MudAlert Variant="Variant.Filled" Severity="Severity.Success" Class="mt-4">
+            The squirrel reached the tree with the acorn and won the game!
+        </MudAlert>
+        break;
+}
+
+<MudButton Class="mt-4" 
+           Variant="Variant.Filled" 
+           Color="Color.Secondary" 
+           ButtonType="ButtonType.Reset" 
+           @onclick="() => Reset()">
+    Reset Game
+</MudButton>
 
 @code {
+    private readonly SquirrelSimulationService _squirrelService;
     public ILogger<SquirrelSimulationService> Logger { get; }
+    public ManualSquirrelBrain Brain { get; } = new();
 
     public Squirrel(SquirrelSimulationService squirrelService, ILogger<SquirrelSimulationService> logger)
     {
+        _squirrelService = squirrelService;
         Logger = logger;
-        
-        Logger.LogDebug("Building test world for squirrel simulation");
-        
-        GameWorld = squirrelService.BuildTestWorld(assumeDirectControl: true);
+        GameWorld = Reset();
     }
 
     public GameWorld GameWorld { get; set; }
@@ -33,6 +66,14 @@
         // This should be the same world, but calling state changed tells the UI to update on the game display
         GameWorld = world;
         StateHasChanged();
+    }
+
+    private GameWorld Reset()
+    {
+        Logger.LogDebug("Building test world for squirrel simulation");
+        GameWorld = _squirrelService.BuildTestWorld(squirrelBrain: Brain);
+
+        return GameWorld;
     }
 
 }

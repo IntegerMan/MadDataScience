@@ -15,6 +15,8 @@
     width: 50px;
     height: 50px;
     display: flex;
+    align-self: center;
+    justify-self: center;
     justify-content: center;
     align-items: center;
     color: white;

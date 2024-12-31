@@ -10,13 +10,14 @@
 </MudAlert>
 
 <GameWorldDisplay GameWorld="GameWorld" />
-
-@* TODO: Add manual controls here *@
+<ManualSquirrelControl GameWorld="GameWorld" />
 
 @code {
 
     public Squirrel(SquirrelSimulationService squirrelService, ILogger<SquirrelSimulationService> logger)
     {
+        logger.LogDebug("Building test world for squirrel simulation");
+        
         GameWorld = squirrelService.BuildTestWorld();
     }
 

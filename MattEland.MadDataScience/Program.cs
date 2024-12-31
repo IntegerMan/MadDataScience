@@ -19,6 +19,7 @@ builder.Services.AddScoped<SpeechService>();
 builder.Services.AddScoped<AzureOpenAiChatService>();
 builder.Services.AddScoped<AzureOpenAiImageService>();
 builder.Services.AddScoped<MachineLearningService>();
+builder.Services.AddScoped<SquirrelSimulationService>();
 
 builder.Services.Configure<AzureAiServicesConfig>(builder.Configuration.GetSection("AzureAiServices"));
 builder.Services.Configure<AzureOpenAiConfig>("Images", builder.Configuration.GetSection("AzureOpenAi:Images"));

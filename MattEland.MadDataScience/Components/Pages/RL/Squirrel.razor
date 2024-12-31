@@ -1,9 +1,24 @@
 @page "/RL/Manual"
-<h3>Our Squirrel Simulation</h3>
 
-@* TODO: Add a squirrel game with manual controls here *@
-@* TODO: Can I use MonoGame here? *@
+<MudText Typo="Typo.h4">Squirrel Simulation</MudText>
+<MudText Typo="Typo.subtitle1" Class="mb-4">
+    We'll be training a squirrel to solve a game, but first let's see what the game looks like.
+</MudText>
+
+<MudAlert Severity="Severity.Info" Class="mb-4" Style="max-width: 800px;">
+    The object of the game is for the squirrel to get to the acorn and then to the tree before the time runs out. The rabbit wanders randomly but will block the squirrel if they try to enter its tile. The dog stays put but will eat the squirrel or rabbit if they enter the adjacent tile.
+</MudAlert>
+
+<GameWorldDisplay GameWorld="GameWorld" />
+
+@* TODO: Add manual controls here *@
 
 @code {
-    
+
+    public Squirrel(SquirrelSimulationService squirrelService, ILogger<SquirrelSimulationService> logger)
+    {
+        GameWorld = squirrelService.BuildTestWorld();
+    }
+
+    public GameWorld GameWorld { get; set; }
 }

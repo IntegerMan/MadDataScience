@@ -38,4 +38,8 @@
       </None>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\MattEland.MadDataScience.SquirrelSimulation\MattEland.MadDataScience.SquirrelSimulation.csproj" />
+    </ItemGroup>
+
 </Project>

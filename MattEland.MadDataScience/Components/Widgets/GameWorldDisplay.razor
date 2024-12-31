@@ -1,0 +1,23 @@
+<MudText Typo="Typo.h6">Game World</MudText>
+<div class="game-world" 
+     style="grid-template-rows: repeat(@GameWorld.Height, 1fr); grid-template-columns: repeat(@GameWorld.Width, 1fr);">
+    @foreach (var obj in GameWorld.Objects)
+    {
+        <div class="Game-Object Game-Object-@obj.Name" 
+             title="@obj.Name"
+             style="grid-row: @(obj.Position.Y + 1); grid-column: @(obj.Position.X + 1);">
+            <!-- Content for the object -->
+            @obj.Name
+        </div>
+    }
+</div>
+
+<div style="max-width: 800px;">
+    <MudText Typo="Typo.h6" Class="mt-4">Turns Remaining: <strong>@GameWorld.TurnsLeft</strong></MudText>
+    <MudProgressLinear Max="@GameWorld.MaxTurns" Min="0" Value="@GameWorld.TurnsLeft" Color="Color.Primary" />
+</div>
+
+@code {
+    [Parameter]
+    public required GameWorld GameWorld { get; set; }
+}

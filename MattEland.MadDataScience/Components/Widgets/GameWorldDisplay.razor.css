@@ -1,0 +1,46 @@
+.game-world {
+    /* TODO: This would be better with a background graphic */
+    background-color: darkolivegreen;
+
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    display: grid;
+    width: 800px;
+    height: 800px;
+}
+
+.Game-Object {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.Game-Object.Game-Object-Squirrel {
+    background-color: brown;
+}
+
+.Game-Object.Game-Object-Tree {
+    background-color: green;
+    width: 75px;
+    height: 75px;
+}
+
+.Game-Object.Game-Object-Acorn {
+    background-color: darkgoldenrod;
+    width: 25px;
+    height: 25px;
+}
+
+.Game-Object.Game-Object-Doggo {
+    background-color: black;
+}
+
+.Game-Object.Game-Object-Rabbit {
+    background-color: white;
+    color: black;
+}

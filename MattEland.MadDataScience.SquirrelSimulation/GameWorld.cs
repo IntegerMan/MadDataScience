@@ -36,6 +36,9 @@ public class GameWorld(int width, int height, int maxTurns)
 
     private bool IsOccupied(WorldPosition position)
         => _objects.Any(o => o.Position == position);
+    
+    private bool HasObjectAtOrNear(WorldPosition position)
+        => _objects.Any(o => o.Position.DistanceTo(position) <= 1.2);
 
     public bool IsValidPosition(WorldPosition pos)
         => pos.X >= 0 && pos.X < width &&
@@ -111,7 +114,7 @@ public class GameWorld(int width, int height, int maxTurns)
         }
     }
 
-    public Random Random { get; set; } = new();
+    public Random Random { get; init; } = new();
 
     private List<TilePerceptions> BuildTilePerceptions(IGameActor actor)
     {
@@ -154,5 +157,19 @@ public class GameWorld(int width, int height, int maxTurns)
     internal void Remove(GameObject obj)
     {
         _objects.Remove(obj);
+    }
+
+    public WorldPosition FindOpenPosition()
+    {
+        WorldPosition pos;
+        do
+        {
+            int x = Random.Next(1, Width - 1);
+            int y = Random.Next(1, Height - 1);
+            pos = new WorldPosition(x, y);
+        } 
+        while (HasObjectAtOrNear(pos));
+
+        return pos;
     }
 }

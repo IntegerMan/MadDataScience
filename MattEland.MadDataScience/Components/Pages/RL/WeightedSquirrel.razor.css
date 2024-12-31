@@ -1,0 +1,14 @@
+#GameArea {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+}
+
+#Weights {
+    max-width: 400px;
+}
+
+.WeightSliderLabels {
+    display: flex;
+    justify-content: space-between;
+}

@@ -6,8 +6,38 @@
 </MudText>
 
 @* TODO: Add a UI to set the squirrel importances here *@
+<div id="GameArea">
+    <section id="GameDisplay">
+        <GameWorldDisplay GameWorld="GameWorld"/>
+    </section>
 
-<GameWorldDisplay GameWorld="GameWorld"/>
+    <section id="Weights">
+        <MudText Typo="Typo.h6">Smell Priorities</MudText>
+        <MudText Typo="Typo.caption">How important is it for the squirrel to smell the acorn, rabbit, or dog?</MudText>
+        <div class="mt-4 mb-4">
+            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true">
+                Acorn
+            </MudSlider>
+            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true">
+                Tree
+            </MudSlider>
+            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true">
+                Doggo
+            </MudSlider>
+            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true">
+                Rabbit
+            </MudSlider>
+            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true">
+                Squirrel
+            </MudSlider>
+            <div class="WeightSliderLabels mt-2">
+                <MudText Typo="Typo.caption" Color="Color.Error">Yucky</MudText>
+                <MudText Typo="Typo.caption" Color="Color.Default">Meh</MudText>
+                <MudText Typo="Typo.caption" Color="Color.Success">Yay!</MudText>
+            </div>
+        </div>
+    </section>
+</div>
 
 @* TODO: Add a UI to choose visualization overlay for the game world *@
 
@@ -59,4 +89,5 @@
         GameWorld.SimulateGameTurn();
         StateHasChanged();
     }
+
 }

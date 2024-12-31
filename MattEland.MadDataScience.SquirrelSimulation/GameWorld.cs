@@ -38,7 +38,8 @@ public class GameWorld(int width, int height, int maxTurns)
         => _objects.Any(o => o.Position == position);
     
     private bool HasObjectAtOrNear(WorldPosition position)
-        => _objects.Any(o => o.Position.DistanceTo(position) <= 1.2);
+        => _objects.Any(o => o.Position.X >= position.X - 1 && o.Position.X <= position.X + 1 &&
+                                        o.Position.Y >= position.Y - 1 && o.Position.Y <= position.Y + 1);
 
     public bool IsValidPosition(WorldPosition pos)
         => pos.X >= 0 && pos.X < width &&

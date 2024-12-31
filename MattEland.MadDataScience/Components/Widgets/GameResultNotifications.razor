@@ -1,0 +1,31 @@
+<div style="max-width: 800px;">
+    @switch (GameWorld.State)
+    {
+        case GameStatus.InProgress:
+            <MudText Typo="Typo.h6" Class="mt-4">Turns Remaining: <strong>@GameWorld.TurnsLeft</strong></MudText>
+            <MudProgressLinear Max="@GameWorld.MaxTurns" Min="0" Value="@GameWorld.TurnsLeft" Color="Color.Primary"/>
+            break;
+
+        case GameStatus.Killed:
+            <MudAlert Variant="Variant.Filled" Severity="Severity.Error" Class="mt-4">
+                The squirrel was eaten by the dog. Game over.
+            </MudAlert>
+            break;
+
+        case GameStatus.OutOfTime:
+            <MudAlert Variant="Variant.Filled" Severity="Severity.Warning" Class="mt-4">
+                You ran out of time. Game over.
+            </MudAlert>
+            break;
+
+        case GameStatus.Won:
+            <MudAlert Variant="Variant.Filled" Severity="Severity.Success" Class="mt-4">
+                The squirrel reached the tree with the acorn and won the game!
+            </MudAlert>
+            break;
+    }
+</div>
+
+@code {
+    [Parameter] public required GameWorld GameWorld { get; set; }
+}

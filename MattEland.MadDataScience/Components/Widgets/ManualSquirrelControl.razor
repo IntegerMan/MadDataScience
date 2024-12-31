@@ -5,38 +5,47 @@
 <MudText Typo="Typo.h6" Class="mt-4">Manual Control</MudText>
 <section class="manual-squirrel-control">
     <MudButton Variant="Variant.Filled"
+               Disabled="GameWorld.State != GameStatus.InProgress"
                ButtonType="ButtonType.Button"
                @onclick="() => HandlePlayerInput(GameDirection.UpLeft)"
                Color="Color.Primary">Up / Left</MudButton>
     <MudButton Variant="Variant.Filled"
+               Disabled="GameWorld.State != GameStatus.InProgress"
                ButtonType="ButtonType.Button"
                @onclick="() => HandlePlayerInput(GameDirection.Up)"
                Color="Color.Primary">Up</MudButton>
     <MudButton Variant="Variant.Filled"
+               Disabled="GameWorld.State != GameStatus.InProgress"
                ButtonType="ButtonType.Button"
                @onclick="() => HandlePlayerInput(GameDirection.UpRight)"
                Color="Color.Primary">Up / Right</MudButton>
     <MudButton Variant="Variant.Filled"
+               Disabled="GameWorld.State != GameStatus.InProgress"
                ButtonType="ButtonType.Button"
                @onclick="() => HandlePlayerInput(GameDirection.Left)"
                Color="Color.Primary">Left</MudButton>
     <MudButton Variant="Variant.Filled"
+               Disabled="GameWorld.State != GameStatus.InProgress"
                ButtonType="ButtonType.Button"
                @onclick="() => HandlePlayerInput(GameDirection.Wait)"
                Color="Color.Default">Wait</MudButton>
     <MudButton Variant="Variant.Filled"
+               Disabled="GameWorld.State != GameStatus.InProgress"
                ButtonType="ButtonType.Button"
                @onclick="() => HandlePlayerInput(GameDirection.Right)"
                Color="Color.Primary">Right</MudButton>
     <MudButton Variant="Variant.Filled"
+               Disabled="GameWorld.State != GameStatus.InProgress"
                ButtonType="ButtonType.Button"
                @onclick="() => HandlePlayerInput(GameDirection.DownLeft)"
                Color="Color.Primary">Down / Left</MudButton>
     <MudButton Variant="Variant.Filled"
+               Disabled="GameWorld.State != GameStatus.InProgress"
                ButtonType="ButtonType.Button"
                @onclick="() => HandlePlayerInput(GameDirection.Down)"
                Color="Color.Primary">Down</MudButton>
     <MudButton Variant="Variant.Filled"
+               Disabled="GameWorld.State != GameStatus.InProgress"
                ButtonType="ButtonType.Button"
                @onclick="() => HandlePlayerInput(GameDirection.DownRight)"
                Color="Color.Primary">Down / Right</MudButton>

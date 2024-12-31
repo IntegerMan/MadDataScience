@@ -12,29 +12,10 @@
 
 <GameWorldDisplay GameWorld="GameWorld" />
 
-@switch (GameWorld.State)
+<GameResultNotifications GameWorld="GameWorld" />
+@if (GameWorld.State == GameStatus.InProgress)
 {
-    case GameStatus.InProgress:
-        <ManualSquirrelControl GameWorld="GameWorld" Brain="Brain" PlayerMoveExecuted="OnGameWorldChanged"/>
-        break;
-        
-    case GameStatus.Killed:
-        <MudAlert Variant="Variant.Filled" Severity="Severity.Error" Class="mt-4">
-            The squirrel was eaten by the dog. Game over.
-        </MudAlert>
-        break;       
-        
-    case GameStatus.OutOfTime:
-        <MudAlert Variant="Variant.Filled" Severity="Severity.Warning" Class="mt-4">
-            You ran out of time. Game over.
-        </MudAlert>
-        break;
-        
-    case GameStatus.Won:
-        <MudAlert Variant="Variant.Filled" Severity="Severity.Success" Class="mt-4">
-            The squirrel reached the tree with the acorn and won the game!
-        </MudAlert>
-        break;
+    <ManualSquirrelControl GameWorld="GameWorld" Brain="Brain" PlayerMoveExecuted="OnGameWorldChanged"/>
 }
 
 <MudButton Class="mt-4" 

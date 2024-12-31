@@ -1,10 +1,62 @@
 @page "/RL/SettingValues"
-<h3>Weighted Squirrel</h3>
+@using MattEland.MadDataScience.SquirrelSimulation.Brains
+<MudText Typo="Typo.h4">AI Squirrels</MudText>
+<MudText Typo="Typo.subtitle1" Class="mb-4">
+    Let's look at a squirrel AI that uses prioritized values to make decisions.
+</MudText>
 
 @* TODO: Add a UI to set the squirrel importances here *@
 
-@* TODO: Add a simulation that's play only so we can see how well this squirrel does *@
+<GameWorldDisplay GameWorld="GameWorld"/>
+
+@* TODO: Add a UI to choose visualization overlay for the game world *@
+
+<GameResultNotifications GameWorld="GameWorld"/>
+
+<div class="mt-4">
+    <MudButton Variant="Variant.Filled"
+               Disabled="GameWorld.State != GameStatus.InProgress"
+               Color="Color.Primary"
+               ButtonType="ButtonType.Submit"
+               @onclick="Next">
+        Next Turn
+    </MudButton>
+
+    <MudButton Class="ml-4"
+               Variant="Variant.Filled"
+               Color="Color.Secondary"
+               ButtonType="ButtonType.Reset"
+               @onclick="() => Reset()">
+        Reset Game
+    </MudButton>
+</div>
 
 @code {
-    
+    private readonly SquirrelSimulationService _squirrelService;
+    public ILogger<SquirrelSimulationService> Logger { get; }
+    public IBrain Brain { get; } = new WeightedBrain();
+
+    public WeightedSquirrel(SquirrelSimulationService squirrelService, ILogger<SquirrelSimulationService> logger)
+    {
+        _squirrelService = squirrelService;
+        Logger = logger;
+        GameWorld = Reset();
+    }
+
+    public GameWorld GameWorld { get; set; }
+
+    private GameWorld Reset()
+    {
+        Logger.LogDebug("Building test world for squirrel simulation");
+        GameWorld = _squirrelService.BuildTestWorld(squirrelBrain: Brain);
+
+        return GameWorld;
+    }
+
+    private void Next()
+    {
+        Logger.LogDebug("Advancing game world");
+        GameWorld.SimulateGameTurn();
+        StateHasChanged();
+    }
 }

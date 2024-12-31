@@ -6,7 +6,7 @@ public class SquirrelSimulationService(ILogger<SquirrelSimulationService> logger
 {
     public GameWorld BuildTestWorld()
     {
-        var world = new GameWorld(11, 11);
+        var world = new GameWorld(11, 11, 50, logger);
 
         world.AddObject(new Squirrel
         {
@@ -42,18 +42,6 @@ public class SquirrelSimulationService(ILogger<SquirrelSimulationService> logger
         }
 
         WorldPosition newPosition = squirrel.Position.Move(direction);
-        if (!gameWorld.IsValidPosition(newPosition))
-        {
-            logger.LogWarning("Invalid move attempted");
-        }
-        else
-        {
-            // TODO: Handle collisions
-            
-            logger.LogDebug("Moving squirrel from {0} to {1}", squirrel.Position, newPosition);
-            squirrel.Position = newPosition;
-        }
-        
-        // TODO: Simulate other actors
+        gameWorld.HandleSquirrelMove(squirrel, newPosition);
     }
 }

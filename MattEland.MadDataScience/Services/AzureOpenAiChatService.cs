@@ -55,4 +55,24 @@ public class AzureOpenAiChatService
         
         return result.Value?.Content.FirstOrDefault()?.Text ?? "The system did not generate a response";
     }
+
+    public async Task<string> DescribeImageAsync(string prompt, Uri uri)
+    {
+        _logger.LogDebug("Describing image {Uri} with prompt: {Prompt} using model {Model}", uri, prompt, _modelName);
+        
+        ChatClient chatClient = _client.GetChatClient(_modelName);
+        
+        List<ChatMessage> history =
+        [
+            new SystemChatMessage(prompt),
+            new UserChatMessage([
+                ChatMessageContentPart.CreateTextPart("Here's the image I'd like you to describe:"),
+                ChatMessageContentPart.CreateImagePart(uri)
+            ])
+        ];
+        
+        ClientResult<ChatCompletion> result = await chatClient.CompleteChatAsync(history);
+        
+        return result.Value?.Content.FirstOrDefault()?.Text ?? "The system did not generate a response";
+    }
 }

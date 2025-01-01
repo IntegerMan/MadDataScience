@@ -1,5 +1,6 @@
 @page "/RL/SettingValues"
 @using MattEland.MadDataScience.SquirrelSimulation.Brains
+@using MattEland.MadDataScience.SquirrelSimulation.Genetics
 <MudText Typo="Typo.h4">AI Squirrels</MudText>
 <MudText Typo="Typo.subtitle1" Class="mb-4">
     Let's look at a squirrel AI that uses prioritized values to make decisions.
@@ -8,13 +9,34 @@
 <div id="GameArea">
     <section id="GameDisplay">
         <GameWorldDisplay GameWorld="GameWorld" Visualization="SelectedVisualization" SmellWeights="Brain.Weights"/>
+
+        <GameResultNotifications GameWorld="GameWorld"/>
+
+        <div class="mt-4">
+            <MudButton Variant="Variant.Filled"
+                       Disabled="GameWorld.State != GameStatus.InProgress"
+                       Color="Color.Primary"
+                       ButtonType="ButtonType.Submit"
+                       @onclick="Next">
+                Next Turn
+            </MudButton>
+
+            <MudButton Class="ml-4"
+                       Variant="Variant.Filled"
+                       Color="Color.Secondary"
+                       ButtonType="ButtonType.Reset"
+                       @onclick="() => Reset()">
+                Reset Game
+            </MudButton>
+        </div>
     </section>
 
     <aside id="Sidebar">
         <section id="Weights">
             <MudText Typo="Typo.h6">Smell Priorities</MudText>
             <MudText Typo="Typo.caption">
-                This squirrel senses the world through its nose. Adjust the importance of each smell to determine where it goes.
+                This squirrel senses the world through its nose. Adjust the importance of each smell to determine where
+                it goes.
             </MudText>
             <div class="mt-4 mb-4">
                 <MudSlider Min="-5" Max="5" ValueLabel="true" Step="1f" TickMarks="true" T="float"
@@ -44,11 +66,12 @@
                 </div>
             </div>
         </section>
-        <section id="Visualization" class="mt-4">
+        
+        <section id="Visualization" class="mt-8">
             <MudText Typo="Typo.h6">Visualization</MudText>
             <MudText Typo="Typo.caption">Choose a visualization overlay for the game world</MudText>
             <div class="mt-4">
-                <MudSelect Variant="Variant.Text" T="VisualizationKind" 
+                <MudSelect Variant="Variant.Text" T="VisualizationKind"
                            bind-Value="SelectedVisualization"
                            ValueChanged="v => OnVisualizationChanged(v)">
                     @foreach (var visualization in Enum.GetValues(typeof(VisualizationKind)).Cast<VisualizationKind>())
@@ -58,39 +81,28 @@
                 </MudSelect>
             </div>
         </section>
+
+        @if (GameWorld.Result is not null)
+        {
+            <section class="mt-8">
+                <GameScorecard Scorer="Scorer" Result="GameWorld.Result"/>
+            </section>
+        }
     </aside>
-</div>
-
-<GameResultNotifications GameWorld="GameWorld"/>
-
-<div class="mt-4">
-    <MudButton Variant="Variant.Filled"
-               Disabled="GameWorld.State != GameStatus.InProgress"
-               Color="Color.Primary"
-               ButtonType="ButtonType.Submit"
-               @onclick="Next">
-        Next Turn
-    </MudButton>
-
-    <MudButton Class="ml-4"
-               Variant="Variant.Filled"
-               Color="Color.Secondary"
-               ButtonType="ButtonType.Reset"
-               @onclick="() => Reset()">
-        Reset Game
-    </MudButton>
 </div>
 
 @code {
     private readonly SquirrelSimulationService _squirrelService;
     public ILogger<SquirrelSimulationService> Logger { get; }
     public WeightedBrain Brain { get; } = new();
+    public SquirrelScorer Scorer { get; }
     public VisualizationKind SelectedVisualization { get; set; } = VisualizationKind.None;
 
     public WeightedSquirrel(SquirrelSimulationService squirrelService, ILogger<SquirrelSimulationService> logger)
     {
         _squirrelService = squirrelService;
         Logger = logger;
+        Scorer = new SquirrelScorer(logger, []);
         GameWorld = Reset();
     }
 

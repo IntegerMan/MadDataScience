@@ -8,38 +8,59 @@
 @* TODO: Add a UI to set the squirrel importances here *@
 <div id="GameArea">
     <section id="GameDisplay">
-        <GameWorldDisplay GameWorld="GameWorld"/>
+        <GameWorldDisplay GameWorld="GameWorld" Visualization="SelectedVisualization"/>
     </section>
 
-    <section id="Weights">
-        <MudText Typo="Typo.h6">Smell Priorities</MudText>
-        <MudText Typo="Typo.caption">How important is it for the squirrel to smell the acorn, rabbit, or dog?</MudText>
-        <div class="mt-4 mb-4">
-            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true" bind-Value="Brain.Weights.Acorn">
-                Acorn
-            </MudSlider>
-            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true" bind-Value="Brain.Weights.Tree">
-                Tree
-            </MudSlider>
-            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true" bind-Value="Brain.Weights.Doggo">
-                Doggo
-            </MudSlider>
-            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true" bind-Value="Brain.Weights.Rabbit">
-                Rabbit
-            </MudSlider>
-            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true" bind-Value="Brain.Weights.Squirrel">
-                Squirrel
-            </MudSlider>
-            <div class="WeightSliderLabels mt-2">
-                <MudText Typo="Typo.caption" Color="Color.Error">Yucky</MudText>
-                <MudText Typo="Typo.caption" Color="Color.Default">Meh</MudText>
-                <MudText Typo="Typo.caption" Color="Color.Success">Yay!</MudText>
+    <aside id="Sidebar">
+        <section id="Weights">
+            <MudText Typo="Typo.h6">Smell Priorities</MudText>
+            <MudText Typo="Typo.caption">
+                This squirrel senses the world through its nose. Adjust the importance of each smell to determine where it goes.
+            </MudText>
+            <div class="mt-4 mb-4">
+                <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true"
+                           bind-Value="Brain.Weights.Acorn">
+                    Acorn
+                </MudSlider>
+                <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true"
+                           bind-Value="Brain.Weights.Tree">
+                    Tree
+                </MudSlider>
+                <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true"
+                           bind-Value="Brain.Weights.Doggo">
+                    Doggo
+                </MudSlider>
+                <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true"
+                           bind-Value="Brain.Weights.Rabbit">
+                    Rabbit
+                </MudSlider>
+                <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true"
+                           bind-Value="Brain.Weights.Squirrel">
+                    Squirrel
+                </MudSlider>
+                <div class="WeightSliderLabels mt-2">
+                    <MudText Typo="Typo.caption" Color="Color.Error">Yucky</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Default">Meh</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Success">Yay!</MudText>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+        <section id="Visualization" class="mt-4">
+            <MudText Typo="Typo.h6">Visualization</MudText>
+            <MudText Typo="Typo.caption">Choose a visualization overlay for the game world</MudText>
+            <div class="mt-4">
+                <MudSelect Variant="Variant.Text" T="VisualizationKind" 
+                           bind-Value="SelectedVisualization"
+                           ValueChanged="v => OnVisualizationChanged(v)">
+                    @foreach (var visualization in Enum.GetValues(typeof(VisualizationKind)).Cast<VisualizationKind>())
+                    {
+                        <MudSelectItem Value="@visualization">@visualization</MudSelectItem>
+                    }
+                </MudSelect>
+            </div>
+        </section>
+    </aside>
 </div>
-
-@* TODO: Add a UI to choose visualization overlay for the game world *@
 
 <GameResultNotifications GameWorld="GameWorld"/>
 
@@ -65,6 +86,7 @@
     private readonly SquirrelSimulationService _squirrelService;
     public ILogger<SquirrelSimulationService> Logger { get; }
     public WeightedBrain Brain { get; } = new();
+    public VisualizationKind SelectedVisualization { get; set; } = VisualizationKind.None;
 
     public WeightedSquirrel(SquirrelSimulationService squirrelService, ILogger<SquirrelSimulationService> logger)
     {
@@ -87,6 +109,13 @@
     {
         Logger.LogDebug("Advancing game world");
         GameWorld.SimulateGameTurn();
+        StateHasChanged();
+    }
+
+    private void OnVisualizationChanged(VisualizationKind kind)
+    {
+        Logger.LogDebug("Visualization changed to {VisualizationKind}", kind);
+        SelectedVisualization = kind;
         StateHasChanged();
     }
 

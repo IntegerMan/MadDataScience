@@ -1,9 +1,25 @@
+@using MattEland.MadDataScience.Components.Pages.RL
+@inject ILogger<WeightedSquirrel> Logger
+
 <MudText Typo="Typo.h6">Game World</MudText>
-<div class="game-world" 
+<div class="game-world"
      style="grid-template-rows: repeat(@GameWorld.Height, 1fr); grid-template-columns: repeat(@GameWorld.Width, 1fr);">
+    
+    @if (Visualization != VisualizationKind.None)
+    {
+        @foreach (var tile in TileVisualizations)
+        {
+            <div class="Game-Tile" 
+                 title="@tile.Value.ToString("F2")"
+                 style="background-color: rgba(255, 255, 255, @(tile.Value)); grid-row: @(tile.Position.Y + 1); grid-column: @(tile.Position.X + 1);">
+                @tile.Value.ToString("F2")
+            </div>
+        }
+    }
+    
     @foreach (var obj in GameWorld.Objects)
     {
-        <div class="Game-Object Game-Object-@obj.Name" 
+        <div class="Game-Object Game-Object-@obj.Name"
              title="@obj.Name"
              style="grid-row: @(obj.Position.Y + 1); grid-column: @(obj.Position.X + 1);">
             @obj.Name
@@ -13,5 +29,19 @@
 
 @code {
     [Parameter]
-    public required GameWorld GameWorld { get; set; }
+    public required GameWorld GameWorld { get; set; }    
+    
+    [Parameter]
+    public required VisualizationKind Visualization { get; set; }
+
+    private IEnumerable<TileVisualization> TileVisualizations
+    {
+        get
+        {
+            Logger.LogTrace("Getting tile visualizations for visualization {Visualization}", Visualization);
+            
+            return GameWorld.GetTileVisualizations(Visualization);
+        }
+    }
+
 }

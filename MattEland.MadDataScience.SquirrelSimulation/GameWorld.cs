@@ -173,4 +173,28 @@ public class GameWorld(int width, int height, int maxTurns)
 
         return pos;
     }
+
+    public IEnumerable<TileVisualization> GetTileVisualizations(VisualizationKind visualization)
+    {
+        for (int y = 0; y < Height; y++)
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                WorldPosition pos = new(x, y);
+                yield return new TileVisualization
+                {
+                    Position = pos,
+                    Value = visualization switch
+                    {
+                        VisualizationKind.Acorn => CalculateTileSmell(pos, typeof(Acorn)),
+                        VisualizationKind.Squirrel => CalculateTileSmell(pos, typeof(Squirrel)),
+                        VisualizationKind.Rabbit => CalculateTileSmell(pos, typeof(Rabbit)),
+                        VisualizationKind.Doggo => CalculateTileSmell(pos, typeof(Doggo)),
+                        VisualizationKind.Tree => CalculateTileSmell(pos, typeof(Tree)),
+                        _ => 0f
+                    }
+                };
+            }
+        }
+    }
 }

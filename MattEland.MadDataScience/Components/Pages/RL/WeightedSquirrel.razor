@@ -18,24 +18,24 @@
                 This squirrel senses the world through its nose. Adjust the importance of each smell to determine where it goes.
             </MudText>
             <div class="mt-4 mb-4">
-                <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true"
-                           bind-Value="Brain.Weights.Acorn">
+                <MudSlider Min="-5" Max="5" ValueLabel="true" Step="1f" TickMarks="true" T="float"
+                           ValueChanged="v => Brain.Weights.Acorn = v">
                     Acorn
                 </MudSlider>
-                <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true"
-                           bind-Value="Brain.Weights.Tree">
+                <MudSlider Min="-5" Max="5" ValueLabel="true" Step="1f" TickMarks="true" T="float"
+                           ValueChanged="v => Brain.Weights.Tree = v">
                     Tree
                 </MudSlider>
-                <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true"
-                           bind-Value="Brain.Weights.Doggo">
+                <MudSlider Min="-5" Max="5" ValueLabel="true" Step="1f" TickMarks="true" T="float"
+                           ValueChanged="v => Brain.Weights.Doggo = v">
                     Doggo
                 </MudSlider>
-                <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true"
-                           bind-Value="Brain.Weights.Rabbit">
+                <MudSlider Min="-5" Max="5" ValueLabel="true" Step="1f" TickMarks="true" T="float"
+                           ValueChanged="v => Brain.Weights.Rabbit = v">
                     Rabbit
                 </MudSlider>
-                <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true"
-                           bind-Value="Brain.Weights.Squirrel">
+                <MudSlider Min="-5" Max="5" ValueLabel="true" Step="1f" TickMarks="true" T="float"
+                           ValueChanged="v => Brain.Weights.Squirrel = v">
                     Squirrel
                 </MudSlider>
                 <div class="WeightSliderLabels mt-2">

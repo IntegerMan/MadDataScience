@@ -1,5 +1,6 @@
 @page "/RL/Manual"
 @using MattEland.MadDataScience.SquirrelSimulation.Brains
+@using MattEland.MadDataScience.SquirrelSimulation.Genetics
 
 <MudText Typo="Typo.h4">Squirrel Simulation</MudText>
 <MudText Typo="Typo.subtitle1" Class="mb-4">
@@ -7,19 +8,30 @@
 </MudText>
 
 <MudAlert Variant="Variant.Filled" Severity="Severity.Info" Class="mb-4" Style="max-width: 1230px;">
-    The object of the game is for the squirrel to get to the acorn and then to the tree before the time runs out. 
-    The rabbit wanders randomly but will block the squirrel if they try to enter its tile. 
+    The object of the game is for the squirrel to get to the acorn and then to the tree before the time runs out.
+    The rabbit wanders randomly but will block the squirrel if they try to enter its tile.
     The dog stays put but will eat the squirrel or rabbit if they enter the adjacent tile.
 </MudAlert>
 
 <div id="GameArea">
     <section id="GameDisplay">
-        <GameWorldDisplay GameWorld="GameWorld" />
+        <GameWorldDisplay GameWorld="GameWorld"/>
     </section>
     <aside id="Sidebar">
         @if (GameWorld.State == GameStatus.InProgress)
         {
             <ManualSquirrelControl GameWorld="GameWorld" Brain="Brain" PlayerMoveExecuted="OnGameWorldChanged"/>
+        }
+        else
+        {
+            <div class="mt-8">
+                <GameResultNotifications GameWorld="GameWorld"/>
+            </div>
+            
+            @if (GameWorld.Result is not null)
+            {
+                <GameScorecard Scorer="Scorer" Result="GameWorld.Result"/>
+            }
         }
 
         <MudButton Class="mt-4"
@@ -32,17 +44,17 @@
     </aside>
 </div>
 
-<GameResultNotifications GameWorld="GameWorld" />
-
 @code {
     private readonly SquirrelSimulationService _squirrelService;
     public ILogger<SquirrelSimulationService> Logger { get; }
     public ManualSquirrelBrain Brain { get; } = new();
+    public SquirrelScorer Scorer { get; }
 
     public Squirrel(SquirrelSimulationService squirrelService, ILogger<SquirrelSimulationService> logger)
     {
         _squirrelService = squirrelService;
         Logger = logger;
+        Scorer = new SquirrelScorer(logger, []);
         GameWorld = Reset();
     }
 
@@ -51,7 +63,7 @@
     private void OnGameWorldChanged(GameWorld world)
     {
         Logger.LogTrace("Game world changed");
-        
+
         // This should be the same world, but calling state changed tells the UI to update on the game display
         GameWorld = world;
         StateHasChanged();

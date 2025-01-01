@@ -1,0 +1,81 @@
+@using MattEland.MadDataScience.SquirrelSimulation.Genetics
+
+<MudText Typo="Typo.h6" Class="mt-4">Game Scorecard</MudText>
+<MudTable T="ScorecardEntry" Items="ScorecardEntries" Class="mt-4">
+    <HeaderContent>
+        <MudTh>Factor</MudTh>
+        <MudTh>Count</MudTh>
+        <MudTh>Score / Item</MudTh>
+        <MudTh>Total</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Factor</MudTd>
+        <MudTd>@context.Count</MudTd>
+        <MudTd>@context.ScorePerItem</MudTd>
+        <MudTd>@context.Total</MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    [Parameter] public required SquirrelScorer Scorer { get; set; }
+
+    [Parameter] public required GameResult Result { get; set; }
+
+    public IEnumerable<ScorecardEntry> ScorecardEntries
+    {
+        get
+        {
+            yield return new ScorecardEntry
+            {
+                Factor = "Turns Left",
+                Count = Result.TurnsLeft,
+                ScorePerItem = Scorer.PointsPerTurnLeft,
+                Total = Scorer.PointsPerTurnLeft * Result.TurnsLeft
+            };               
+            yield return new ScorecardEntry
+            {
+                Factor = "Winning Squirrels",
+                Count = Result.WinningSquirrels,
+                ScorePerItem = Scorer.PointsForWinningSquirrels,
+                Total = Scorer.PointsForWinningSquirrels * Result.WinningSquirrels
+            };                 
+            yield return new ScorecardEntry
+            {
+                Factor = "Surviving Squirrels",
+                Count = Result.SquirrelsOnBoard,
+                ScorePerItem = Scorer.PointsForSquirrelsOnBoard,
+                Total = Scorer.PointsForSquirrelsOnBoard * Result.SquirrelsOnBoard
+            };                  
+            yield return new ScorecardEntry
+            {
+                Factor = "Surviving Rabbits",
+                Count = Result.RabbitsOnBoard,
+                ScorePerItem = Scorer.PointsForRabbitsOnBoard,
+                Total = Scorer.PointsForRabbitsOnBoard * Result.RabbitsOnBoard
+            };                        
+            yield return new ScorecardEntry
+            {
+                Factor = "Acorns on Board",
+                Count = Result.AcornsOnBoard,
+                ScorePerItem = Scorer.PointsForAcornsOnBoard,
+                Total = Scorer.PointsForAcornsOnBoard * Result.AcornsOnBoard
+            };            
+            yield return new ScorecardEntry
+            {
+                Factor = "Total",
+                Count = null,
+                ScorePerItem = null,
+                Total = Scorer.ScoreGame(Result)
+            };
+        }
+    }
+
+    public class ScorecardEntry
+    {
+        public required string Factor { get; set; }
+        public int? Count { get; set; }
+        public double? ScorePerItem { get; set; }
+        public double Total { get; set; }
+    }
+
+}

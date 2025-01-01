@@ -78,6 +78,7 @@ public class GameWorld(int width, int height, int maxTurns)
             State = Objects.OfType<Squirrel>().Any(s => s.IsInTree) 
                 ? GameStatus.Won 
                 : GameStatus.Killed;
+            Result = CalculateResult();
         }
         else if (TurnsLeft <= 0)
         {
@@ -85,8 +86,18 @@ public class GameWorld(int width, int height, int maxTurns)
             State = Objects.OfType<Squirrel>().Any(s => s.IsInTree) 
                 ? GameStatus.Won 
                 : GameStatus.OutOfTime;
+            Result = CalculateResult();
         }
     }
+
+    private GameResult CalculateResult() => new()
+        {
+            TurnsLeft = TurnsLeft,
+            AcornsOnBoard = Objects.OfType<Acorn>().Count(),
+            SquirrelsOnBoard = Objects.OfType<Squirrel>().Count(),
+            WinningSquirrels = Objects.OfType<Squirrel>().Count(s => s.IsInTree),
+            RabbitsOnBoard = Objects.OfType<Rabbit>().Count(),
+        };
 
     private void HandleActorMove(IGameActor actor, WorldPosition desiredPos)
     {
@@ -218,4 +229,16 @@ public class GameWorld(int width, int height, int maxTurns)
         (choice.SmellOfDoggo * weights.Doggo) +
         (choice.SmellOfTree * weights.Tree) +
         (choice.SmellOfAcorn * weights.Acorn);
+
+    public GameResult RunToCompletion()
+    {
+        while (State == GameStatus.InProgress)
+        {
+            SimulateGameTurn();
+        }
+
+        return Result!;
+    }
+
+    public GameResult? Result { get; private set; }
 }

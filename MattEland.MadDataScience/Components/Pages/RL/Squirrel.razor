@@ -6,25 +6,33 @@
     We'll be training a digital squirrel to solve a game, but first let's see what the game looks like.
 </MudText>
 
-<MudAlert Variant="Variant.Filled" Severity="Severity.Info" Class="mb-4" Style="max-width: 800px;">
-    The object of the game is for the squirrel to get to the acorn and then to the tree before the time runs out. The rabbit wanders randomly but will block the squirrel if they try to enter its tile. The dog stays put but will eat the squirrel or rabbit if they enter the adjacent tile.
+<MudAlert Variant="Variant.Filled" Severity="Severity.Info" Class="mb-4" Style="max-width: 1230px;">
+    The object of the game is for the squirrel to get to the acorn and then to the tree before the time runs out. 
+    The rabbit wanders randomly but will block the squirrel if they try to enter its tile. 
+    The dog stays put but will eat the squirrel or rabbit if they enter the adjacent tile.
 </MudAlert>
 
-<GameWorldDisplay GameWorld="GameWorld" />
+<div id="GameArea">
+    <section id="GameDisplay">
+        <GameWorldDisplay GameWorld="GameWorld" />
+    </section>
+    <aside id="Sidebar">
+        @if (GameWorld.State == GameStatus.InProgress)
+        {
+            <ManualSquirrelControl GameWorld="GameWorld" Brain="Brain" PlayerMoveExecuted="OnGameWorldChanged"/>
+        }
+
+        <MudButton Class="mt-4"
+                   Variant="Variant.Filled"
+                   Color="Color.Secondary"
+                   ButtonType="ButtonType.Reset"
+                   @onclick="() => Reset()">
+            Reset Game
+        </MudButton>
+    </aside>
+</div>
 
 <GameResultNotifications GameWorld="GameWorld" />
-@if (GameWorld.State == GameStatus.InProgress)
-{
-    <ManualSquirrelControl GameWorld="GameWorld" Brain="Brain" PlayerMoveExecuted="OnGameWorldChanged"/>
-}
-
-<MudButton Class="mt-4" 
-           Variant="Variant.Filled" 
-           Color="Color.Secondary" 
-           ButtonType="ButtonType.Reset" 
-           @onclick="() => Reset()">
-    Reset Game
-</MudButton>
 
 @code {
     private readonly SquirrelSimulationService _squirrelService;

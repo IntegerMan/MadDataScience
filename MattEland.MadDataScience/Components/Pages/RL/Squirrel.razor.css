@@ -1,0 +1,9 @@
+#GameArea {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+}
+
+aside {
+    max-width: 400px;
+}

@@ -3,7 +3,9 @@
 @inject ILogger<ManualSquirrelControl> Logger
 
 <MudText Typo="Typo.h6" Class="mt-4">Manual Control</MudText>
-<section class="manual-squirrel-control">
+<MudText Typo="Typo.caption">Use these buttons to control the squirrel.</MudText>
+
+<section class="manual-squirrel-control mt-4">
     <MudButton Variant="Variant.Filled"
                Disabled="GameWorld.State != GameStatus.InProgress"
                ButtonType="ButtonType.Button"

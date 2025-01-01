@@ -4,7 +4,7 @@ namespace MattEland.MadDataScience.SquirrelSimulation.Brains;
 
 public class WeightedBrain : IBrain
 {
-    public SmellWeights Weights { get; init; } = new();
+    public SmellWeights Weights { get; set; } = new();
     
     public WorldPosition GetGameMove(IGameActor actor, IEnumerable<TilePerceptions> choices, Random random)
     {

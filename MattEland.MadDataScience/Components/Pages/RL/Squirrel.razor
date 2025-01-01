@@ -46,11 +46,11 @@
 
 @code {
     private readonly SquirrelSimulationService _squirrelService;
-    public ILogger<SquirrelSimulationService> Logger { get; }
+    public ILogger<Squirrel> Logger { get; }
     public ManualSquirrelBrain Brain { get; } = new();
     public SquirrelScorer Scorer { get; }
 
-    public Squirrel(SquirrelSimulationService squirrelService, ILogger<SquirrelSimulationService> logger)
+    public Squirrel(SquirrelSimulationService squirrelService, ILogger<Squirrel> logger)
     {
         _squirrelService = squirrelService;
         Logger = logger;

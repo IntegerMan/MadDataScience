@@ -44,13 +44,18 @@ public class SquirrelScorer(ILogger logger, int[] randomSeeds) : IFitness
         (result.SquirrelsOnBoard * PointsForSquirrelsOnBoard) +
         (result.RabbitsOnBoard * PointsForRabbitsOnBoard);
 
-    public static SmellWeights GetWeightsFromChromosome(IChromosome chromosome) 
-        => new()
+    public static SmellWeights GetWeightsFromChromosome(IChromosome chromosome)
+    {
+        FloatingPointChromosome fpChromosome = (FloatingPointChromosome)chromosome;
+        double[] values = fpChromosome.ToFloatingPoints();
+        
+        return new SmellWeights
         {
-            Acorn = (float)chromosome.GetGene(0).Value,
-            Squirrel = (float)chromosome.GetGene(1).Value,
-            Doggo = (float)chromosome.GetGene(2).Value,
-            Rabbit = (float)chromosome.GetGene(3).Value,
-            Tree = (float)chromosome.GetGene(4).Value
+            Acorn = (float)values[0],
+            Squirrel = (float)values[1],
+            Doggo = (float)values[2],
+            Rabbit = (float)values[3],
+            Tree = (float)values[4]
         };
+    }
 }

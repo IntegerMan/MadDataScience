@@ -1,10 +1,149 @@
 @page "/RL/Learning"
-<h3>Learning Squirrel</h3>
+@using GeneticSharp
+@using MattEland.MadDataScience.SquirrelSimulation.Brains
+@using MattEland.MadDataScience.SquirrelSimulation.Genetics
 
-@* TODO: Add a simulation with a squirrel that learns to solve the game here *@
+<MudText Typo="Typo.h4">Reinforcement Learning &amp; Squirrels</MudText>
+<MudText Typo="Typo.subtitle1" Class="mb-4">
+    This time we'll use reinforcement learning and genetic algorithms to train a squirrel that maximizes its score.
+</MudText>
 
-@* TODO: Add a cheat button to load a winning squirrel in case of an emergency *@
+<div id="GameArea">
+    <section id="GameDisplay">
+        <GameWorldDisplay GameWorld="GameWorld" Visualization="SelectedVisualization" SmellWeights="Brain.Weights"/>
+
+        <GameResultNotifications GameWorld="GameWorld"/>
+
+        <div class="mt-4">
+            <MudButton Variant="Variant.Filled"
+                       Disabled="GameWorld.State != GameStatus.InProgress"
+                       Color="Color.Primary"
+                       ButtonType="ButtonType.Submit"
+                       @onclick="Next">
+                Next Turn
+            </MudButton>
+
+            <MudButton Class="ml-4"
+                       Variant="Variant.Filled"
+                       Color="Color.Secondary"
+                       ButtonType="ButtonType.Reset"
+                       @onclick="() => Reset()">
+                Reset Game
+            </MudButton>
+        </div>
+    </section>
+
+    <aside id="Sidebar">
+        <section id="Training">
+            <MudText Typo="Typo.h6">Training</MudText>
+            <MudText Typo="Typo.caption">Simulate generations of squirrels. The brain will use the best result.</MudText>
+            
+            @* TODO: Allow specifying the number of generations to train, or use train 1, train 5, train 25 buttons *@
+            
+            <div class="mt-4">
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           ButtonType="ButtonType.Button"
+                           @onclick="Train">
+                    Train
+                </MudButton>
+
+                @* TODO: Add a progress bar here for training progress *@
+            </div>
+        </section>
+        
+        
+        @* TODO: Visualize the best chromosome here *@
+        
+        <section id="Visualization" class="mt-8">
+            <MudText Typo="Typo.h6">Visualization</MudText>
+            <MudText Typo="Typo.caption">Choose a visualization overlay for the game world</MudText>
+            <div class="mt-4">
+                <MudSelect Variant="Variant.Text" T="VisualizationKind"
+                           bind-Value="SelectedVisualization"
+                           ValueChanged="v => OnVisualizationChanged(v)">
+                    @foreach (var visualization in Enum.GetValues(typeof(VisualizationKind)).Cast<VisualizationKind>())
+                    {
+                        <MudSelectItem Value="@visualization">@visualization</MudSelectItem>
+                    }
+                </MudSelect>
+            </div>
+        </section>
+
+        @if (GameWorld.Result is not null)
+        {
+            <section class="mt-8">
+                <GameScorecard Scorer="Scorer" Result="GameWorld.Result"/>
+            </section>
+        }
+    </aside>
+</div>
 
 @code {
-    
+    private readonly SquirrelSimulationService _squirrelService;
+    private ILogger<LearningSquirrel> Logger { get; }
+    public WeightedBrain Brain { get; } = new();
+    public SquirrelScorer Scorer { get; }
+    public VisualizationKind SelectedVisualization { get; set; } = VisualizationKind.None;
+
+    public LearningSquirrel(SquirrelSimulationService squirrelService, ILogger<LearningSquirrel> logger)
+    {
+        _squirrelService = squirrelService;
+        Logger = logger;
+        Scorer = new SquirrelScorer(logger, []);
+        GameWorld = Reset();
+    }
+
+    public GameWorld GameWorld { get; set; }
+
+    private GameWorld Reset()
+    {
+        Logger.LogDebug("Building test world for squirrel simulation");
+        GameWorld = _squirrelService.BuildTestWorld(squirrelBrain: Brain);
+
+        return GameWorld;
+    }
+
+    private void Next()
+    {
+        Logger.LogDebug("Advancing game world");
+        GameWorld.SimulateGameTurn();
+        StateHasChanged();
+    }
+
+    private void OnVisualizationChanged(VisualizationKind kind)
+    {
+        Logger.LogDebug("Visualization changed to {VisualizationKind}", kind);
+        SelectedVisualization = kind;
+        StateHasChanged();
+    }
+
+    private void Train()
+    {
+        Logger.LogDebug("Training squirrels");
+
+        IsBusy = true;
+        
+        // TODO: Training should be incremental and not replacing the brain entirely
+        
+        SquirrelGeneticSolver solver = new(Logger, [123]);
+        
+        // TODO: On generation complete, update our weights to use the best chromosome and the progress bar
+        // TODO: On solver complete, update our weights again and mark unbusy
+        solver.Solve(5, OnGenerationComplete, OnSolverComplete);
+    }
+
+    private void OnGenerationComplete(GeneticAlgorithm ga)
+    {
+        Brain.Weights = SquirrelScorer.GetWeightsFromChromosome(ga.BestChromosome);
+    }
+
+    private void OnSolverComplete(GeneticAlgorithm ga)
+    {
+        IsBusy = false;
+        Brain.Weights = SquirrelScorer.GetWeightsFromChromosome(ga.BestChromosome);
+    }
+
+    public bool IsBusy { get; set; }
+
 }

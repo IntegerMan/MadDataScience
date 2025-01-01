@@ -93,12 +93,12 @@
 
 @code {
     private readonly SquirrelSimulationService _squirrelService;
-    public ILogger<SquirrelSimulationService> Logger { get; }
+    public ILogger<WeightedSquirrel> Logger { get; }
     public WeightedBrain Brain { get; } = new();
     public SquirrelScorer Scorer { get; }
     public VisualizationKind SelectedVisualization { get; set; } = VisualizationKind.None;
 
-    public WeightedSquirrel(SquirrelSimulationService squirrelService, ILogger<SquirrelSimulationService> logger)
+    public WeightedSquirrel(SquirrelSimulationService squirrelService, ILogger<WeightedSquirrel> logger)
     {
         _squirrelService = squirrelService;
         Logger = logger;

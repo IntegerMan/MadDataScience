@@ -4,6 +4,7 @@ namespace MattEland.MadDataScience.SquirrelSimulation.GameObjects;
 
 public interface IGameActor
 {
+    public bool IsActive => true;
     public WorldPosition Position { get; set; }
     public string Name { get; }
     public int TurnOrder { get; }

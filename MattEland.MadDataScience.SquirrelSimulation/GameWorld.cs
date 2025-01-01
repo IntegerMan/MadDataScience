@@ -27,7 +27,6 @@ public class GameWorld(int width, int height, int maxTurns)
             throw new ArgumentOutOfRangeException(nameof(gameObject.Position),
                 $"Position {gameObject.Position} is outside the bounds of the world");
         }
-
         if (IsOccupied(gameObject.Position))
         {
             throw new InvalidOperationException($"Position {gameObject.Position} is already occupied");
@@ -60,7 +59,9 @@ public class GameWorld(int width, int height, int maxTurns)
         }
         
         // Have all actors take their turns in sequence (Squirrel, Rabbit, Doggo)
-        foreach (var actor in Objects.OfType<IGameActor>().OrderBy(o => o.TurnOrder))
+        foreach (var actor in Objects.OfType<IGameActor>()
+                                     .Where(a => a.IsActive)
+                                     .OrderBy(o => o.TurnOrder))
         {
             List<TilePerceptions> perceptions = BuildTilePerceptions(actor);
 
@@ -71,50 +72,55 @@ public class GameWorld(int width, int height, int maxTurns)
         
         // Maintain game state
         TurnsLeft -= 1;
-        if (!Objects.OfType<Squirrel>().Any())
+        if (!Objects.OfType<Squirrel>().Any(s => s.IsActive))
         {
-            Logger?.LogInformation("Game ended: Squirrel is gone");
-            State = GameStatus.Killed;
+            Logger?.LogInformation("Game ended: No active squirrels");
+            State = Objects.OfType<Squirrel>().Any(s => s.IsInTree) 
+                ? GameStatus.Won 
+                : GameStatus.Killed;
         }
         else if (TurnsLeft <= 0)
         {
             Logger?.LogInformation("Game ended: Out of turns");
-            State = GameStatus.OutOfTime;
+            State = Objects.OfType<Squirrel>().Any(s => s.IsInTree) 
+                ? GameStatus.Won 
+                : GameStatus.OutOfTime;
         }
     }
 
     private void HandleActorMove(IGameActor actor, WorldPosition desiredPos)
     {
+        // Evaluate what they want to do
         if (desiredPos == actor.Position)
         {
             Logger?.LogTrace("{Actor} is staying put", actor.Name);
+            return;
         }
-        else
-        {
-            Logger?.LogDebug("{Actor} wants to move to {Pos}", actor.Name, desiredPos);
+        Logger?.LogDebug("{Actor} wants to move to {Pos}", actor.Name, desiredPos);
 
-            if (IsBlocked(actor, desiredPos))
-            {
-                Logger?.LogWarning("{Actor} was blocked trying to move to {Pos}", actor.Name, desiredPos);
-            }
-            else if (!IsValidPosition(desiredPos))
-            {
-                Logger?.LogWarning("{Actor} tried to move to an invalid position {Pos}", actor.Name, desiredPos);
-            }
-            else
-            {
-                // This is necessary since we may be removing the objects from the Objects collection during iteration
-                List<GameObject> collidedObjects = Objects.Where(o => o.Position == desiredPos).ToList();
-                foreach (var obj in collidedObjects)
-                {
-                    Logger?.LogDebug("{Actor} collided with {Obj}", actor.Name, obj.Name);
-                    actor.HandleCollision(obj, this);
-                }
-                    
-                actor.Position = desiredPos;
-                Logger?.LogDebug("{Actor} moved to {Pos}", actor.Name, desiredPos);
-            }
+        // Validate the move
+        if (IsBlocked(actor, desiredPos))
+        {
+            Logger?.LogWarning("{Actor} was blocked trying to move to {Pos}", actor.Name, desiredPos);
+            return;
         }
+        if (!IsValidPosition(desiredPos))
+        {
+            Logger?.LogWarning("{Actor} tried to move to an invalid position {Pos}", actor.Name, desiredPos);
+            return;
+        }
+
+        // Check collisions. We need to use ToList() here to create a copy of the collection since doggos can kill
+        List<GameObject> collidedObjects = Objects.Where(o => o.Position == desiredPos).ToList();
+        foreach (var obj in collidedObjects)
+        {
+            Logger?.LogDebug("{Actor} collided with {Obj}", actor.Name, obj.Name);
+            actor.HandleCollision(obj, this);
+        }
+                    
+        // Move the actor
+        actor.Position = desiredPos;
+        Logger?.LogDebug("{Actor} moved to {Pos}", actor.Name, desiredPos);
     }
 
     public Random Random { get; init; } = new();

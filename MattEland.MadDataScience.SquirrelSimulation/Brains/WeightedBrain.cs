@@ -1,3 +1,5 @@
+using MattEland.MadDataScience.SquirrelSimulation.GameObjects;
+
 namespace MattEland.MadDataScience.SquirrelSimulation.Brains;
 
 public class WeightedBrain : IBrain
@@ -12,11 +14,7 @@ public class WeightedBrain : IBrain
         // Random order here helps in cases of tie scores since the first with that value will win
         foreach (TilePerceptions choice in choices.OrderBy(_ => random.Next()))
         {
-            float score = (choice.SmellOfSquirrel * Weights.Squirrel) + 
-                          (choice.SmellOfRabbit * Weights.Rabbit) +
-                          (choice.SmellOfDoggo * Weights.Doggo) +
-                          (choice.SmellOfTree * Weights.Tree) +
-                          (choice.SmellOfAcorn * Weights.Acorn);
+            float score = GameWorld.CalculateTileAttractiveness(choice, Weights);
             
             if (score > bestScore)
             {

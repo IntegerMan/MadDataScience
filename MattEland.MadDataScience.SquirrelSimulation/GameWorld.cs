@@ -1,3 +1,5 @@
+using MattEland.MadDataScience.SquirrelSimulation.Brains;
+using MattEland.MadDataScience.SquirrelSimulation.GameObjects;
 using Microsoft.Extensions.Logging;
 
 namespace MattEland.MadDataScience.SquirrelSimulation;
@@ -129,20 +131,23 @@ public class GameWorld(int width, int height, int maxTurns)
                     
                 if (IsBlocked(actor, newPosition)) continue;
 
-                perceptions.Add(new TilePerceptions
-                {
-                    Position = newPosition,
-                    SmellOfDoggo = CalculateTileSmell(newPosition, typeof(Doggo)),
-                    SmellOfAcorn = CalculateTileSmell(newPosition, typeof(Acorn)),
-                    SmellOfSquirrel = CalculateTileSmell(newPosition, typeof(Squirrel)),
-                    SmellOfTree = CalculateTileSmell(newPosition, typeof(Tree)),
-                    SmellOfRabbit = CalculateTileSmell(newPosition, typeof(Rabbit))
-                });
+                perceptions.Add(BuildTilePerceptions(newPosition));
             }
         }
 
         return perceptions;
     }
+
+    private TilePerceptions BuildTilePerceptions(WorldPosition newPosition) 
+        => new()
+        {
+            Position = newPosition,
+            SmellOfDoggo = CalculateTileSmell(newPosition, typeof(Doggo)),
+            SmellOfAcorn = CalculateTileSmell(newPosition, typeof(Acorn)),
+            SmellOfSquirrel = CalculateTileSmell(newPosition, typeof(Squirrel)),
+            SmellOfTree = CalculateTileSmell(newPosition, typeof(Tree)),
+            SmellOfRabbit = CalculateTileSmell(newPosition, typeof(Rabbit))
+        };
 
     private float CalculateTileSmell(WorldPosition pos, Type type)
     {
@@ -174,7 +179,7 @@ public class GameWorld(int width, int height, int maxTurns)
         return pos;
     }
 
-    public IEnumerable<TileVisualization> GetTileVisualizations(VisualizationKind visualization)
+    public IEnumerable<TileVisualization> GetTileVisualizations(VisualizationKind visualization, SmellWeights? weights = null)
     {
         for (int y = 0; y < Height; y++)
         {
@@ -191,10 +196,20 @@ public class GameWorld(int width, int height, int maxTurns)
                         VisualizationKind.Rabbit => CalculateTileSmell(pos, typeof(Rabbit)),
                         VisualizationKind.Doggo => CalculateTileSmell(pos, typeof(Doggo)),
                         VisualizationKind.Tree => CalculateTileSmell(pos, typeof(Tree)),
+                        VisualizationKind.Attractiveness => weights is not null 
+                            ? CalculateTileAttractiveness(BuildTilePerceptions(pos), weights) 
+                            : 0f,
                         _ => 0f
                     }
                 };
             }
         }
     }
+
+    internal static float CalculateTileAttractiveness(TilePerceptions choice, SmellWeights weights) =>
+        (choice.SmellOfSquirrel * weights.Squirrel) + 
+        (choice.SmellOfRabbit * weights.Rabbit) +
+        (choice.SmellOfDoggo * weights.Doggo) +
+        (choice.SmellOfTree * weights.Tree) +
+        (choice.SmellOfAcorn * weights.Acorn);
 }

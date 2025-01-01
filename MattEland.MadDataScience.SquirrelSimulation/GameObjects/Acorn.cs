@@ -1,4 +1,4 @@
-namespace MattEland.MadDataScience.SquirrelSimulation;
+namespace MattEland.MadDataScience.SquirrelSimulation.GameObjects;
 
 public class Acorn : GameObject
 {

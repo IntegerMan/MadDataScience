@@ -1,6 +1,6 @@
 using MattEland.MadDataScience.SquirrelSimulation.Brains;
 
-namespace MattEland.MadDataScience.SquirrelSimulation;
+namespace MattEland.MadDataScience.SquirrelSimulation.GameObjects;
 
 public class Rabbit : GameObject, IGameActor
 {

@@ -1,3 +1,5 @@
+using MattEland.MadDataScience.SquirrelSimulation.GameObjects;
+
 namespace MattEland.MadDataScience.SquirrelSimulation.Brains;
 
 public class DoggoBrain : IBrain

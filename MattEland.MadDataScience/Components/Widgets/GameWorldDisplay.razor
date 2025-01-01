@@ -1,11 +1,12 @@
 @using MattEland.MadDataScience.Components.Pages.RL
+@using MattEland.MadDataScience.SquirrelSimulation.Brains
 @inject ILogger<WeightedSquirrel> Logger
 
 <MudText Typo="Typo.h6">Game World</MudText>
 <div class="game-world"
      style="grid-template-rows: repeat(@GameWorld.Height, 1fr); grid-template-columns: repeat(@GameWorld.Width, 1fr);">
     
-    @if (Visualization != VisualizationKind.None)
+    @if (Visualization != VisualizationKind.None && Math.Abs(MaxSmellValue - MinSmellValue) > float.Epsilon)
     {
         @foreach (var tile in TileVisualizations)
         {
@@ -33,14 +34,33 @@
     
     [Parameter]
     public required VisualizationKind Visualization { get; set; }
+    
+    [Parameter]
+    public SmellWeights? SmellWeights { get; set; }
+    
+    public float MaxSmellValue { get; set; } = 1.0f;
+    public float MinSmellValue { get; set; } = 0f;
 
     private IEnumerable<TileVisualization> TileVisualizations
     {
         get
         {
-            Logger.LogTrace("Getting tile visualizations for visualization {Visualization}", Visualization);
+            Logger.LogTrace("Getting tile visualizations for visualization {Visualization} with weights {Weights}", Visualization, SmellWeights);
+
+            TileVisualization[] tiles = GameWorld.GetTileVisualizations(Visualization, SmellWeights).ToArray();
             
-            return GameWorld.GetTileVisualizations(Visualization);
+            /*
+            MaxSmellValue = tiles.Max(t => t.Value);
+            if (MaxSmellValue == 0)
+            {
+                MaxSmellValue = 1;
+            }
+            MinSmellValue = tiles.Min(t => t.Value);
+            
+            Logger.LogTrace("Max Smell Value: {MaxSmellValue}, Min Smell Value: {MinSmellValue}", MaxSmellValue, MinSmellValue);
+            */
+            
+            return tiles;
         }
     }
 

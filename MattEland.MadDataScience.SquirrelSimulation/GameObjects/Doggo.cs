@@ -1,7 +1,7 @@
 using MattEland.MadDataScience.SquirrelSimulation.Brains;
 using Microsoft.Extensions.Logging;
 
-namespace MattEland.MadDataScience.SquirrelSimulation;
+namespace MattEland.MadDataScience.SquirrelSimulation.GameObjects;
 
 public class Doggo : GameObject, IGameActor
 {

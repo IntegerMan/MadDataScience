@@ -1,5 +1,6 @@
 using MattEland.MadDataScience.SquirrelSimulation;
 using MattEland.MadDataScience.SquirrelSimulation.Brains;
+using MattEland.MadDataScience.SquirrelSimulation.GameObjects;
 
 namespace MattEland.MadDataScience.Services;
 

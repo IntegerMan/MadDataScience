@@ -15,19 +15,19 @@
         <MudText Typo="Typo.h6">Smell Priorities</MudText>
         <MudText Typo="Typo.caption">How important is it for the squirrel to smell the acorn, rabbit, or dog?</MudText>
         <div class="mt-4 mb-4">
-            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true">
+            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true" bind-Value="Brain.Weights.Acorn">
                 Acorn
             </MudSlider>
-            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true">
+            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true" bind-Value="Brain.Weights.Tree">
                 Tree
             </MudSlider>
-            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true">
+            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true" bind-Value="Brain.Weights.Doggo">
                 Doggo
             </MudSlider>
-            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true">
+            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true" bind-Value="Brain.Weights.Rabbit">
                 Rabbit
             </MudSlider>
-            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true">
+            <MudSlider Min="-1" Max="1" ValueLabel="true" Step="0.25" TickMarks="true" bind-Value="Brain.Weights.Squirrel">
                 Squirrel
             </MudSlider>
             <div class="WeightSliderLabels mt-2">
@@ -64,7 +64,7 @@
 @code {
     private readonly SquirrelSimulationService _squirrelService;
     public ILogger<SquirrelSimulationService> Logger { get; }
-    public IBrain Brain { get; } = new WeightedBrain();
+    public WeightedBrain Brain { get; } = new();
 
     public WeightedSquirrel(SquirrelSimulationService squirrelService, ILogger<SquirrelSimulationService> logger)
     {

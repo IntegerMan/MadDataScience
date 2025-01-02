@@ -1,12 +1,115 @@
 @page "/RL/KillerSquirrel"
-<h3>Killer Squirrel</h3>
+@using MattEland.MadDataScience.SquirrelSimulation.Brains
+@using MattEland.MadDataScience.SquirrelSimulation.Genetics
 
-@* TODO: Add a way of tweaking the fitness function here *@
+<MudText Typo="Typo.h4">Killer Squirrels</MudText>
+<MudText Typo="Typo.subtitle1" Class="mb-4">
+    Let's see how changing how squirrels are scored impacts their behavior.
+</MudText>
 
-@* TODO: Add a simulation with a squirrel that learns to solve the game here *@
+<div id="GameArea">
+    <section id="GameDisplay">
+        <GameWorldDisplay GameWorld="GameWorld" SmellWeights="Brain.Weights"/>
 
-@* TODO: Add a cheat button to load a winning squirrel in case of an emergency *@
+        <GameResultNotifications GameWorld="GameWorld"/>
+
+        <div class="mt-4">
+            <MudButton Variant="Variant.Filled"
+                       Disabled="GameWorld.State != GameStatus.InProgress"
+                       Color="Color.Primary"
+                       ButtonType="ButtonType.Submit"
+                       @onclick="Next">
+                Next Turn
+            </MudButton>
+
+            <MudButton Class="ml-4"
+                       Variant="Variant.Filled"
+                       Color="Color.Secondary"
+                       ButtonType="ButtonType.Reset"
+                       @onclick="() => Reset()">
+                Reset Game
+            </MudButton>
+        </div>
+    </section>
+
+    <aside id="Sidebar">
+        <section id="Training">
+            <SquirrelTrainingWidget Brain="Brain"/>
+        </section>
+
+        <section id="Scoring" class="mt-4">
+            <MudText Typo="Typo.h6">Scoring</MudText>
+            <MudText Typo="Typo.caption">
+                Adjust the scoring weights to see how the squirrel's behavior changes.
+            </MudText>
+            <div class="mt-4 mb-4">
+                <MudSlider Min="-1000" Max="1000" ValueLabel="true" T="int"
+                           Value="Scorer.PointsForWinningSquirrels"
+                           ValueChanged="v => Scorer.PointsForWinningSquirrels = v">
+                    Points for Winning Squirrels: @Scorer.PointsForWinningSquirrels
+                </MudSlider>
+                <MudSlider Min="-1000" Max="1000" ValueLabel="true" T="int"
+                           Value="Scorer.PointsForSquirrelsOnBoard"
+                           ValueChanged="v => Scorer.PointsForSquirrelsOnBoard = v">
+                    Points for Surviving Squirrels: @Scorer.PointsForSquirrelsOnBoard
+                </MudSlider>
+                <MudSlider Min="-1000" Max="1000" ValueLabel="true" T="int"
+                           Value="Scorer.PointsForRabbitsOnBoard"
+                           ValueChanged="v => Scorer.PointsForRabbitsOnBoard = v">
+                    Points for Surviving Rabbits: @Scorer.PointsForRabbitsOnBoard
+                </MudSlider>
+                <MudSlider Min="-1000" Max="1000" ValueLabel="true" T="int"
+                           Value="Scorer.PointsForAcornsOnBoard"
+                           ValueChanged="v => Scorer.PointsForAcornsOnBoard = v">
+                    Points for Uncollected Acorns: @Scorer.PointsForAcornsOnBoard
+                </MudSlider>
+                <MudSlider Min="-1000" Max="1000" ValueLabel="true" T="int"
+                           Value="Scorer.PointsPerTurnLeft"
+                           ValueChanged="v => Scorer.PointsPerTurnLeft = v">
+                    Points for Turns Remaining: @Scorer.PointsPerTurnLeft
+                </MudSlider>
+            </div>
+        </section>
+
+        @if (GameWorld.Result is not null)
+        {
+            <section class="mt-8">
+                <GameScorecard Scorer="Scorer" Result="GameWorld.Result"/>
+            </section>
+        }
+    </aside>
+</div>
 
 @code {
-    
+    private readonly SquirrelSimulationService _squirrelService;
+    private ILogger<KillerSquirrel> Logger { get; }
+    public WeightedBrain Brain { get; } = new();
+    public SquirrelScorer Scorer { get; }
+
+    public KillerSquirrel(SquirrelSimulationService squirrelService, ILogger<KillerSquirrel> logger)
+    {
+        _squirrelService = squirrelService;
+        Logger = logger;
+        Scorer = new SquirrelScorer(logger, []);
+        GameWorld = Reset();
+        Brain.Weights.Randomize(new Random());
+    }
+
+    public GameWorld GameWorld { get; set; }
+
+    private GameWorld Reset()
+    {
+        Logger.LogDebug("Building test world for squirrel simulation");
+        GameWorld = _squirrelService.BuildTestWorld(squirrelBrain: Brain);
+
+        return GameWorld;
+    }
+
+    private void Next()
+    {
+        Logger.LogDebug("Advancing game world");
+        GameWorld.SimulateGameTurn();
+        StateHasChanged();
+    }
+
 }

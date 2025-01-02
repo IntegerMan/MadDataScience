@@ -27,17 +27,21 @@ public class SquirrelGeneticSolver
             fractionDigits: [2,2,2,2,2],
             geneValues: [startWeights.Acorn, startWeights.Squirrel, startWeights.Doggo, startWeights.Rabbit, startWeights.Tree]
         );
-        Population population = new Population(minSize: 100, maxSize: 250, chromosome);
+        Population population = new Population(minSize: 100, maxSize: 250, chromosome)
+        {
+            GenerationStrategy = new PerformanceGenerationStrategy(),
+        };
 
         IFitness fitness = new SquirrelScorer(_logger, _randomSeeds);
         ISelection selection = new EliteSelection();
-        ICrossover crossover = new UniformCrossover();
+        ICrossover crossover = new TwoPointCrossover();
         IMutation mutation = new FlipBitMutation();
         
         GeneticAlgorithm ga = new(population, fitness, selection, crossover, mutation)
         {
             Termination = new GenerationNumberTermination(generations),
-            Reinsertion = new ElitistReinsertion()
+            Reinsertion = new ElitistReinsertion(),
+            MutationProbability = 0.3f
         };
         
         ga.GenerationRan += (sender, _) =>

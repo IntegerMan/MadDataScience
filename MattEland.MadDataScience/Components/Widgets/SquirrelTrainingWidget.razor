@@ -10,27 +10,9 @@
                Disabled="IsBusy"
                Color="Color.Primary"
                ButtonType="ButtonType.Button"
-               @onclick="() => Train(1)">
-        Train 1
-    </MudButton>
-
-    <MudButton Variant="Variant.Filled"
-               Disabled="IsBusy"
-               Color="Color.Primary"
-               Class="ml-2"
-               ButtonType="ButtonType.Button"
                @onclick="() => Train(5)">
-        5
+        Train 5
     </MudButton>
-    
-    <MudButton Variant="Variant.Filled"
-               Disabled="IsBusy"
-               Color="Color.Primary"
-               Class="ml-2"
-               ButtonType="ButtonType.Button"
-               @onclick="() => Train(10)">
-        10
-    </MudButton>    
     
     <MudButton Variant="Variant.Filled"
                Disabled="IsBusy"
@@ -48,6 +30,24 @@
                ButtonType="ButtonType.Button"
                @onclick="() => Train(50)">
         50
+    </MudButton>    
+    
+    <MudButton Variant="Variant.Filled"
+               Disabled="IsBusy"
+               Color="Color.Primary"
+               Class="ml-2"
+               ButtonType="ButtonType.Button"
+               @onclick="() => Train(125)">
+        125
+    </MudButton>    
+    
+    <MudButton Variant="Variant.Filled"
+               Disabled="IsBusy"
+               Color="Color.Primary"
+               Class="ml-2"
+               ButtonType="ButtonType.Button"
+               @onclick="() => Train(250)">
+        250
     </MudButton>
 
     @if (IsBusy)
@@ -65,23 +65,23 @@
 
 <MudExpansionPanels MultiExpansion="false" Class="mt-4">
     <MudExpansionPanel Text="Best Brain" Style="font-size: 0.8em;">
-        <MudSlider Min="-5" Max="5" ValueLabel="true" Step="1f" TickMarks="true" T="float"
+        <MudSlider Min="-5" Max="5" ValueLabel="true" T="float"
                    Disabled="true" Value="Brain.Weights.Acorn">
             Acorn
         </MudSlider>
-        <MudSlider Min="-5" Max="5" ValueLabel="true" Step="1f" TickMarks="true" T="float"
+        <MudSlider Min="-5" Max="5" ValueLabel="true" T="float"
                    Disabled="true" Value="Brain.Weights.Tree">
             Tree
         </MudSlider>
-        <MudSlider Min="-5" Max="5" ValueLabel="true" Step="1f" TickMarks="true" T="float"
+        <MudSlider Min="-5" Max="5" ValueLabel="true" T="float"
                    Disabled="true" Value="Brain.Weights.Doggo">
             Doggo
         </MudSlider>
-        <MudSlider Min="-5" Max="5" ValueLabel="true" Step="1f" TickMarks="true" T="float"
+        <MudSlider Min="-5" Max="5" ValueLabel="true" T="float"
                    Disabled="true" Value="Brain.Weights.Rabbit">
             Rabbit
         </MudSlider>
-        <MudSlider Min="-5" Max="5" ValueLabel="true" Step="1f" TickMarks="true" T="float"
+        <MudSlider Min="-5" Max="5" ValueLabel="true" T="float"
                    Disabled="true" Value="Brain.Weights.Squirrel">
             Squirrel
         </MudSlider>

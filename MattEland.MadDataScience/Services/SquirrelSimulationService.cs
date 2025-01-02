@@ -7,6 +7,6 @@ public class SquirrelSimulationService(ILogger<SquirrelSimulationService> logger
 {
     private readonly GameWorldGenerator _generator = new(logger);
     
-    public GameWorld BuildTestWorld(IBrain squirrelBrain, int? randomSeed = null) 
-        => _generator.Generate(squirrelBrain, randomSeed);
+    public GameWorld BuildTestWorld(IBrain squirrelBrain, Random? random = null) 
+        => _generator.Generate(squirrelBrain, random);
 }

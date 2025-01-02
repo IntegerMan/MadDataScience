@@ -29,7 +29,8 @@ public class SquirrelScorer(ILogger logger, int[] randomSeeds) : IFitness
         {
             logger.LogTrace("Evaluating chromosome {Chromosome} with seed {Seed} (index {Index})", chromosome, randomSeeds[i], i);
             
-            GameWorld world = _generator.Generate(brain, randomSeeds[i], provideLogger: false);
+            Random random = new Random(randomSeeds[i]);
+            GameWorld world = _generator.Generate(brain, random, provideLogger: false);
             GameResult result = world.RunToCompletion();
             scores[i] = ScoreGame(result);
         }

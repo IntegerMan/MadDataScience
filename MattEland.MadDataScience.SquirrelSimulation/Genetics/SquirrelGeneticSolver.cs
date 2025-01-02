@@ -27,7 +27,7 @@ public class SquirrelGeneticSolver
             fractionDigits: [2,2,2,2,2],
             geneValues: [startWeights.Acorn, startWeights.Squirrel, startWeights.Doggo, startWeights.Rabbit, startWeights.Tree]
         );
-        Population population = new Population(minSize: 50, maxSize: 100, chromosome);
+        Population population = new Population(minSize: 100, maxSize: 250, chromosome);
 
         IFitness fitness = new SquirrelScorer(_logger, _randomSeeds);
         ISelection selection = new EliteSelection();

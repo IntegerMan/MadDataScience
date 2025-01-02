@@ -20,21 +20,46 @@
                Class="ml-2"
                ButtonType="ButtonType.Button"
                @onclick="() => Train(5)">
-        Train 5
+        5
     </MudButton>
     
     <MudButton Variant="Variant.Filled"
                Disabled="IsBusy"
-               Color="Color.Error"
-               class="ml-2"
+               Color="Color.Primary"
+               Class="ml-2"
                ButtonType="ButtonType.Button"
-               @onclick="Reset">
-        Reset Brain
+               @onclick="() => Train(10)">
+        10
+    </MudButton>    
+    
+    <MudButton Variant="Variant.Filled"
+               Disabled="IsBusy"
+               Color="Color.Primary"
+               Class="ml-2"
+               ButtonType="ButtonType.Button"
+               @onclick="() => Train(25)">
+        25
+    </MudButton>    
+    
+    <MudButton Variant="Variant.Filled"
+               Disabled="IsBusy"
+               Color="Color.Primary"
+               Class="ml-2"
+               ButtonType="ButtonType.Button"
+               @onclick="() => Train(50)">
+        50
     </MudButton>
 
     @if (IsBusy)
     {
-        <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-4"/>
+        @if (MaxGenerations > 1)
+        {
+            <MudProgressLinear Indeterminate="false" Min="0" Max="MaxGenerations" Value="Generation" Color="Color.Primary" Class="mt-4"/>
+        }
+        else
+        {
+            <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-4"/>
+        }
     }
 </div>
 
@@ -69,7 +94,7 @@
     public SquirrelTrainingWidget(ILogger<SquirrelTrainingWidget> logger)
     {
         Logger = logger;
-        _solver = new SquirrelGeneticSolver(logger, [123]);
+        _solver = new SquirrelGeneticSolver(logger, [42, 50, 150]);
     }
 
     private readonly SquirrelGeneticSolver _solver;
@@ -81,6 +106,8 @@
         Logger.LogDebug("Training squirrels for {Generations} generation(s)", generations);
 
         IsBusy = true;
+        Generation = 0;
+        MaxGenerations = generations;
         StateHasChanged();
         
         // Call solve on a new thread so we can display busy state
@@ -103,6 +130,7 @@
         // Move back to the UI thread
         InvokeAsync(() =>
         {
+            Generation = ga.GenerationsNumber;
             Brain.Weights = SquirrelScorer.GetWeightsFromChromosome(ga.BestChromosome);
             StateHasChanged();
         });
@@ -115,6 +143,7 @@
         // Move back to the UI thread
         InvokeAsync(() =>
         {
+            Generation = ga.GenerationsNumber;
             IsBusy = false;
             Brain.Weights = SquirrelScorer.GetWeightsFromChromosome(ga.BestChromosome);
             StateHasChanged();
@@ -122,5 +151,6 @@
     }
 
     public bool IsBusy { get; set; }
-
+    public int MaxGenerations { get; set; } = 1;
+    public int Generation { get; set; }
 }

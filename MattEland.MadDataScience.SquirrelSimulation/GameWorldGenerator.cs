@@ -6,7 +6,7 @@ namespace MattEland.MadDataScience.SquirrelSimulation;
 
 public class GameWorldGenerator(ILogger logger)
 {
-    public GameWorld Generate(IBrain squirrelBrain, int? randomSeed = null, int minSize = 9, int maxSize = 21)
+    public GameWorld Generate(IBrain squirrelBrain, int? randomSeed = null, int minSize = 9, int maxSize = 21, bool provideLogger = true)
     {
         Random random = randomSeed.HasValue ? new Random(randomSeed.Value) : new Random();
 
@@ -14,7 +14,7 @@ public class GameWorldGenerator(ILogger logger)
         
         GameWorld world = new(worldSize, worldSize, maxTurns: 100)
         {
-            Logger = logger,
+            Logger = provideLogger ? logger : null,
             Random = random
         };
         

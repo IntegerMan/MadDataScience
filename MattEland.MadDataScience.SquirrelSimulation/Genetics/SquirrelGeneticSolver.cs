@@ -15,14 +15,17 @@ public class SquirrelGeneticSolver
         _randomSeeds = randomSeeds;
     }
     
-    public void Solve(int generations, Action<GeneticAlgorithm> onGenerationComplete, Action<GeneticAlgorithm> onSolverComplete)
+    public void Solve(int generations, 
+        SmellWeights startWeights, 
+        Action<GeneticAlgorithm> onGenerationComplete,
+        Action<GeneticAlgorithm> onSolverComplete)
     {
         FloatingPointChromosome chromosome = new(
             minValue: [-5,-5,-5,-5,-5], 
             maxValue: [5,5,5,5,5], 
             totalBits: [64,64,64,64,64], 
             fractionDigits: [2,2,2,2,2],
-            geneValues: [0,0,0,0,0]  // TODO: These values should start random, then come from the best prior run
+            geneValues: [startWeights.Acorn, startWeights.Squirrel, startWeights.Doggo, startWeights.Rabbit, startWeights.Tree]
         );
         Population population = new Population(minSize: 50, maxSize: 100, chromosome);
 
@@ -34,18 +37,19 @@ public class SquirrelGeneticSolver
         GeneticAlgorithm ga = new(population, fitness, selection, crossover, mutation)
         {
             Termination = new GenerationNumberTermination(generations),
+            Reinsertion = new ElitistReinsertion()
         };
         
-        ga.GenerationRan += (sender, args) =>
+        ga.GenerationRan += (sender, _) =>
         {
-            _logger.LogInformation("Generation {Generation} complete", ga.GenerationsNumber);
-            _logger.LogDebug("Sender {Sender} args {Args}", sender, args);
+            double best = ga.Fitness.Evaluate(ga.BestChromosome);
+            _logger.LogInformation("Generation {Generation} complete with best score of {Best}", ga.GenerationsNumber, best);
             onGenerationComplete((GeneticAlgorithm)sender!);
         };
-        ga.TerminationReached += (sender, args) =>
+        ga.TerminationReached += (sender, _) =>
         {
-            _logger.LogInformation("Solver complete");
-            _logger.LogDebug("Sender {Sender} args {Args}", sender, args);
+            double best = ga.Fitness.Evaluate(ga.BestChromosome);
+            _logger.LogInformation("Solver complete with best score of {Best}", best);
             onSolverComplete((GeneticAlgorithm)sender!);
         };
         

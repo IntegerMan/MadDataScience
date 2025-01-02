@@ -10,4 +10,13 @@ public record SmellWeights
 
     public override string ToString() 
         => $"Acorn: {Acorn}, Squirrel: {Squirrel}, Doggo: {Doggo}, Rabbit: {Rabbit}, Tree: {Tree}";
+
+    public void Randomize(Random random)
+    {
+        Acorn = (float)((random.NextDouble() * 10) - 5);
+        Squirrel = (float)((random.NextDouble() * 10) - 5);
+        Doggo = (float)((random.NextDouble() * 10) - 5);
+        Rabbit = (float)((random.NextDouble() * 10) - 5);
+        Tree = (float)((random.NextDouble() * 10) - 5);
+    }
 }

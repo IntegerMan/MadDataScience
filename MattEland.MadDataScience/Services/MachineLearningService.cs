@@ -1,4 +1,5 @@
 using System.Text;
+using MattEland.MadDataScience.Models;
 using Microsoft.Data.Analysis;
 using Microsoft.ML;
 using Microsoft.ML.AutoML;
@@ -52,5 +53,19 @@ public class MachineLearningService (ILogger<MachineLearningService> logger, IWe
         }
         
         return message;
+    }
+
+    public float PredictGamePrice(VideoGame game)
+    {
+        logger.LogDebug("Predicting Price for {Title}", game.Title);
+        
+        MLContext mlContext = new();
+        ITransformer model = mlContext.Model.Load(Path.Combine(webHostEnvironment.WebRootPath, "model.zip"), out _);
+        PredictionEngine<VideoGame, PricePrediction> engine = mlContext.Model.CreatePredictionEngine<VideoGame, PricePrediction>(model);
+        
+        PricePrediction prediction = engine.Predict(game);
+        logger.LogInformation("Predicted Price for {Title}: {Price:C}", game.Title, prediction.Price);
+        
+        return prediction.Price;
     }
 }

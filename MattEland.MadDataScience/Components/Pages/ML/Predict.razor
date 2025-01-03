@@ -1,12 +1,75 @@
 @page "/ML/Predict"
-<h3>Predict</h3>
+@inject MachineLearningService MachineLearningService
 
-@* TODO: Add a UI here for the user to configure a hypothetical video game *@
+<MudText Typo="Typo.h4">Predict Game Prices</MudText>
+<MudText Typo="Typo.subtitle1" Class="mb-8">
+    Let's use a trained model to predict the price of a hypothetical video game.
+</MudText>
 
-@* TODO: Add a predict button and associated code and progress bar *@
+<MudPaper Class="p-4">
+    <form @onsubmit="PredictGamePrice">
+        <MudText Typo="Typo.h6">Game Information</MudText>
 
-@* TODO: Add a display of the predicted value here *@
+        <MudTextField Label="Game Title" @bind-Value="Game.Title" Variant="Variant.Text"/>
+        <MudTextField Label="Target Age Group" @bind-Value="Game.TargetAgeGroup" Variant="Variant.Text"/>
+        <MudTextField Label="Platform" @bind-Value="Game.Platform" Variant="Variant.Text"/>
+        <MudCheckBox Label="Requires Special Device?" @bind-Value="Game.RequiresSpecialDevice"/>
+        <MudTextField Label="Platform" @bind-Value="Game.Platform" Variant="Variant.Text"/>
+        <MudTextField Label="Publisher" @bind-Value="Game.Publisher" Variant="Variant.Text"/>
+        <MudTextField Label="Year Published" @bind-Value="Game.Year" Variant="Variant.Text"/>
+        <MudTextField Label="Genre" @bind-Value="Game.Genre" Variant="Variant.Text"/>
+        <MudCheckBox Label="Is Multiplayer?" @bind-Value="Game.Multiplayer"/>
+        <MudTextField Label="Hours Long" @bind-Value="Game.HoursLong" Variant="Variant.Text"/>
+        <MudTextField Label="Graphics Quality" @bind-Value="Game.Graphics" Variant="Variant.Text"/>
+        <MudTextField Label="Music Quality" @bind-Value="Game.Music" Variant="Variant.Text"/>
+        <MudTextField Label="Story Quality" @bind-Value="Game.Story" Variant="Variant.Text"/>
+        <MudTextField Label="Review Text" @bind-Value="Game.ReviewText" Lines="3" AutoGrow="true" Variant="Variant.Text"/>
+        <MudTextField Label="Game Mode" @bind-Value="Game.GameMode" Variant="Variant.Text"/>
+        <MudTextField Label="Minimum Players" @bind-Value="Game.MinPlayers" Variant="Variant.Text"/>
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" Class="mt-8" Disabled="IsBusy">
+            Predict Price
+        </MudButton>
+        
+        @if (IsBusy)
+        {
+            <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-4"/>
+        }
+
+    </form>
+</MudPaper>
+
+@if (PredictedPrice.HasValue)
+{
+    <MudPaper Class="p-4 mt-8">
+        <MudText Typo="Typo.h6">Predicted Price</MudText>
+        <MudText Typo="Typo.subtitle1" Class="mb-4">
+            The predicted price of @Game.Title is @PredictedPrice.Value.ToString("C")
+        </MudText>
+    </MudPaper>
+}
 
 @code {
-    
+    public bool IsBusy { get; set; }
+    public VideoGame Game { get; set; } = new();
+    public float? PredictedPrice { get; set; }
+
+    private Task PredictGamePrice()
+    {
+        IsBusy = true;
+        PredictedPrice = null;
+        StateHasChanged();
+        
+        return Task.Run(() =>
+        {
+            float price = MachineLearningService.PredictGamePrice(Game);
+            InvokeAsync(() =>
+            {
+                PredictedPrice = price;
+                IsBusy = false;
+                StateHasChanged();
+            });
+        });
+    }
+
 }

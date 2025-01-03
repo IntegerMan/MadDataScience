@@ -8,7 +8,22 @@
     Detect and describe objects inside of an image
 </MudText>
 
-<img src="@ImageSource" alt="Sample Image" class="img-fluid" />
+<div style="position: relative; display: inline-block;">
+    <img src="@ImageSource" alt="Sample Image" class="img-fluid" />
+    @if (Objects.Any())
+    {
+        @foreach (var obj in Objects)
+        {
+            <div style="position: absolute; border: 2px solid red; 
+                        top: @(obj.BoundingBox.Y)px; 
+                        left: @(obj.BoundingBox.X)px; 
+                        width: @(obj.BoundingBox.Width)px; 
+                        height: @(obj.BoundingBox.Height)px;"
+                 title="@obj.Name">
+            </div>
+        }
+    }
+</div>
 
 <br />
 <MudButton Disabled="IsBusy" Class="mt-8 mb-4" @onclick="HandleCaptionClick" Variant="Variant.Filled" Color="Color.Primary">
@@ -21,20 +36,19 @@
     <MudProgressLinear class="mt-4" Indeterminate="true" Color="Color.Primary"/>
 }
 
-@* TODO: Overlay rectangles on the image *@
 @if (Objects.Any())
 {
     <MudText Typo="Typo.h6">Objects Detected</MudText>
     <ul>
         @foreach (var obj in Objects)
         {
-            <li>@obj</li>
+            <li>@obj (@obj.BoundingBox.X , @obj.BoundingBox.Y, @obj.BoundingBox.Width, @obj.BoundingBox.Height)</li>
         }
     </ul>
 }
 
 @code {
-    public string ImageSource { get; set; } = "CodeMash.jpg";
+    public string ImageSource => "CodeMash.jpg";
     List<ObjectDetectionResult> Objects { get; set; } = new();
     public bool IsBusy { get; set; }
 

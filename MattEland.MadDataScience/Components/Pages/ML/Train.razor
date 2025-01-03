@@ -1,22 +1,78 @@
 @page "/ML/Train"
+@using Markdig
 @rendermode InteractiveServer
 @inject MachineLearningService MachineLearningService
+@inject ILogger<Train> Logger
 
-<h3>Train</h3>
+<MudText Typo="Typo.h4">Train a Model</MudText>
+<MudText Typo="Typo.subtitle1" Class="mb-8">
+    Machine learning models must "memorize" patterns in data to make predictions through training. 
+    Training takes time and may not be perfect, but predictions are fast.
+</MudText>
 
-@* TODO: Add a description of the training process here and image *@
+@* TODO: Add an image illustrating the training process *@
 
-<MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" @onclick="HandleTrainClick">Train Model</MudButton>
-@* TODO: Add a progress bar here *@
+<div>
+    <MudButton Disabled="IsBusy" 
+               ButtonType="ButtonType.Button" 
+               Color="Color.Primary" 
+               Variant="Variant.Filled" 
+               @onclick="() => HandleTrainClick(1)" 
+               Class="mb-4">
+        Train for 1 Second
+    </MudButton>    
+    <MudButton Disabled="IsBusy" 
+               ButtonType="ButtonType.Button" 
+               Color="Color.Primary" 
+               Variant="Variant.Filled" 
+               @onclick="() => HandleTrainClick(5)" 
+               Class="mb-4 ml-2">
+        Train for 5 Seconds
+    </MudButton>    
+    <MudButton Disabled="IsBusy" 
+               ButtonType="ButtonType.Button" 
+               Color="Color.Primary" 
+               Variant="Variant.Filled" 
+               @onclick="() => HandleTrainClick(15)" 
+               Class="mb-4 ml-2">
+        Train for 15 Seconds
+    </MudButton>
+</div>
+@if (IsBusy)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" Style="max-width: 800px;" class="mb-4"/>
+}
+
+@if (!string.IsNullOrWhiteSpace(TrainResult))
+{
+    <MudAlert Variant="Variant.Filled" Severity="Severity.Success">
+        <span>@((MarkupString)Markdown.ToHtml(@TrainResult))</span>
+    </MudAlert>
+}
 
 @code {
-
-    private Task HandleTrainClick()
+    public bool IsBusy { get; set; }
+    public string? TrainResult { get; set; }
+    
+    private Task HandleTrainClick(uint seconds)
     {
-        Console.WriteLine("Training Model");
-        MachineLearningService.TrainModel();
-        
-        return Task.CompletedTask;
-    }
+        Logger.LogInformation("Training Model for {Seconds} seconds", seconds);
+        TrainResult = null;
+        IsBusy = true;
+        StateHasChanged();
 
+        // ML .NET does synchronous training, so let's move to another thread so the UI can show busy
+        return Task.Run(() =>
+        {
+            string result = MachineLearningService.TrainModel(seconds);
+
+            // Get back on the UI Thread
+            InvokeAsync(() =>
+            {
+                TrainResult = result;
+                IsBusy = false;
+                StateHasChanged();
+            });
+        });
+    }
 }

@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.Data.Analysis;
 using Microsoft.ML;
 using Microsoft.ML.AutoML;
@@ -5,17 +6,20 @@ using Microsoft.ML.Data;
 
 namespace MattEland.MadDataScience.Services;
 
-public class MachineLearningService
+public class MachineLearningService (ILogger<MachineLearningService> logger, IWebHostEnvironment webHostEnvironment)
 {
-    public void TrainModel()
+    
+    public string TrainModel(uint seconds)
     {
         // Load data
-        DataFrame df = DataFrame.LoadCsv("video_game_reviews.csv");
-        Console.WriteLine("Data Frame Loaded with " + df.Rows.Count + " rows");
+        string filePath = Path.Combine(webHostEnvironment.WebRootPath, "video_game_reviews.csv");
+        DataFrame df = DataFrame.LoadCsv(filePath);
+        logger.LogDebug("Data Frame Loaded with {Count} rows", df.Rows.Count);
         
         // Drop unreliable columns and columns not relevant for training
-        df.Columns.Remove("Game Title");
-        df.Columns.Remove("User Review");
+        df.Columns.Remove("Title");
+        df.Columns.Remove("Rating");
+        df.Columns.Remove("ReviewText");
         
         // Split data into train / test splits
         MLContext mlContext = new();
@@ -23,18 +27,30 @@ public class MachineLearningService
         
         // Train using AutoML
         Console.WriteLine("Training Model...");
-        var experiment = mlContext.Auto().CreateRegressionExperiment(maxExperimentTimeInSeconds: 10);
+        var experiment = mlContext.Auto().CreateRegressionExperiment(maxExperimentTimeInSeconds: seconds);
         ExperimentResult<RegressionMetrics>? result = experiment.Execute(split.TrainSet, labelColumnName: "Price");
         
         // Print results
-        Console.WriteLine("Best Trainer: " + result.BestRun.TrainerName);
-        Console.WriteLine("R Squared: " + result.BestRun.ValidationMetrics.RSquared);
-        Console.WriteLine("Mean Absolute Error: " + result.BestRun.ValidationMetrics.MeanAbsoluteError);
-        Console.WriteLine("Root Mean Squared Error: " + result.BestRun.ValidationMetrics.RootMeanSquaredError);
+        StringBuilder sb = new();
+        sb.AppendLine($"**Training Complete ({(seconds == 1 ? "1 second" : $"{seconds} seconds")})**");
+        sb.AppendLine();
+        sb.AppendLine($"- Best Trainer: {result.BestRun.TrainerName}");
+        sb.AppendLine($"- R Squared: {result.BestRun.ValidationMetrics.RSquared:F2}");
+        sb.AppendLine($"- Mean Absolute Error: {result.BestRun.ValidationMetrics.MeanAbsoluteError:C}");
+        sb.AppendLine($"- Root Mean Squared Error: {result.BestRun.ValidationMetrics.RootMeanSquaredError:C}");
+        
+        string message = sb.ToString();
+        logger.LogInformation(message);
         
         // Save model
-        Console.WriteLine("Saving Model...");
-        mlContext.Model.Save(result.BestRun.Model, split.TrainSet.Schema, "model.zip");
-        Console.WriteLine("Model Saved to model.zip");
+        if (webHostEnvironment.IsDevelopment())
+        {
+            logger.LogDebug("Saving Model...");
+            string modelPath = Path.Combine(webHostEnvironment.WebRootPath, "model.zip");
+            mlContext.Model.Save(result.BestRun.Model, split.TrainSet.Schema, modelPath);
+            logger.LogDebug("Model Saved to {Path}", modelPath);
+        }
+        
+        return message;
     }
 }

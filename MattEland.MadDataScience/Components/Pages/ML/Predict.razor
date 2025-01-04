@@ -17,13 +17,14 @@
                     {
                         <MudSelectItem Value="@g">@g</MudSelectItem>
                     }
-                </MudSelect>                
-                <MudSelect Label="Platform" T="string" Variant="Variant.Outlined" @bind-Value="Game.Platform">
+                </MudSelect>
+                
+                @*<MudSelect Label="Platform" T="string" Variant="Variant.Outlined" @bind-Value="Game.Platform">
                     @foreach (var p in Platforms)
                     {
                         <MudSelectItem Value="@p">@p</MudSelectItem>
                     }
-                </MudSelect>
+                </MudSelect>*@
                 <MudSelect Label="Target Age Group" T="string" Variant="Variant.Outlined" @bind-Value="Game.TargetAgeGroup">
                     @foreach (var g in AgeGroups)
                     {
@@ -34,6 +35,7 @@
                 <MudNumericField Label="Price" @bind-Value="Game.Price" Variant="Variant.Outlined" Min="0"
                                  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" />
                 
+                @*
                 <MudSelect Label="Developer" T="string" Variant="Variant.Outlined" @bind-Value="Game.Developer">
                     @foreach (var dev in Developers)
                     {
@@ -46,13 +48,14 @@
                         <MudSelectItem Value="@publisher">@publisher</MudSelectItem>
                     }
                 </MudSelect>
-                <MudTextField Label="Year Published" @bind-Value="Game.Year" Variant="Variant.Outlined"/>
-            </MudItem>
-            <MudItem>
-                <MudCheckBox Label="Requires Special Device?" @bind-Value="Game.RequiresSpecialDevice"/>
-                <MudCheckBox Label="Is Online?" @bind-Value="Game.IsOnline"/>
-                <MudCheckBox Label="Is Multiplayer?" @bind-Value="Game.Multiplayer"/>
+                <MudTextField Label="Year Published" @bind-Value="Game.Year" Variant="Variant.Outlined"/>*@
+
+
                 <MudNumericField Label="Hours Long" @bind-Value="Game.HoursLong" Variant="Variant.Outlined" Min="1"/>
+
+                <MudNumericField Label="Minimum Players" @bind-Value="Game.MinPlayers" Variant="Variant.Outlined" Min="1" Max="16"/>
+            </MudItem>
+            <MudItem Style="min-width: 350px;">
                 <MudSelect Label="Graphics Quality" T="float" Variant="Variant.Outlined" @bind-Value="Game.Graphics">
                     @foreach ((string rating, float value) in GraphicsRatings)
                     {
@@ -71,7 +74,9 @@
                         <MudSelectItem Value="@value">@rating</MudSelectItem>
                     }
                 </MudSelect>
-                <MudNumericField Label="Minimum Players" @bind-Value="Game.MinPlayers" Variant="Variant.Outlined" Min="1" Max="16"/>
+                <MudCheckBox Label="Is Online?" @bind-Value="Game.IsOnline" Class="mt-8"/>
+                <MudCheckBox Label="Is Multiplayer?" @bind-Value="Game.Multiplayer"/>
+                <MudCheckBox Label="Requires Special Device?" @bind-Value="Game.RequiresSpecialDevice"/>
             </MudItem>
         </MudGrid>
 
@@ -91,9 +96,9 @@
 @if (PredictedRating.HasValue)
 {
     <MudAlert Severity="Severity.Success" Class="mt-8" Variant="Variant.Outlined">
-        <MudText Typo="Typo.h6">Predicted Price</MudText>
+        <MudText Typo="Typo.h6">Predicted Rating</MudText>
         <MudText Typo="Typo.subtitle1" Class="mb-4">
-            The predicted rating of @Game.Title is a @PredictedRating.Value.ToString("F1") out of 50!
+            The predicted rating of @(Game.Title ?? "this untitled game") is a @PredictedRating.Value.ToString("F1"). The best released games get around 50!
         </MudText>
     </MudAlert>
 }

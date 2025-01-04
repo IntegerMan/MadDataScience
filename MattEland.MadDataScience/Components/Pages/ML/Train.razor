@@ -3,6 +3,7 @@
 @rendermode InteractiveServer
 @inject MachineLearningService MachineLearningService
 @inject ILogger<Train> Logger
+@inject IWebHostEnvironment Environment
 
 <MudText Typo="Typo.h4">Train a Model</MudText>
 <MudText Typo="Typo.subtitle1" Class="mb-8">
@@ -10,7 +11,7 @@
     Training takes time and may not be perfect, but predictions are fast.
 </MudText>
 
-@* TODO: Add an image illustrating the training process *@
+<img src="ModelTraining.png" alt="An illustration of the model training process" style="width: auto; height: 350px;">
 
 <div>
     <MudButton Disabled="IsBusy" 
@@ -36,8 +37,24 @@
                @onclick="() => HandleTrainClick(15)" 
                Class="mb-4 ml-2">
         Train for 15 Seconds
+    </MudButton>    
+    <MudButton Disabled="IsBusy" 
+               ButtonType="ButtonType.Button" 
+               Color="Color.Primary" 
+               Variant="Variant.Filled" 
+               @onclick="() => HandleTrainClick(60)" 
+               Class="mb-4 ml-2">
+        Train for 60 Seconds
     </MudButton>
 </div>
+
+@if (Environment.IsDevelopment())
+{
+    <div class="mb-4">
+        <MudCheckBox Label="Save Model?" @bind-Value="SaveModel" Disabled="IsBusy" />
+    </div>
+}
+
 @if (IsBusy)
 {
     <MudProgressLinear Indeterminate="true" Color="Color.Primary" Style="max-width: 800px;" class="mb-4"/>
@@ -53,6 +70,7 @@
 @code {
     public bool IsBusy { get; set; }
     public string? TrainResult { get; set; }
+    public bool SaveModel { get; set; }
     
     private Task HandleTrainClick(uint seconds)
     {
@@ -64,7 +82,7 @@
         // ML .NET does synchronous training, so let's move to another thread so the UI can show busy
         return Task.Run(() =>
         {
-            string result = MachineLearningService.TrainModel(seconds);
+            string result = MachineLearningService.TrainModel(seconds, SaveModel);
 
             // Get back on the UI Thread
             InvokeAsync(() =>

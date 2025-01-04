@@ -10,7 +10,7 @@ namespace MattEland.MadDataScience.Services;
 public class MachineLearningService (ILogger<MachineLearningService> logger, IWebHostEnvironment webHostEnvironment)
 {
     
-    public string TrainModel(uint seconds)
+    public string TrainModel(uint seconds, bool saveModel)
     {
         // Load data
         DataFrame df = LoadDataFrame();
@@ -40,7 +40,7 @@ public class MachineLearningService (ILogger<MachineLearningService> logger, IWe
         logger.LogInformation(message);
         
         // Save model
-        if (webHostEnvironment.IsDevelopment())
+        if (saveModel)
         {
             logger.LogDebug("Saving Model...");
             string modelPath = Path.Combine(webHostEnvironment.WebRootPath, "model.zip");

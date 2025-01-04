@@ -20,11 +20,7 @@
     
     @foreach (var obj in GameWorld.Objects)
     {
-        <div class="Game-Object Game-Object-@obj.Name"
-             title="@obj.Name"
-             style="grid-row: @(obj.Position.Y + 1); grid-column: @(obj.Position.X + 1);">
-            @obj.Name
-        </div>
+        <img src="@(obj.Name).png" alt="@obj.Name" class="Game-Object" style="grid-row: @(obj.Position.Y + 1); grid-column: @(obj.Position.X + 1);">
     }
 </div>
 

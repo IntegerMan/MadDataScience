@@ -82,7 +82,7 @@
     private GameWorld Reset()
     {
         Logger.LogDebug("Building test world for squirrel simulation");
-        GameWorld = _squirrelService.BuildTestWorld(squirrelBrain: Brain);
+        GameWorld = _squirrelService.BuildTestWorld(squirrelBrain: Brain, worldSize: 13);
 
         return GameWorld;
     }

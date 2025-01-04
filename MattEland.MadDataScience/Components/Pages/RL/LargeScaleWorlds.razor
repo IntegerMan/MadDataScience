@@ -1,9 +1,10 @@
-@page "/RL/SettingValues"
+@page "/RL/LargeScale"
 @using MattEland.MadDataScience.SquirrelSimulation.Brains
 @using MattEland.MadDataScience.SquirrelSimulation.Genetics
-<MudText Typo="Typo.h4">AI Squirrels</MudText>
+
+<MudText Typo="Typo.h4">Reinforcement Learning &amp; Squirrels</MudText>
 <MudText Typo="Typo.subtitle1" Class="mb-4">
-    Let's look at a squirrel AI that uses prioritized values to make decisions.
+    This time we'll use reinforcement learning and genetic algorithms to train a squirrel that maximizes its score.
 </MudText>
 
 <div id="GameArea">
@@ -32,39 +33,8 @@
     </section>
 
     <aside id="Sidebar">
-        <section id="Weights">
-            <MudText Typo="Typo.h6">Smell Priorities</MudText>
-            <MudText Typo="Typo.caption">
-                This squirrel senses the world through its nose. Adjust the importance of each smell to determine where
-                it goes.
-            </MudText>
-            <div class="mt-4 mb-4">
-                <MudSlider Min="-5" Max="5" ValueLabel="true" Step="1f" TickMarks="true" T="float"
-                           ValueChanged="v => Brain.Weights.Acorn = v">
-                    Acorn
-                </MudSlider>
-                <MudSlider Min="-5" Max="5" ValueLabel="true" Step="1f" TickMarks="true" T="float"
-                           ValueChanged="v => Brain.Weights.Tree = v">
-                    Tree
-                </MudSlider>
-                <MudSlider Min="-5" Max="5" ValueLabel="true" Step="1f" TickMarks="true" T="float"
-                           ValueChanged="v => Brain.Weights.Doggo = v">
-                    Doggo
-                </MudSlider>
-                <MudSlider Min="-5" Max="5" ValueLabel="true" Step="1f" TickMarks="true" T="float"
-                           ValueChanged="v => Brain.Weights.Rabbit = v">
-                    Rabbit
-                </MudSlider>
-                <MudSlider Min="-5" Max="5" ValueLabel="true" Step="1f" TickMarks="true" T="float"
-                           ValueChanged="v => Brain.Weights.Squirrel = v">
-                    Squirrel
-                </MudSlider>
-                <div class="WeightSliderLabels mt-2">
-                    <MudText Typo="Typo.caption" Color="Color.Error">Yucky</MudText>
-                    <MudText Typo="Typo.caption" Color="Color.Default">Meh</MudText>
-                    <MudText Typo="Typo.caption" Color="Color.Success">Yay!</MudText>
-                </div>
-            </div>
+        <section id="Training">
+            <SquirrelTrainingWidget Brain="Brain" />
         </section>
         
         <section id="Visualization" class="mt-8">
@@ -93,25 +63,26 @@
 
 @code {
     private readonly SquirrelSimulationService _squirrelService;
-    public ILogger<WeightedSquirrel> Logger { get; }
+    private ILogger<LargeScaleWorlds> Logger { get; }
     public WeightedBrain Brain { get; } = new();
     public SquirrelScorer Scorer { get; }
     public VisualizationKind SelectedVisualization { get; set; } = VisualizationKind.None;
 
-    public WeightedSquirrel(SquirrelSimulationService squirrelService, ILogger<WeightedSquirrel> logger)
+    public LargeScaleWorlds(SquirrelSimulationService squirrelService, ILogger<LargeScaleWorlds> logger)
     {
         _squirrelService = squirrelService;
         Logger = logger;
         Scorer = new SquirrelScorer(logger, []);
         GameWorld = Reset();
+        Brain.Weights.Randomize(new Random());
     }
 
     public GameWorld GameWorld { get; set; }
 
     private GameWorld Reset()
     {
-        Logger.LogDebug("Building test world for squirrel simulation");
-        GameWorld = _squirrelService.BuildTestWorld(squirrelBrain: Brain, worldSize: 13);
+        Logger.LogDebug("Building large world for squirrel simulation");
+        GameWorld = _squirrelService.BuildLargeWorld(squirrelBrain: Brain);
 
         return GameWorld;
     }
@@ -129,5 +100,4 @@
         SelectedVisualization = kind;
         StateHasChanged();
     }
-
 }

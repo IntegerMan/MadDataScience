@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MattEland.MadDataScience.SquirrelSimulation.Genetics;
 
-public class SquirrelScorer(ILogger logger, int[] randomSeeds) : IFitness
+public class SquirrelScorer : IFitness
 {
     public int PointsPerTurnLeft { get; set; } = -1;
     public int PointsForAcornsOnBoard { get; set; } = -100;
@@ -12,7 +12,16 @@ public class SquirrelScorer(ILogger logger, int[] randomSeeds) : IFitness
     public int PointsForRabbitsOnBoard { get; set; } = 0;
     public int PointsForWinningSquirrels { get; set; } = 500;
 
-    private readonly GameWorldGenerator _generator = new(logger);
+    private readonly GameWorldGenerator _generator;
+    private readonly ILogger _logger;
+    private readonly int[] _randomSeeds;
+
+    public SquirrelScorer(ILogger logger, int[] randomSeeds)
+    {
+        _logger = logger;
+        _randomSeeds = randomSeeds;
+        _generator = new GameWorldGenerator(logger);
+    }
 
     public double Evaluate(IChromosome chromosome)
     {
@@ -23,14 +32,20 @@ public class SquirrelScorer(ILogger logger, int[] randomSeeds) : IFitness
             Weights = weights
         };
 
-        float[] scores = new float[randomSeeds.Length];
+        float[] scores = new float[_randomSeeds.Length];
         
-        for (int i = 0; i < randomSeeds.Length; i++)
+        for (int i = 0; i < _randomSeeds.Length; i++)
         {
-            logger.LogTrace("Evaluating chromosome {Chromosome} with seed {Seed} (index {Index})", chromosome, randomSeeds[i], i);
+            _logger.LogTrace("Evaluating chromosome {Chromosome} with seed {Seed} (index {Index})", chromosome, _randomSeeds[i], i);
             
-            Random random = new Random(randomSeeds[i]);
-            GameWorld world = _generator.Generate(brain, random, provideLogger: false);
+            Random random = new Random(_randomSeeds[i]);
+            GameWorld world = _generator.Generate(new WorldGenerationParameters
+            {
+                SquirrelBrain = brain,
+                Random = random,
+                ProvideLogger = false,
+                WorldSize = 13
+            });
             GameResult result = world.RunToCompletion();
             scores[i] = ScoreGame(result);
         }

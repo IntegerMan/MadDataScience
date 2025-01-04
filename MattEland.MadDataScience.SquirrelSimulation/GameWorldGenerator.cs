@@ -1,4 +1,3 @@
-using MattEland.MadDataScience.SquirrelSimulation.Brains;
 using MattEland.MadDataScience.SquirrelSimulation.GameObjects;
 using Microsoft.Extensions.Logging;
 
@@ -6,39 +5,52 @@ namespace MattEland.MadDataScience.SquirrelSimulation;
 
 public class GameWorldGenerator(ILogger logger)
 {
-    public GameWorld Generate(IBrain squirrelBrain, Random? random = null, int minSize = 9, int maxSize = 21, bool provideLogger = true)
+    public GameWorld Generate(WorldGenerationParameters parameters)
     {
-        random ??= new Random();
-
-        int worldSize = random.Next(minSize, maxSize + 1);
+        Random random = parameters.Random ?? new Random();
         
-        GameWorld world = new(worldSize, worldSize, maxTurns: 100)
+        GameWorld world = new(parameters.WorldSize, parameters.WorldSize, maxTurns: parameters.MaxTurns)
         {
-            Logger = provideLogger ? logger : null,
+            Logger = parameters.ProvideLogger ? logger : null,
             Random = random
         };
         
-        world.AddObject(new Tree
+        for (int i = 0; i < parameters.NumberOfTrees; i++)
         {
-            Position = world.FindOpenPosition()
-        });
-        world.AddObject(new Doggo
+            world.AddObject(new Tree
+            {
+                Position = world.FindOpenPosition()
+            });
+        }
+        for (int i = 0; i < parameters.NumberOfDoggos; i++)
         {
-            Position = world.FindOpenPosition()
-        });        
-        world.AddObject(new Squirrel
+            world.AddObject(new Doggo
+            {
+                Position = world.FindOpenPosition()
+            });
+        }
+        for (int i = 0; i < parameters.NumberOfSquirrels; i++)
         {
-            Brain = squirrelBrain,
-            Position = world.FindOpenPosition()
-        });        
-        world.AddObject(new Rabbit
+            world.AddObject(new Squirrel
+            {
+                Brain = parameters.SquirrelBrain,
+                Position = world.FindOpenPosition()
+            });
+        }
+        for (int i = 0; i < parameters.NumberOfRabbits; i++)
         {
-            Position = world.FindOpenPosition()
-        });
-        world.AddObject(new Acorn
+            world.AddObject(new Rabbit
+            {
+                Position = world.FindOpenPosition()
+            });
+        }
+        for (int i = 0; i < parameters.NumberOfAcorns; i++)
         {
-            Position = world.FindOpenPosition()
-        });        
+            world.AddObject(new Acorn
+            {
+                Position = world.FindOpenPosition()
+            });
+        }    
         
         return world;
     }

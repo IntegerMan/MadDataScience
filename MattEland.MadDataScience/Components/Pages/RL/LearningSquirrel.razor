@@ -41,7 +41,7 @@
             <MudText Typo="Typo.h6">Visualization</MudText>
             <MudText Typo="Typo.caption">Choose a visualization overlay for the game world</MudText>
             <div class="mt-4">
-                <MudSelect Variant="Variant.Text" T="VisualizationKind"
+                <MudSelect Variant="Variant.Outlined" T="VisualizationKind"
                            bind-Value="SelectedVisualization"
                            ValueChanged="v => OnVisualizationChanged(v)">
                     @foreach (var visualization in Enum.GetValues(typeof(VisualizationKind)).Cast<VisualizationKind>())

@@ -45,7 +45,7 @@
 
 @if (!string.IsNullOrWhiteSpace(TrainResult))
 {
-    <MudAlert Variant="Variant.Filled" Severity="Severity.Success">
+    <MudAlert Variant="Variant.Outlined" Severity="Severity.Success">
         <span>@((MarkupString)Markdown.ToHtml(@TrainResult))</span>
     </MudAlert>
 }

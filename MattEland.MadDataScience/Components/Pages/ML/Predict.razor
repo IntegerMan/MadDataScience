@@ -1,36 +1,42 @@
 @page "/ML/Predict"
 @inject MachineLearningService MachineLearningService
 
-<MudText Typo="Typo.h4">Predict Game Prices</MudText>
+<MudText Typo="Typo.h4">Predict Game Ratings</MudText>
 <MudText Typo="Typo.subtitle1" Class="mb-8">
-    Let's use a trained model to predict the price of a hypothetical video game.
+    Let's use a trained model to predict the rating of a hypothetical video game.
 </MudText>
 
 <MudPaper Class="p-4">
     <form @onsubmit="PredictGamePrice">
         <MudText Typo="Typo.h6">Game Information</MudText>
+        <MudGrid>
+            <MudItem>
+                <MudTextField Label="Game Title" @bind-Value="Game.Title" Variant="Variant.Outlined"/>
+                <MudTextField Label="Genre" @bind-Value="Game.Genre" Variant="Variant.Outlined"/>
+                <MudTextField Label="Platform" @bind-Value="Game.Platform" Variant="Variant.Outlined"/>
+                <MudTextField Label="Target Age Group" @bind-Value="Game.TargetAgeGroup" Variant="Variant.Outlined"/>
+                <MudTextField Label="Price" @bind-Value="Game.Price" Variant="Variant.Outlined"/>
+                <MudTextField Label="Developer" @bind-Value="Game.Developer" Variant="Variant.Outlined"/>
+                <MudTextField Label="Publisher" @bind-Value="Game.Publisher" Variant="Variant.Outlined"/>
+                <MudTextField Label="Year Published" @bind-Value="Game.Year" Variant="Variant.Outlined"/>
+            </MudItem>
+            <MudItem>
+                <MudCheckBox Label="Requires Special Device?" @bind-Value="Game.RequiresSpecialDevice"/>
+                <MudCheckBox Label="Is Online?" @bind-Value="Game.IsOnline"/>
+                <MudCheckBox Label="Is Multiplayer?" @bind-Value="Game.Multiplayer"/>
+                <MudTextField Label="Hours Long" @bind-Value="Game.HoursLong" Variant="Variant.Outlined"/>
+                <MudTextField Label="Graphics Quality" @bind-Value="Game.Graphics" Variant="Variant.Outlined"/>
+                <MudTextField Label="Music Quality" @bind-Value="Game.Music" Variant="Variant.Outlined"/>
+                <MudTextField Label="Story Quality" @bind-Value="Game.Story" Variant="Variant.Outlined"/>
+                <MudTextField Label="Minimum Players" @bind-Value="Game.MinPlayers" Variant="Variant.Outlined"/>
+            </MudItem>
+        </MudGrid>
 
-        <MudTextField Label="Game Title" @bind-Value="Game.Title" Variant="Variant.Text"/>
-        <MudTextField Label="Target Age Group" @bind-Value="Game.TargetAgeGroup" Variant="Variant.Text"/>
-        <MudTextField Label="Platform" @bind-Value="Game.Platform" Variant="Variant.Text"/>
-        <MudCheckBox Label="Requires Special Device?" @bind-Value="Game.RequiresSpecialDevice"/>
-        <MudTextField Label="Platform" @bind-Value="Game.Platform" Variant="Variant.Text"/>
-        <MudTextField Label="Publisher" @bind-Value="Game.Publisher" Variant="Variant.Text"/>
-        <MudTextField Label="Year Published" @bind-Value="Game.Year" Variant="Variant.Text"/>
-        <MudTextField Label="Genre" @bind-Value="Game.Genre" Variant="Variant.Text"/>
-        <MudCheckBox Label="Is Multiplayer?" @bind-Value="Game.Multiplayer"/>
-        <MudTextField Label="Hours Long" @bind-Value="Game.HoursLong" Variant="Variant.Text"/>
-        <MudTextField Label="Graphics Quality" @bind-Value="Game.Graphics" Variant="Variant.Text"/>
-        <MudTextField Label="Music Quality" @bind-Value="Game.Music" Variant="Variant.Text"/>
-        <MudTextField Label="Story Quality" @bind-Value="Game.Story" Variant="Variant.Text"/>
-        <MudTextField Label="Review Text" @bind-Value="Game.ReviewText" Lines="3" AutoGrow="true" Variant="Variant.Text"/>
-        <MudTextField Label="Game Mode" @bind-Value="Game.GameMode" Variant="Variant.Text"/>
-        <MudTextField Label="Minimum Players" @bind-Value="Game.MinPlayers" Variant="Variant.Text"/>
-
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" Class="mt-8" Disabled="IsBusy">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" Class="mt-8"
+                   Disabled="IsBusy">
             Predict Price
         </MudButton>
-        
+
         @if (IsBusy)
         {
             <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-4"/>
@@ -41,17 +47,31 @@
 
 @if (PredictedPrice.HasValue)
 {
-    <MudPaper Class="p-4 mt-8">
+    <MudAlert Severity="Severity.Success" Class="mt-8" Variant="Variant.Outlined">
         <MudText Typo="Typo.h6">Predicted Price</MudText>
         <MudText Typo="Typo.subtitle1" Class="mb-4">
-            The predicted price of @Game.Title is @PredictedPrice.Value.ToString("C")
+            The predicted rating of @Game.Title is a @PredictedPrice.Value.ToString("F1") out of 50!
         </MudText>
-    </MudPaper>
+    </MudAlert>
 }
 
 @code {
     public bool IsBusy { get; set; }
-    public VideoGame Game { get; set; } = new();
+
+    public VideoGame Game { get; set; } = new()
+    {
+        Year = 2025,
+        Price = 40.00f,
+        RequiresSpecialDevice = false,
+        HoursLong = 30,
+        MinPlayers = 1,
+        Graphics = 3,
+        Music = 3,
+        Story = 3,
+        Genre = "Adventure",
+        Platform = "PC",
+        TargetAgeGroup = "All Ages"
+    };
     public float? PredictedPrice { get; set; }
 
     private Task PredictGamePrice()
@@ -59,10 +79,10 @@
         IsBusy = true;
         PredictedPrice = null;
         StateHasChanged();
-        
+
         return Task.Run(() =>
         {
-            float price = MachineLearningService.PredictGamePrice(Game);
+            float price = MachineLearningService.PredictGameRating(Game);
             InvokeAsync(() =>
             {
                 PredictedPrice = price;

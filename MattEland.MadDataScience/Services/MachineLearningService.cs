@@ -13,14 +13,12 @@ public class MachineLearningService (ILogger<MachineLearningService> logger, IWe
     public string TrainModel(uint seconds)
     {
         // Load data
-        string filePath = Path.Combine(webHostEnvironment.WebRootPath, "video_game_reviews.csv");
+        string filePath = Path.Combine(webHostEnvironment.WebRootPath, "Data.csv");
         DataFrame df = DataFrame.LoadCsv(filePath);
         logger.LogDebug("Data Frame Loaded with {Count} rows", df.Rows.Count);
         
-        // Drop unreliable columns and columns not relevant for training
+        // Drop title since we don't really need it
         df.Columns.Remove("Title");
-        df.Columns.Remove("Rating");
-        df.Columns.Remove("ReviewText");
         
         // Split data into train / test splits
         MLContext mlContext = new();
@@ -29,7 +27,7 @@ public class MachineLearningService (ILogger<MachineLearningService> logger, IWe
         // Train using AutoML
         Console.WriteLine("Training Model...");
         var experiment = mlContext.Auto().CreateRegressionExperiment(maxExperimentTimeInSeconds: seconds);
-        ExperimentResult<RegressionMetrics>? result = experiment.Execute(split.TrainSet, labelColumnName: "Price");
+        ExperimentResult<RegressionMetrics>? result = experiment.Execute(split.TrainSet, labelColumnName: "Rating");
         
         // Print results
         StringBuilder sb = new();
@@ -37,8 +35,8 @@ public class MachineLearningService (ILogger<MachineLearningService> logger, IWe
         sb.AppendLine();
         sb.AppendLine($"- Best Trainer: {result.BestRun.TrainerName}");
         sb.AppendLine($"- R Squared: {result.BestRun.ValidationMetrics.RSquared:F2}");
-        sb.AppendLine($"- Mean Absolute Error: {result.BestRun.ValidationMetrics.MeanAbsoluteError:C}");
-        sb.AppendLine($"- Root Mean Squared Error: {result.BestRun.ValidationMetrics.RootMeanSquaredError:C}");
+        sb.AppendLine($"- Mean Absolute Error: {result.BestRun.ValidationMetrics.MeanAbsoluteError:F2}");
+        sb.AppendLine($"- Root Mean Squared Error: {result.BestRun.ValidationMetrics.RootMeanSquaredError:F2}");
         
         string message = sb.ToString();
         logger.LogInformation(message);
@@ -55,16 +53,16 @@ public class MachineLearningService (ILogger<MachineLearningService> logger, IWe
         return message;
     }
 
-    public float PredictGamePrice(VideoGame game)
+    public float PredictGameRating(VideoGame game)
     {
-        logger.LogDebug("Predicting Price for {Title}", game.Title);
+        logger.LogDebug("Predicting rating for {Title}", game.Title);
         
         MLContext mlContext = new();
         ITransformer model = mlContext.Model.Load(Path.Combine(webHostEnvironment.WebRootPath, "model.zip"), out _);
         PredictionEngine<VideoGame, PricePrediction> engine = mlContext.Model.CreatePredictionEngine<VideoGame, PricePrediction>(model);
         
         PricePrediction prediction = engine.Predict(game);
-        logger.LogInformation("Predicted Price for {Title}: {Price:C}", game.Title, prediction.Price);
+        logger.LogInformation("Predicted rating for {Title}: {Price:C}", game.Title, prediction.Price);
         
         return prediction.Price;
     }

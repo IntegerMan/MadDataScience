@@ -1,0 +1,140 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":[],"name":"csharp"}]}}
+
+#!csharp
+
+#r "nuget:Microsoft.Data.Analysis"
+
+using Microsoft.Data.Analysis;
+
+DataFrame df = DataFrame.LoadCsv("../MattEland.MadDataScience/wwwroot/video_game_reviews.csv");
+df.Head(5)
+
+#!csharp
+
+df.Description()
+
+#!csharp
+
+df.Columns.Remove("ReviewText");
+
+df.Info()
+
+#!csharp
+
+// Change Multiplayer to a boolean based on "Yes" or "No"
+df["Multiplayer"] = df["Multiplayer"].ElementwiseEquals("Yes");
+df["Multiplayer"].ValueCounts()
+
+#!csharp
+
+// RequiresSpecialDevice is a boolean column as well
+df["RequiresSpecialDevice"] = df["RequiresSpecialDevice"].ElementwiseEquals("Yes");
+df["RequiresSpecialDevice"].ValueCounts()
+
+#!csharp
+
+// Let's see mode
+df["GameMode"].ValueCounts()
+
+#!csharp
+
+df["IsOnline"] = df["GameMode"].ElementwiseEquals("Online");
+df.Columns.Remove("GameMode");
+df["IsOnline"].ValueCounts()
+
+#!csharp
+
+// Let's see what our genres are
+df["Genre"].ValueCounts()
+
+#!csharp
+
+// How about publisher?
+df["Publisher"].ValueCounts()
+
+#!csharp
+
+// And developer?
+df["Developer"].ValueCounts()
+
+#!csharp
+
+// Year?
+df["Year"].ValueCounts()
+
+#!markdown
+
+Well, shoot. This data looks really synthetic to me.
+
+#!csharp
+
+// Let's see what our platforms are
+df["Platform"].ValueCounts()
+
+#!csharp
+
+// And now let's look at our ratings
+df["Story"].ValueCounts().Display();
+df["Graphics"].ValueCounts().Display();
+df["Music"].ValueCounts().Display();
+
+#!csharp
+
+// Let's translate our values to a 1-5 scale with poor being 2, average being 3, good or high being 4, and excellent or Ultra being 5
+
+int TranslateRating(string rating)
+{
+    switch (rating)
+    {
+        case "Poor":
+        case "Low":
+            return 2;
+        case "Average":
+        case "Medium":
+            return 3;
+        case "Good":
+        case "High":
+            return 4;
+        case "Excellent":
+        case "Ultra":
+            return 5;
+        default:
+            return 1;
+    }
+}
+
+// Add new columns for our ratings
+df.Columns.Add(new PrimitiveDataFrameColumn<int>("StoryRating", df.Rows.Count));
+df.Columns.Add(new PrimitiveDataFrameColumn<int>("GraphicsRating", df.Rows.Count));
+df.Columns.Add(new PrimitiveDataFrameColumn<int>("MusicRating", df.Rows.Count));
+
+// Apply a function to each row in the DataFrame
+foreach (var row in df.Rows)
+{
+    row["StoryRating"] = TranslateRating(row["Story"].ToString());
+    row["GraphicsRating"] = TranslateRating(row["Graphics"].ToString());
+    row["MusicRating"] = TranslateRating(row["Music"].ToString());
+}
+
+// Proof our results
+df["StoryRating"].ValueCounts().Display();
+df["GraphicsRating"].ValueCounts().Display();
+df["MusicRating"].ValueCounts().Display();
+
+#!csharp
+
+df.Columns.Remove("Story");
+df.Columns.Remove("Graphics");
+df.Columns.Remove("Music");
+
+df["StoryRating"].SetName("Story");
+df["GraphicsRating"].SetName("Graphics");
+df["MusicRating"].SetName("Music");
+
+df.Info()
+
+#!csharp
+
+DataFrame.SaveCsv(df, "../MattEland.MadDataScience/wwwroot/Data.csv");

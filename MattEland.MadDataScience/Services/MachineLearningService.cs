@@ -13,10 +13,8 @@ public class MachineLearningService (ILogger<MachineLearningService> logger, IWe
     public string TrainModel(uint seconds)
     {
         // Load data
-        string filePath = Path.Combine(webHostEnvironment.WebRootPath, "Data.csv");
-        DataFrame df = DataFrame.LoadCsv(filePath);
-        logger.LogDebug("Data Frame Loaded with {Count} rows", df.Rows.Count);
-        
+        DataFrame df = LoadDataFrame();
+
         // Drop title since we don't really need it
         df.Columns.Remove("Title");
         
@@ -51,6 +49,14 @@ public class MachineLearningService (ILogger<MachineLearningService> logger, IWe
         }
         
         return message;
+    }
+
+    public DataFrame LoadDataFrame()
+    {
+        string filePath = Path.Combine(webHostEnvironment.WebRootPath, "Data.csv");
+        DataFrame df = DataFrame.LoadCsv(filePath);
+        logger.LogDebug("Data Frame Loaded with {Count} rows", df.Rows.Count);
+        return df;
     }
 
     public float PredictGameRating(VideoGame game)

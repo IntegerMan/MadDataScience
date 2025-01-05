@@ -11,7 +11,8 @@ public class Squirrel: GameObject, IGameActor
     public bool IsInTree { get; set; }
     
     public override string Name => "Squirrel";
-    public override bool Blocks(IGameActor actor) => actor is Rabbit;
+    public override bool Blocks(IGameActor actor) 
+        => actor is Rabbit;
 
     public bool IsActive => !IsInTree;
 

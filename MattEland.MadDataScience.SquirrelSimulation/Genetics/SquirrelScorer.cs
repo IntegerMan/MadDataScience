@@ -62,16 +62,15 @@ public class SquirrelScorer : IFitness
 
     public static SmellWeights GetWeightsFromChromosome(IChromosome chromosome)
     {
-        FloatingPointChromosome fpChromosome = (FloatingPointChromosome)chromosome;
-        double[] values = fpChromosome.ToFloatingPoints();
+        SquirrelChromosome squirrelChromosome = (SquirrelChromosome)chromosome;
         
         return new SmellWeights
         {
-            Acorn = (float)values[0],
-            Squirrel = (float)values[1],
-            Doggo = (float)values[2],
-            Rabbit = (float)values[3],
-            Tree = (float)values[4]
+            Acorn = squirrelChromosome.GetValue(0),
+            Squirrel = squirrelChromosome.GetValue(1),
+            Doggo = squirrelChromosome.GetValue(2),
+            Rabbit = squirrelChromosome.GetValue(3),
+            Tree = squirrelChromosome.GetValue(4)
         };
     }
 }

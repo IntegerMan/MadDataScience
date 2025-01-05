@@ -20,14 +20,14 @@ public class SquirrelGeneticSolver
         Action<GeneticAlgorithm> onGenerationComplete,
         Action<GeneticAlgorithm> onSolverComplete)
     {
-        FloatingPointChromosome chromosome = new(
-            minValue: [-5,-5,-5,-5,-5], 
-            maxValue: [5,5,5,5,5], 
-            totalBits: [64,64,64,64,64], 
-            fractionDigits: [2,2,2,2,2],
-            geneValues: [startWeights.Acorn, startWeights.Squirrel, startWeights.Doggo, startWeights.Rabbit, startWeights.Tree]
-        );
-        Population population = new Population(minSize: 100, maxSize: 250, chromosome)
+        SquirrelChromosome chromosome = new();
+        chromosome.SetValue(0, startWeights.Acorn);
+        chromosome.SetValue(1, startWeights.Squirrel);
+        chromosome.SetValue(2, startWeights.Doggo);
+        chromosome.SetValue(3, startWeights.Rabbit);
+        chromosome.SetValue(4, startWeights.Tree);
+        
+        Population population = new Population(minSize: 50, maxSize: 100, chromosome)
         {
             GenerationStrategy = new PerformanceGenerationStrategy(),
         };

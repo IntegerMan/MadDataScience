@@ -65,24 +65,29 @@
 
 <MudExpansionPanels MultiExpansion="false" Class="mt-4">
     <MudExpansionPanel Text="Best Brain" Style="font-size: 0.8em;">
-        <MudSlider Min="-5" Max="5" ValueLabel="true" T="float"
-                   Disabled="true" Value="Brain.Weights.Acorn">
+        <MudSlider Min="-10" Max="10" ValueLabel="true" T="float"
+                   ValueChanged="v => Brain.Weights.Acorn = v"
+                   Value="Brain.Weights.Acorn">
             Acorn
         </MudSlider>
-        <MudSlider Min="-5" Max="5" ValueLabel="true" T="float"
-                   Disabled="true" Value="Brain.Weights.Tree">
+        <MudSlider Min="-10" Max="10" ValueLabel="true" T="float"
+                   ValueChanged="v => Brain.Weights.Tree = v"
+                   Value="Brain.Weights.Tree">
             Tree
         </MudSlider>
-        <MudSlider Min="-5" Max="5" ValueLabel="true" T="float"
-                   Disabled="true" Value="Brain.Weights.Doggo">
+        <MudSlider Min="-10" Max="10" ValueLabel="true" T="float"
+                   ValueChanged="v => Brain.Weights.Doggo = v"
+                   Value="Brain.Weights.Doggo">
             Doggo
         </MudSlider>
-        <MudSlider Min="-5" Max="5" ValueLabel="true" T="float"
-                   Disabled="true" Value="Brain.Weights.Rabbit">
+        <MudSlider Min="-10" Max="10" ValueLabel="true" T="float"
+                   ValueChanged="v => Brain.Weights.Rabbit = v"
+                   Value="Brain.Weights.Rabbit">
             Rabbit
         </MudSlider>
-        <MudSlider Min="-5" Max="5" ValueLabel="true" T="float"
-                   Disabled="true" Value="Brain.Weights.Squirrel">
+        <MudSlider Min="-10" Max="10" ValueLabel="true" T="float"
+                   ValueChanged="v => Brain.Weights.Squirrel = v"
+                   Value="Brain.Weights.Squirrel">
             Squirrel
         </MudSlider>
     </MudExpansionPanel>
@@ -94,7 +99,7 @@
     public SquirrelTrainingWidget(ILogger<SquirrelTrainingWidget> logger)
     {
         Logger = logger;
-        _solver = new SquirrelGeneticSolver(logger, [1,5,3,9,4,42,18,2,7,6]);
+        _solver = new SquirrelGeneticSolver(logger, [513,672,15]);
     }
 
     private readonly SquirrelGeneticSolver _solver;

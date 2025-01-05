@@ -7,20 +7,20 @@
             break;
 
         case GameStatus.Killed:
-            <MudAlert Variant="Variant.Outlined" Severity="Severity.Error" Class="mt-4">
-                The squirrel was eaten by the dog. Game over.
+            <MudAlert Variant="Variant.Filled" Severity="Severity.Error" Class="mt-4">
+                All squirrels were eaten by the dog. Game over.
             </MudAlert>
             break;
 
         case GameStatus.OutOfTime:
-            <MudAlert Variant="Variant.Outlined" Severity="Severity.Warning" Class="mt-4">
+            <MudAlert Variant="Variant.Filled" Severity="Severity.Warning" Class="mt-4">
                 You ran out of time. Game over.
             </MudAlert>
             break;
 
         case GameStatus.Won:
-            <MudAlert Variant="Variant.Outlined" Severity="Severity.Success" Class="mt-4">
-                The squirrel reached the tree with the acorn and won the game!
+            <MudAlert Variant="Variant.Filled" Severity="Severity.Success" Class="mt-4">
+                At least one squirrel reached the tree with the acorn and won the game!
             </MudAlert>
             break;
     }

@@ -148,7 +148,15 @@ public class GameWorld(int width, int height, int maxTurns)
                     
                 if (IsBlocked(actor, newPosition)) continue;
 
-                perceptions.Add(BuildTilePerceptions(newPosition));
+                TilePerceptions tilePerceptions = BuildTilePerceptions(newPosition);
+
+                // Squirrels should not smell acorns if they have one - this helps with multi-agent simulations since squirrels can only carry 1 acorn
+                if (actor is Squirrel { HasAcorn: true })
+                {
+                    tilePerceptions.SmellOfAcorn = 0;
+                }
+                
+                perceptions.Add(tilePerceptions);
             }
         }
 

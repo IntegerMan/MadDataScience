@@ -1,6 +1,6 @@
 .game-world {
     /*background-image: url("Background2.png");*/
-    background-color: seagreen;
+    background-color: #629562;
     display: grid;
     width: 800px;
     height: 800px;
@@ -20,5 +20,5 @@
     height: auto;
     justify-self: center;
     align-self: center;
-    filter: drop-shadow(2px 2px 2px #222);
+    filter: drop-shadow(2px 2px 5px #222);
 }

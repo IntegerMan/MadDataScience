@@ -1,16 +1,13 @@
 using System.Collections;
 using GeneticSharp;
+using MattEland.MadDataScience.SquirrelSimulation.Brains;
 
 namespace MattEland.MadDataScience.SquirrelSimulation.Genetics;
 
-public class SquirrelChromosome : BinaryChromosomeBase
+public class SquirrelChromosome() : BinaryChromosomeBase(NumVariables * BitsPerVariable)
 {
     private const int NumVariables = 5;
     private const int BitsPerVariable = 8;
-
-    public SquirrelChromosome() : base(NumVariables * BitsPerVariable)
-    {
-    }
 
     public override IChromosome CreateNew()
     {
@@ -23,7 +20,7 @@ public class SquirrelChromosome : BinaryChromosomeBase
         return squirrelChromosome;
     }
 
-    public float GetValue(int index)
+    private float GetValue(int index)
     {
         // Get the bits for the gene
         BitArray arr = new BitArray(BitsPerVariable);
@@ -42,7 +39,7 @@ public class SquirrelChromosome : BinaryChromosomeBase
         return val / 10.0f;
     }
 
-    public void SetValue(int index, float value)
+    private void SetValue(int index, float value)
     {
         value = Math.Clamp(value, -10, 10);
         sbyte intVal = (sbyte)Math.Round(value * 10);
@@ -59,4 +56,25 @@ public class SquirrelChromosome : BinaryChromosomeBase
 
     public override string ToString()
         => $"Acorn: {GetValue(0)}, Squirrel: {GetValue(1)}, Doggo: {GetValue(2)}, Rabbit: {GetValue(3)}, Tree: {GetValue(4)}";
+
+    public void SetWeights(SmellWeights weights)
+    {
+        SetValue(0, weights.Acorn);
+        SetValue(1, weights.Squirrel);
+        SetValue(2, weights.Gorilla);
+        SetValue(3, weights.Rabbit);
+        SetValue(4, weights.Tree);
+    }
+
+    public SmellWeights GetWeights()
+    {
+        return new SmellWeights
+        {
+            Acorn = GetValue(0),
+            Squirrel = GetValue(1),
+            Gorilla = GetValue(2),
+            Rabbit = GetValue(3),
+            Tree = GetValue(4)
+        };
+    }
 }

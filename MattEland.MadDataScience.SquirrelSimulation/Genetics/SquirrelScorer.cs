@@ -55,14 +55,6 @@ public class SquirrelScorer(ILogger logger, int[] randomSeeds, IBrain rabbitBrai
     public static SmellWeights GetWeightsFromChromosome(IChromosome chromosome)
     {
         SquirrelChromosome squirrelChromosome = (SquirrelChromosome)chromosome;
-        
-        return new SmellWeights
-        {
-            Acorn = squirrelChromosome.GetValue(0),
-            Squirrel = squirrelChromosome.GetValue(1),
-            Doggo = squirrelChromosome.GetValue(2),
-            Rabbit = squirrelChromosome.GetValue(3),
-            Tree = squirrelChromosome.GetValue(4)
-        };
+        return squirrelChromosome.GetWeights();
     }
 }

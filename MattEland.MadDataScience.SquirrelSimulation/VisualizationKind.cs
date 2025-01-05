@@ -6,7 +6,7 @@ public enum VisualizationKind
     Squirrel,
     Acorn,
     Tree,
-    Doggo,
+    Gorilla,
     Rabbit,
     Attractiveness
 }

@@ -16,18 +16,18 @@
 <div id="GameArea">
     <section id="GameDisplay">
         <GameWorldDisplay GameWorld="GameWorld"/>
+        <div class="mt-8">
+            <GameResultNotifications GameWorld="GameWorld"/>
+        </div>
     </section>
     <aside id="Sidebar">
         @if (GameWorld.State == GameStatus.InProgress)
         {
             <ManualSquirrelControl GameWorld="GameWorld" Brain="Brain" PlayerMoveExecuted="OnGameWorldChanged"/>
+           
         }
         else
         {
-            <div class="mt-8">
-                <GameResultNotifications GameWorld="GameWorld"/>
-            </div>
-            
             @if (GameWorld.Result is not null)
             {
                 <GameScorecard Scorer="Scorer" Result="GameWorld.Result"/>

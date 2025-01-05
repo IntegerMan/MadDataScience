@@ -13,11 +13,7 @@ public class SquirrelGeneticSolver(ILogger logger, int[] randomSeeds)
         Action<GeneticAlgorithm> onSolverComplete)
     {
         SquirrelChromosome chromosome = new();
-        chromosome.SetValue(0, startWeights.Acorn);
-        chromosome.SetValue(1, startWeights.Squirrel);
-        chromosome.SetValue(2, startWeights.Doggo);
-        chromosome.SetValue(3, startWeights.Rabbit);
-        chromosome.SetValue(4, startWeights.Tree);
+        chromosome.SetWeights(startWeights);
         
         Population population = new Population(minSize: 50, maxSize: 100, chromosome)
         {

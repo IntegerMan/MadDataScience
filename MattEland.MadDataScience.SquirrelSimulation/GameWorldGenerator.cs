@@ -24,7 +24,7 @@ public class GameWorldGenerator(ILogger logger)
         }
         for (int i = 0; i < parameters.NumberOfDoggos; i++)
         {
-            world.AddObject(new Doggo
+            world.AddObject(new Gorilla
             {
                 Position = world.FindOpenPosition()
             });

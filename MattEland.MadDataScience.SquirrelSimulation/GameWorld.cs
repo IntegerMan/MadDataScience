@@ -170,7 +170,7 @@ public class GameWorld(int width, int height, int maxTurns)
         => new()
         {
             Position = newPosition,
-            SmellOfDoggo = CalculateTileSmell(actor, newPosition, typeof(Doggo)),
+            SmellOfGorilla = CalculateTileSmell(actor, newPosition, typeof(Gorilla)),
             SmellOfAcorn = CalculateTileSmell(actor, newPosition, typeof(Acorn)),
             SmellOfSquirrel = CalculateTileSmell(actor, newPosition, typeof(Squirrel)),
             SmellOfTree = CalculateTileSmell(actor, newPosition, typeof(Tree)),
@@ -222,7 +222,7 @@ public class GameWorld(int width, int height, int maxTurns)
                         VisualizationKind.Acorn => CalculateTileSmell(actor, pos, typeof(Acorn)),
                         VisualizationKind.Squirrel => CalculateTileSmell(actor, pos, typeof(Squirrel)),
                         VisualizationKind.Rabbit => CalculateTileSmell(actor, pos, typeof(Rabbit)),
-                        VisualizationKind.Doggo => CalculateTileSmell(actor, pos, typeof(Doggo)),
+                        VisualizationKind.Gorilla => CalculateTileSmell(actor, pos, typeof(Gorilla)),
                         VisualizationKind.Tree => CalculateTileSmell(actor, pos, typeof(Tree)),
                         VisualizationKind.Attractiveness => weights is not null 
                             ? CalculateTileAttractiveness(BuildTilePerceptions(actor, pos), weights) 
@@ -237,7 +237,7 @@ public class GameWorld(int width, int height, int maxTurns)
     internal static float CalculateTileAttractiveness(TilePerceptions choice, SmellWeights weights) =>
         (choice.SmellOfSquirrel * weights.Squirrel) + 
         (choice.SmellOfRabbit * weights.Rabbit) +
-        (choice.SmellOfDoggo * weights.Doggo) +
+        (choice.SmellOfGorilla * weights.Gorilla) +
         (choice.SmellOfTree * weights.Tree) +
         (choice.SmellOfAcorn * weights.Acorn);
 

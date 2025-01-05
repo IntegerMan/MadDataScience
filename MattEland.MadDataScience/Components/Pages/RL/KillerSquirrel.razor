@@ -90,7 +90,14 @@
     {
         _squirrelService = squirrelService;
         Logger = logger;
-        Scorer = new SquirrelScorer(logger, [], squirrelService.RabbitBrain);
+        Scorer = new SquirrelScorer(logger, [], squirrelService.RabbitBrain)
+        {
+            PointsForWinningSquirrels = 0,
+            PointsForSquirrelsOnBoard = 0,
+            PointsForRabbitsOnBoard = 0,
+            PointsForAcornsOnBoard = 0,
+            PointsPerTurnLeft = 0
+        };
         GameWorld = Reset();
         Brain.Weights.Randomize(new Random());
     }

@@ -2,7 +2,7 @@ using MattEland.MadDataScience.SquirrelSimulation.GameObjects;
 
 namespace MattEland.MadDataScience.SquirrelSimulation.Brains;
 
-public class RabbitBrain : IBrain
+public class RandomRabbitBrain : IBrain
 {
     public WorldPosition GetGameMove(IGameActor actor, IEnumerable<TilePerceptions> choices, Random random)
     {

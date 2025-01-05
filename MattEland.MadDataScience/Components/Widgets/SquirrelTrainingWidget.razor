@@ -94,10 +94,12 @@
 </MudExpansionPanels>
 
 @code {
+    private readonly SquirrelSimulationService _squirrelService;
     private ILogger<SquirrelTrainingWidget> Logger { get; }
     
-    public SquirrelTrainingWidget(ILogger<SquirrelTrainingWidget> logger)
+    public SquirrelTrainingWidget(ILogger<SquirrelTrainingWidget> logger, SquirrelSimulationService squirrelService)
     {
+        _squirrelService = squirrelService;
         Logger = logger;
         _solver = new SquirrelGeneticSolver(logger, [513,672,15]);
     }
@@ -116,7 +118,7 @@
         StateHasChanged();
         
         // Call solve on a new thread so we can display busy state
-        return Task.Run(() => _solver.Solve(generations, Brain.Weights, OnGenerationComplete, OnSolverComplete));
+        return Task.Run(() => _solver.Solve(generations, Brain.Weights, _squirrelService.RabbitBrain, OnGenerationComplete, OnSolverComplete));
     }
     
     private void Reset()

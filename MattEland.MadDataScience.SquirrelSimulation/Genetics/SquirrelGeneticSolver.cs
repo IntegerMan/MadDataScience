@@ -4,19 +4,11 @@ using Microsoft.Extensions.Logging;
 
 namespace MattEland.MadDataScience.SquirrelSimulation.Genetics;
 
-public class SquirrelGeneticSolver
+public class SquirrelGeneticSolver(ILogger logger, int[] randomSeeds)
 {
-    private readonly ILogger _logger;
-    private readonly int[] _randomSeeds;
-
-    public SquirrelGeneticSolver(ILogger logger, int[] randomSeeds)
-    {
-        _logger = logger;
-        _randomSeeds = randomSeeds;
-    }
-    
     public void Solve(int generations, 
         SmellWeights startWeights, 
+        IBrain rabbitBrain,
         Action<GeneticAlgorithm> onGenerationComplete,
         Action<GeneticAlgorithm> onSolverComplete)
     {
@@ -32,7 +24,7 @@ public class SquirrelGeneticSolver
             GenerationStrategy = new PerformanceGenerationStrategy(),
         };
 
-        IFitness fitness = new SquirrelScorer(_logger, _randomSeeds);
+        IFitness fitness = new SquirrelScorer(logger, randomSeeds, rabbitBrain);
         ISelection selection = new EliteSelection();
         ICrossover crossover = new TwoPointCrossover();
         IMutation mutation = new FlipBitMutation();
@@ -47,13 +39,13 @@ public class SquirrelGeneticSolver
         ga.GenerationRan += (sender, _) =>
         {
             double best = ga.Fitness.Evaluate(ga.BestChromosome);
-            _logger.LogInformation("Generation {Generation} complete with best score of {Best}", ga.GenerationsNumber, best);
+            logger.LogInformation("Generation {Generation} complete with best score of {Best}", ga.GenerationsNumber, best);
             onGenerationComplete((GeneticAlgorithm)sender!);
         };
         ga.TerminationReached += (sender, _) =>
         {
             double best = ga.Fitness.Evaluate(ga.BestChromosome);
-            _logger.LogInformation("Solver complete with best score of {Best}", best);
+            logger.LogInformation("Solver complete with best score of {Best}", best);
             onSolverComplete((GeneticAlgorithm)sender!);
         };
         

@@ -41,7 +41,8 @@ public class GameWorldGenerator(ILogger logger)
         {
             world.AddObject(new Rabbit
             {
-                Position = world.FindOpenPosition()
+                Position = world.FindOpenPosition(),
+                Brain = parameters.RabbitBrain
             });
         }
         for (int i = 0; i < parameters.NumberOfAcorns; i++)

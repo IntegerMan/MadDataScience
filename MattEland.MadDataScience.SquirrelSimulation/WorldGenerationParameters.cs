@@ -5,6 +5,7 @@ namespace MattEland.MadDataScience.SquirrelSimulation;
 public class WorldGenerationParameters
 {
     public required IBrain SquirrelBrain { get; set; }
+    public required IBrain RabbitBrain { get; set; }
     public int WorldSize { get; set; } = 13;
     public int MaxTurns { get; set; } = 100;
     public bool ProvideLogger { get; set; } = true;

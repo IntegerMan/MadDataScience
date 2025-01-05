@@ -143,12 +143,15 @@ public class GameWorld(int width, int height, int maxTurns)
         {
             for (int x = -1; x <= 1; x++)
             {
+                // Skip the center tile - we want to encourage movement. Actors will remain stationary when out of options
+                if (x == 0 && y == 0) continue; 
+                
                 WorldPosition newPosition = actor.Position.Move(x, y);
                 if (!IsValidPosition(newPosition)) continue;
                     
                 if (IsBlocked(actor, newPosition)) continue;
 
-                TilePerceptions tilePerceptions = BuildTilePerceptions(newPosition);
+                TilePerceptions tilePerceptions = BuildTilePerceptions(actor, newPosition);
 
                 // Squirrels should not smell acorns if they have one - this helps with multi-agent simulations since squirrels can only carry 1 acorn
                 if (actor is Squirrel { HasAcorn: true })
@@ -163,21 +166,21 @@ public class GameWorld(int width, int height, int maxTurns)
         return perceptions;
     }
 
-    private TilePerceptions BuildTilePerceptions(WorldPosition newPosition) 
+    private TilePerceptions BuildTilePerceptions(IGameActor actor, WorldPosition newPosition) 
         => new()
         {
             Position = newPosition,
-            SmellOfDoggo = CalculateTileSmell(newPosition, typeof(Doggo)),
-            SmellOfAcorn = CalculateTileSmell(newPosition, typeof(Acorn)),
-            SmellOfSquirrel = CalculateTileSmell(newPosition, typeof(Squirrel)),
-            SmellOfTree = CalculateTileSmell(newPosition, typeof(Tree)),
-            SmellOfRabbit = CalculateTileSmell(newPosition, typeof(Rabbit))
+            SmellOfDoggo = CalculateTileSmell(actor, newPosition, typeof(Doggo)),
+            SmellOfAcorn = CalculateTileSmell(actor, newPosition, typeof(Acorn)),
+            SmellOfSquirrel = CalculateTileSmell(actor, newPosition, typeof(Squirrel)),
+            SmellOfTree = CalculateTileSmell(actor, newPosition, typeof(Tree)),
+            SmellOfRabbit = CalculateTileSmell(actor, newPosition, typeof(Rabbit))
         };
 
-    private float CalculateTileSmell(WorldPosition pos, Type type)
+    private float CalculateTileSmell(IGameActor? self, WorldPosition pos, Type type)
     {
         float smell = 0;
-        foreach (var obj in Objects.Where(o => o.GetType() == type))
+        foreach (var obj in Objects.Where(o => o.GetType() == type && o != self))
         {
             smell += 1 / (obj.Position.DistanceTo(pos) + 1);
         }
@@ -204,7 +207,7 @@ public class GameWorld(int width, int height, int maxTurns)
         return pos;
     }
 
-    public IEnumerable<TileVisualization> GetTileVisualizations(VisualizationKind visualization, SmellWeights? weights = null)
+    public IEnumerable<TileVisualization> GetTileVisualizations(VisualizationKind visualization, SmellWeights? weights = null, IGameActor? actor = null)
     {
         for (int y = 0; y < Height; y++)
         {
@@ -216,13 +219,13 @@ public class GameWorld(int width, int height, int maxTurns)
                     Position = pos,
                     Value = visualization switch
                     {
-                        VisualizationKind.Acorn => CalculateTileSmell(pos, typeof(Acorn)),
-                        VisualizationKind.Squirrel => CalculateTileSmell(pos, typeof(Squirrel)),
-                        VisualizationKind.Rabbit => CalculateTileSmell(pos, typeof(Rabbit)),
-                        VisualizationKind.Doggo => CalculateTileSmell(pos, typeof(Doggo)),
-                        VisualizationKind.Tree => CalculateTileSmell(pos, typeof(Tree)),
+                        VisualizationKind.Acorn => CalculateTileSmell(actor, pos, typeof(Acorn)),
+                        VisualizationKind.Squirrel => CalculateTileSmell(actor, pos, typeof(Squirrel)),
+                        VisualizationKind.Rabbit => CalculateTileSmell(actor, pos, typeof(Rabbit)),
+                        VisualizationKind.Doggo => CalculateTileSmell(actor, pos, typeof(Doggo)),
+                        VisualizationKind.Tree => CalculateTileSmell(actor, pos, typeof(Tree)),
                         VisualizationKind.Attractiveness => weights is not null 
-                            ? CalculateTileAttractiveness(BuildTilePerceptions(pos), weights) 
+                            ? CalculateTileAttractiveness(BuildTilePerceptions(actor, pos), weights) 
                             : 0f,
                         _ => 0f
                     }

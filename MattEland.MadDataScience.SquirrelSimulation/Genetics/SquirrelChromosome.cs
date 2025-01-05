@@ -55,7 +55,7 @@ public class SquirrelChromosome() : BinaryChromosomeBase(NumVariables * BitsPerV
     }
 
     public override string ToString()
-        => $"Acorn: {GetValue(0)}, Squirrel: {GetValue(1)}, Doggo: {GetValue(2)}, Rabbit: {GetValue(3)}, Tree: {GetValue(4)}";
+        => $"Acorn: {GetValue(0)}, Squirrel: {GetValue(1)}, Gorilla: {GetValue(2)}, Rabbit: {GetValue(3)}, Tree: {GetValue(4)}";
 
     public void SetWeights(SmellWeights weights)
     {

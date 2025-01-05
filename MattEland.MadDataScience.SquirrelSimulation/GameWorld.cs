@@ -121,7 +121,7 @@ public class GameWorld(int width, int height, int maxTurns)
             return;
         }
 
-        // Check collisions. We need to use ToList() here to create a copy of the collection since doggos can kill
+        // Check collisions. We need to use ToList() here to create a copy of the collection since gorillas can kill
         List<GameObject> collidedObjects = Objects.Where(o => o.Position == desiredPos).ToList();
         foreach (var obj in collidedObjects)
         {

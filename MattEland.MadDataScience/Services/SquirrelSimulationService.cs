@@ -28,7 +28,7 @@ public class SquirrelSimulationService(ILogger<SquirrelSimulationService> logger
             WorldSize = 40,
             Random = random,
             NumberOfAcorns = 5,
-            NumberOfDoggos = 5,
+            NumberOfGorillas = 5,
             NumberOfRabbits = 5,
             NumberOfSquirrels = 5,
             NumberOfTrees = 5

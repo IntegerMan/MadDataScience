@@ -11,7 +11,7 @@ public class WorldGenerationParameters
     public bool ProvideLogger { get; set; } = true;
     public Random? Random { get; set; }
     public int NumberOfTrees { get; set; } = 1;
-    public int NumberOfDoggos { get; set; } = 1;
+    public int NumberOfGorillas { get; set; } = 1;
     public int NumberOfSquirrels { get; set; } = 1;
     public int NumberOfRabbits { get; set; } = 1;
     public int NumberOfAcorns { get; set; } = 1;

@@ -22,7 +22,7 @@ public class GameWorldGenerator(ILogger logger)
                 Position = world.FindOpenPosition()
             });
         }
-        for (int i = 0; i < parameters.NumberOfDoggos; i++)
+        for (int i = 0; i < parameters.NumberOfGorillas; i++)
         {
             world.AddObject(new Gorilla
             {

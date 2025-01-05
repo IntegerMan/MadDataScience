@@ -1,8 +1,87 @@
 @page "/RL/Overview"
-<h3>Reinforcement Learning</h3>
 
-@* TODO: Add text and images describing Reinforcement Learning. We'll do an example with making faces *@
+<MudText Typo="Typo.h4">Reinforcement Learning</MudText>
+<MudText Typo="Typo.subtitle1" Class="mb-4">
+    Let's talk about reinforcement learning and how it can be used to train AI agents.
+</MudText>
 
-@code {
-    
-}
+<MudExpansionPanels class="mt-4" MultiExpansion="false">
+    <MudExpansionPanel Text="Reinforcement Learning and Animal Care" Expanded="true">
+
+        <MudText Typo="Typo.subtitle1" Class="mb-4">
+            Who here has trained an animal before? What did you do?
+        </MudText>
+
+        <img src="JesterTub.jpg" alt="A Cairn Terrier in a shower near shredded toilet paper" style="height: 600px; width: auto;">
+    </MudExpansionPanel>
+    <MudExpansionPanel Text="Reinforcement Learning in the real world">
+        <img src="RLMario.jpg" alt="A computer playing Super Mario World" style="height: 600px; width: auto;" class="mt-4">
+        
+        <MudText Typo="Typo.subtitle1" Class="mb-4">
+            In the real world, reinforcement learning is used in a number of different places, including:
+        </MudText>
+        <ul class="mt-4">
+            <li>- Controlling Robot Arms and Legs</li>
+            <li>- Training Computers to Play Games like <MudLink Href="https://www.youtube.com/watch?v=L4KBBAwF_bE">Super Mario World</MudLink></li>
+            <li>- Search Results and Suggestions</li>
+        </ul>
+    </MudExpansionPanel>
+    <MudExpansionPanel Text="Reinforcement Learning and YOU!">
+        <MudText Typo="Typo.h5" Class="mt-8">A funny face experiment</MudText>
+        <MudText Typo="Typo.subtitle1" Class="mb-4">
+            Let's try an experiment making silly faces to see if you can guess the face I want you to make.
+        </MudText>
+
+        <img src="SillyFaces.png" alt="A many kids making silly faces" style="height: 600px; width: auto;" class="mt-4">
+    </MudExpansionPanel>
+    <MudExpansionPanel Text="The Face I hoped you'd make">
+        <img src="SillyFace.jpg" alt="A man making a silly face" style="height: 600px; width: auto;">
+    </MudExpansionPanel>
+    <MudExpansionPanel Text="Reinforcement Learning in Action">
+        <MudText Typo="Typo.h5" Class="mt-8">Reinforcement Learning and Squirrels</MudText>
+        <MudText Typo="Typo.subtitle1" Class="mb-4">
+            We're going to see reinforcement learning in action with squirrels. Let's see what our app can do.
+        </MudText>
+        
+        <MudPaper Class="mt-8 p-4">
+            <img src="Squirrel.png" alt="A squirrel" style="height: 100px; width: auto;">
+            <MudText Typo="Typo.h6">Squirrel</MudText>
+            <MudText Typo="Typo.body1">
+                Our goal is to help squirrels learn to survive in a world with other squirrels, rabbits, acorns, and a gorilla.
+            </MudText>
+        </MudPaper>
+        
+        <MudPaper Class="mt-8 p-4">
+            <img src="Acorn.png" alt="An acorn" style="height: 100px; width: auto;">
+            <MudText Typo="Typo.h6">Acorn</MudText>
+            <MudText Typo="Typo.body1">
+                A squirrel needs to collect acorns to survive. They're delicious and nutritious, but squirrels only have so much time to collect them.
+            </MudText>
+        </MudPaper>
+
+        <MudPaper Class="mt-8 p-4">
+            <img src="Tree.png" alt="An oak tree" style="height: 100px; width: auto;">
+            <MudText Typo="Typo.h6">Tree</MudText>
+            <MudText Typo="Typo.body1">
+                Squirrels win by collecting acorns and then getting to the tree. The tree is a safe place where the squirrel can rest and store food. It won't eat outside of the tree.
+            </MudText>
+        </MudPaper>
+
+        <MudPaper Class="mt-8 p-4">
+            <img src="Rabbit.png" alt="A cute bunny rabbit" style="height: 100px; width: auto;">
+            <MudText Typo="Typo.h6">Rabbit</MudText>
+            <MudText Typo="Typo.body1">
+                The game has cute rabbits that wander around the world. They're cute and fluffy, but they'll block the squirrel if they get too close. Thankfully they tend to avoid squirrels.
+            </MudText>
+        </MudPaper>
+
+        <MudPaper Class="mt-8 p-4">
+            <img src="Gorilla.png" alt="A disapproving gorilla" style="height: 100px; width: auto;">
+            <MudText Typo="Typo.h6">Disapproving Gorilla</MudText>
+            <MudText Typo="Typo.body1">
+                The world has a disapproving gorilla that will eat the squirrel or the rabbit if they get too close.
+            </MudText>
+        </MudPaper>
+    </MudExpansionPanel>
+</MudExpansionPanels>
+

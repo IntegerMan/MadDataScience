@@ -6,7 +6,7 @@ namespace MattEland.MadDataScience.SquirrelSimulation.Genetics;
 public class SquirrelChromosome : BinaryChromosomeBase
 {
     private const int NumVariables = 5;
-    private const int BitsPerVariable = 16;
+    private const int BitsPerVariable = 8;
 
     public SquirrelChromosome() : base(NumVariables * BitsPerVariable)
     {
@@ -26,30 +26,29 @@ public class SquirrelChromosome : BinaryChromosomeBase
     public float GetValue(int index)
     {
         // Get the bits for the gene
-        BitArray arr = new BitArray(16);
+        BitArray arr = new BitArray(BitsPerVariable);
         for (int i = 0; i < BitsPerVariable; i++)
         {
-            Gene gene = GetGene((index * 16) + i);
+            Gene gene = GetGene((index * BitsPerVariable) + i);
             arr.Set(i, gene.Value is not 0);
         }
 
-        // Convert the BitArray to a short
-        byte[] array = new byte[2];
+        // Convert the BitArray to a byte
+        byte[] array = new byte[BitsPerVariable / 8];
         arr.CopyTo(array, 0);
-        short intVal = BitConverter.ToInt16(array, 0);
+        sbyte val = (sbyte)array[0];
 
-        // Convert the short value back to a float
-        return intVal / 100.0f;
+        // Convert the byte value back to a float
+        return val / 10.0f;
     }
 
     public void SetValue(int index, float value)
     {
         value = Math.Clamp(value, -10, 10);
-        
-        short intVal = (short)Math.Round(value * 100);
+        sbyte intVal = (sbyte)Math.Round(value * 10);
 
         // Get the binary representation of value
-        BitArray arr = new BitArray(BitConverter.GetBytes(intVal));
+        BitArray arr = new BitArray([(byte) intVal]);
 
         // Copy the bits into the chromosome
         for (int i = 0; i < BitsPerVariable; i++)

@@ -3,14 +3,17 @@
 
 @inject SpeechService SpeechService
 
-<h3>Text to Speech (Speech Synthesis)</h3>
+<MudText Typo="Typo.h4">Text to Speech (Speech Synthesis)</MudText>
+<MudText Typo="Typo.subtitle1" Class="mb-8">
+    AI can use neural networks to emulate the patterns of speech by converting text to spoken words.
+</MudText>
 
 <form @onsubmit="HandleSubmit">
-    <MudTextField @bind-Value="Message" Label="Message" Variant="Variant.Outlined" />
+    <MudTextField @bind-Value="Message" Label="Message" Variant="Variant.Outlined" HelperText="Enter some text you want the AI to say" />
     
     @* TODO: Add a voice selection box *@
     
-    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">Speak</MudButton>
+    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" Class="mt-4">Speak</MudButton>
 </form>
 
 @code {

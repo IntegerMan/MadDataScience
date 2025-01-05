@@ -1,25 +1,48 @@
 @page "/Speech/SpeechToText"
 @rendermode InteractiveServer
-@inject SpeechService speechService
+@inject SpeechService SpeechService
 
-<h3>SpeechToText</h3>
+<MudText Typo="Typo.h4">Speech to Text (Speech Recognition)</MudText>
+<MudText Typo="Typo.subtitle1" Class="mb-8">
+    AI can use neural networks to match audio to known words in supported languages, giving you real-time speech recognition.
+</MudText>
 
 <form @onsubmit="HandleSubmit">
-    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">Start Listening</MudButton>
+    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" Disabled="Listening">Start Listening</MudButton>
 </form>
 
-<span>@Heard</span>
+@if (Listening)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-8"/>
+}
+
+@if (!string.IsNullOrWhiteSpace(Heard))
+{
+    <MudText Typo="Typo.h6" Class="mt8">Heard:</MudText>
+    <MudText Typo="Typo.body1" Class="mt8">@Heard</MudText>
+}
 
 @code {
 
     public string? Heard { get; set; }
+    public bool Listening { get; set; }
     
-    private async Task HandleSubmit()
+    private Task HandleSubmit()
     {
-        Console.WriteLine("Handling Submit");
-        string result = await speechService.ListenAsync() ?? "No text recognized";
+        Listening = true;
+        Heard = null;
+        StateHasChanged();
         
-        Heard = result;
+        return SpeechService.ListenAsync().ContinueWith(task =>
+        {
+            string heard = task.Result ?? "No speech detected";
+            InvokeAsync(() =>
+            {
+                Heard = heard;
+                Listening = false;
+                StateHasChanged();
+            });
+        });
     }
 
 }

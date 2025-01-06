@@ -1,4 +1,80 @@
 @page "/Intro/About"
-<h3>Matt Eland, Professional Wizard</h3>
 
-@* TODO: Add a picture of Matt here and some key weird screenshots and facts *@
+<MudContainer MaxWidth="MaxWidth.Medium">
+
+    <MudText Typo="Typo.h3" Class="mt-2">About Us</MudText>
+    <MudText Typo="Typo.subtitle1" Class="mb-8">
+        Who are these people, and does security know they're here?
+    </MudText>
+
+    <MudExpansionPanels>
+        <MudExpansionPanel Text="Matt Eland" Expanded="true">
+            <MudCard>
+                <MudCardContent>
+                    <MudGrid>
+                        <MudItem sm="3">
+                            <img src="MattWizard.jpg" alt="Matt Eland" style="width: 100%; height: auto;">
+                        </MudItem>
+                        <MudItem sm="9">
+                            <MudText Typo="Typo.h4">Matt Eland</MudText>
+                            <MudText Typo="Typo.subtitle1">Professional Wizard at Leading EDJE</MudText>
+                            <MudText Typo="Typo.body2" class="my-4" Style="font-size: 1.5em;">
+                                Matt Eland is a professional wizard at Leading EDJE. He's a Microsoft MVP and AI
+                                Specialist / Senior Solutions Engineer II with over 20 years of experience
+                                in the industry. He's a retired teacher who is passionate about software development,
+                                machine learning, and artificial intelligence. He's also a little weird.
+                            </MudText>
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+            </MudCard>
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.body1" class="mb-4">Some of Matt's projects include:</MudText>
+                <ul style="list-style-type: disc; padding-left: 18px;">
+                    <li>
+                        <MudText>Proving that Die Hard is a Christmas Movie using Machine Learning</MudText>
+                    </li>
+                    <li>
+                        <MudText>Spending months writing software to let him sleep in</MudText>
+                    </li>
+                    <li>
+                        <MudText>Playing Dungeons and Dragons and other RPGs with an AI game master</MudText>
+                    </li>
+                    <li>
+                        <MudText>Building an AI to beat him at Rock / Paper / Scissors</MudText>
+                    </li>
+                    <li>
+                        <MudText>Teaching an AI to lie to him at One Night Ultimate Werewolf</MudText>
+                    </li>
+                    <li>
+                        <MudText>Building "HatGPT" to tell him what hat and jacket to wear</MudText>
+                    </li>
+                    <li>
+                        <MudText>Volunteering at Girls Who Code, the Central Ohio .NET Developer Group, CodeMash, and
+                            more
+                        </MudText>
+                    </li>
+                    <li>
+                        <MudText>Writing books (usually with Sam!)</MudText>
+                    </li>
+                    <li>
+                        <MudText>Plus a bunch of software around home automation, project management, insurance, and
+                            more
+                        </MudText>
+                    </li>
+                </ul>
+            </MudPaper>
+        </MudExpansionPanel>
+        <MudExpansionPanel Text="Sam Gomez">
+            <img src="SamFun.jpg" alt="Sam Gomez" style="width: auto; height: 300px;">
+            <MudText Typo="Typo.h3">Sam Gomez</MudText>
+            <MudText Typo="Typo.subtitle1">Not a Wizard at Geneca</MudText>
+            <MudText Typo="Typo.body1">
+                Sam Gomez is not a wizard at Geneca, but he is a Microsoft MVP. He's a software engineer with over 10
+                years
+                of experience in the industry.
+                He's passionate about software development, machine learning, and artificial intelligence.
+            </MudText>
+        </MudExpansionPanel>
+    </MudExpansionPanels>
+</MudContainer>

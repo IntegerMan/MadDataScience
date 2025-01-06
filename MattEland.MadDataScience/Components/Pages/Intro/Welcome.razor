@@ -1,6 +1,48 @@
 @page "/"
 @page "/Intro/Welcome"
 
-<h3>Welcome</h3>
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mx-auto my-8">
+    
+    <img src="HeaderBanner.png" alt="Mad Data Science" class="img-fluid" style="width: auto; height: 350px;">
+    
+    <MudText Typo="Typo.h3" Align="Align.Center" Class="mt-2">Mad Data Science!</MudText>
+    <MudText Typo="Typo.subtitle1" Align="Align.Center" Class="mt-4 mb-8">Exploring Machine Learning and Artificial Intelligence the mad scientist way</MudText>
 
-@* TODO: Intro slide image *@
+    <MudGrid Spacing="3" Class="mt-8">
+        <MudItem xs="12" sm="6">
+            <MudPaper Class="pa-4">
+                <MudGrid>
+                    <MudItem xs="12" sm="3" Class="d-flex justify-center align-center">
+                        <img src="MattEland.jpg" alt="Matt Eland" style="width: 100px; height: 100px;" class="rounded-circle">
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudText Typo="Typo.h6" Color="Color.Default">Matt Eland</MudText>
+                        <MudText Typo="Typo.subtitle1" Color="Color.Default">Wizard</MudText>
+                        <MudText Typo="Typo.subtitle2" Color="Color.Success">Leading EDJE</MudText>
+                    </MudItem>
+                    <MudItem sm="3">
+                        <img src="MVPVertical.png" alt="MVP Logo" class="mr-4">
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" sm="6">
+            <MudPaper Class="pa-4">
+                <MudGrid>
+                    <MudItem xs="12" sm="3" Class="d-flex justify-center align-center">
+                        <img src="SamGomez.jpg" alt="Sam Gomez" style="width: 100px; height: 100px;" class="rounded-circle">
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudText Typo="Typo.h6" Color="Color.Default">Sam Gomez</MudText>
+                        <MudText Typo="Typo.subtitle1" Color="Color.Default">Not a Wizard</MudText>
+                        <MudText Typo="Typo.subtitle2" Color="Color.Info">Geneca</MudText>
+                    </MudItem>
+                    <MudItem sm="3">
+                        <img src="MVPVertical.png" alt="MVP Logo" class="mr-4">
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>

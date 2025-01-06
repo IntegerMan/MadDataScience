@@ -90,6 +90,15 @@
                    Value="Brain.Weights.Squirrel">
             Other Squirrels
         </MudSlider>
+        
+        <div class="mt-4">
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" @onclick="LoadSolver">
+                Preset 1
+            </MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" @onclick="LoadKillerSolver" class="ml-4">
+                Preset 2
+            </MudButton>
+        </div>
     </MudExpansionPanel>
 </MudExpansionPanels>
 
@@ -101,7 +110,7 @@
     {
         _squirrelService = squirrelService;
         Logger = logger;
-        _solver = new SquirrelGeneticSolver(logger, [513,672,15]);
+        _solver = new SquirrelGeneticSolver(logger);
     }
 
     private readonly SquirrelGeneticSolver _solver;
@@ -160,4 +169,14 @@
     public bool IsBusy { get; set; }
     public int MaxGenerations { get; set; } = 1;
     public int Generation { get; set; }
+
+    private void LoadSolver()
+    {
+        Brain.Weights = _squirrelService.BestWeightsFallback;
+    }
+
+    private void LoadKillerSolver()
+    {
+        Brain.Weights = _squirrelService.BestKillerWeightsFallback;
+    }
 }

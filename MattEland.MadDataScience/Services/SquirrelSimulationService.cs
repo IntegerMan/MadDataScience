@@ -34,4 +34,24 @@ public class SquirrelSimulationService(ILogger<SquirrelSimulationService> logger
             NumberOfTrees = 5
         });
     }
+
+    public SmellWeights BestWeightsFallback 
+        => new()
+        {
+            Acorn = 10f,
+            Squirrel = -8.4f,
+            Gorilla = -11.5f,
+            Rabbit = -10f,
+            Tree = 6.8f
+        };
+    
+    public SmellWeights BestKillerWeightsFallback 
+        => new()
+        {
+            Acorn = 6f,
+            Squirrel = -1f,
+            Gorilla = -10f,
+            Rabbit = 9f,
+            Tree = 3.4f
+        };
 }

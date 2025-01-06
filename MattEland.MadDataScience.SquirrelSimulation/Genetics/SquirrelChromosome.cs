@@ -36,7 +36,7 @@ public class SquirrelChromosome() : BinaryChromosomeBase(NumVariables * BitsPerV
         sbyte val = (sbyte)array[0];
 
         // Convert the byte value back to a float
-        return val / 10.0f;
+        return Math.Clamp(val / 10.0f, -10f, 10f);
     }
 
     private void SetValue(int index, float value)
@@ -53,9 +53,6 @@ public class SquirrelChromosome() : BinaryChromosomeBase(NumVariables * BitsPerV
             ReplaceGene((index * BitsPerVariable) + i, new Gene(arr[i] ? 1 : 0));
         }
     }
-
-    public override string ToString()
-        => $"Acorn: {GetValue(0)}, Squirrel: {GetValue(1)}, Gorilla: {GetValue(2)}, Rabbit: {GetValue(3)}, Tree: {GetValue(4)}";
 
     public void SetWeights(SmellWeights weights)
     {
@@ -77,4 +74,7 @@ public class SquirrelChromosome() : BinaryChromosomeBase(NumVariables * BitsPerV
             Tree = GetValue(4)
         };
     }
+    
+    public override string ToString() 
+        => GetWeights().ToString();
 }

@@ -9,7 +9,7 @@
 
 <div id="GameArea">
     <section id="GameDisplay">
-        <GameWorldDisplay GameWorld="GameWorld" Visualization="SelectedVisualization" SmellWeights="Brain.Weights"/>
+        <GameWorldDisplay GameWorld="GameWorld" SmellWeights="Brain.Weights"/>
 
         <GameResultNotifications GameWorld="GameWorld"/>
 
@@ -36,21 +36,6 @@
         <section id="Training">
             <SquirrelTrainingWidget Brain="Brain" />
         </section>
-        
-        <section id="Visualization" class="mt-8">
-            <MudText Typo="Typo.h6">Visualization</MudText>
-            <MudText Typo="Typo.caption">Choose a visualization overlay for the game world</MudText>
-            <div class="mt-4">
-                <MudSelect Variant="Variant.Outlined" T="VisualizationKind"
-                           bind-Value="SelectedVisualization"
-                           ValueChanged="v => OnVisualizationChanged(v)">
-                    @foreach (var visualization in Enum.GetValues(typeof(VisualizationKind)).Cast<VisualizationKind>())
-                    {
-                        <MudSelectItem Value="@visualization">@visualization</MudSelectItem>
-                    }
-                </MudSelect>
-            </div>
-        </section>
 
         @if (GameWorld.Result is not null)
         {
@@ -66,7 +51,6 @@
     private ILogger<LargeScaleWorlds> Logger { get; }
     public WeightedBrain Brain { get; } = new();
     public SquirrelScorer Scorer { get; }
-    public VisualizationKind SelectedVisualization { get; set; } = VisualizationKind.None;
 
     public LargeScaleWorlds(SquirrelSimulationService squirrelService, ILogger<LargeScaleWorlds> logger)
     {
@@ -91,13 +75,6 @@
     {
         Logger.LogDebug("Advancing game world");
         GameWorld.SimulateGameTurn();
-        StateHasChanged();
-    }
-
-    private void OnVisualizationChanged(VisualizationKind kind)
-    {
-        Logger.LogDebug("Visualization changed to {VisualizationKind}", kind);
-        SelectedVisualization = kind;
         StateHasChanged();
     }
 }

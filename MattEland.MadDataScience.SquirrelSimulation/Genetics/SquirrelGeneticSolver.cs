@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MattEland.MadDataScience.SquirrelSimulation.Genetics;
 
-public class SquirrelGeneticSolver(ILogger logger, int[] randomSeeds)
+public class SquirrelGeneticSolver(ILogger logger)
 {
     public void Solve(int generations, 
         SmellWeights startWeights, 
@@ -20,7 +20,11 @@ public class SquirrelGeneticSolver(ILogger logger, int[] randomSeeds)
             GenerationStrategy = new PerformanceGenerationStrategy(),
         };
 
-        IFitness fitness = new SquirrelScorer(logger, randomSeeds, rabbitBrain);
+        int[] seeds = [RandomizationProvider.Current.GetInt(0, int.MaxValue), 
+            RandomizationProvider.Current.GetInt(0, int.MaxValue), 
+            RandomizationProvider.Current.GetInt(0, int.MaxValue)];
+        
+        IFitness fitness = new SquirrelScorer(logger, seeds, rabbitBrain);
         ISelection selection = new EliteSelection();
         ICrossover crossover = new TwoPointCrossover();
         IMutation mutation = new FlipBitMutation();
@@ -35,13 +39,13 @@ public class SquirrelGeneticSolver(ILogger logger, int[] randomSeeds)
         ga.GenerationRan += (sender, _) =>
         {
             double best = ga.Fitness.Evaluate(ga.BestChromosome);
-            logger.LogInformation("Generation {Generation} complete with best score of {Best}", ga.GenerationsNumber, best);
+            logger.LogInformation("Generation {Generation} complete with best score of {Best}: {Details}", ga.GenerationsNumber, best, ga.BestChromosome.ToString());
             onGenerationComplete((GeneticAlgorithm)sender!);
         };
         ga.TerminationReached += (sender, _) =>
         {
             double best = ga.Fitness.Evaluate(ga.BestChromosome);
-            logger.LogInformation("Solver complete with best score of {Best}", best);
+            logger.LogInformation("Solver complete with best score of {Best}: {Details}", best, ga.BestChromosome.ToString());
             onSolverComplete((GeneticAlgorithm)sender!);
         };
         

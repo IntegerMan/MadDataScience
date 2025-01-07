@@ -3,6 +3,7 @@
 @inject VisionService VisionService
 @inject ILogger<Captioning> Logger
 
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mx-auto my-8">
 <MudText Typo="Typo.h4">Image Captioning</MudText>
 <MudText Typo="Typo.subtitle1" Class="mb-8">
     Describe the contents of an image
@@ -22,6 +23,7 @@
 <MudButton Class="mt-4" Disabled="IsBusy" @onclick="HandleCaptionClick" Variant="Variant.Filled" Color="Color.Primary">
     Caption This
 </MudButton>
+</MudContainer>
 
 @code {
     public string ImageSource { get; set; } = "CodeMash.jpg";

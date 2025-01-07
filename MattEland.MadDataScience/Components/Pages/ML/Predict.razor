@@ -1,41 +1,43 @@
 @page "/ML/Predict"
 @using Microsoft.Data.Analysis
 
-<MudText Typo="Typo.h4">Predict Game Ratings</MudText>
-<MudText Typo="Typo.subtitle1" Class="mb-8">
-    Let's use a trained model to predict the rating of a hypothetical video game.
-</MudText>
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mx-auto my-8">
+    <MudText Typo="Typo.h4">Predict Game Ratings</MudText>
+    <MudText Typo="Typo.subtitle1" Class="mb-8">
+        Let's use a trained model to predict the rating of a hypothetical video game.
+    </MudText>
 
-<MudPaper Class="p-4">
-    <form @onsubmit="PredictGameRating">
-        <MudText Typo="Typo.h6">Game Information</MudText>
-        <MudGrid>
-            <MudItem Style="min-width: 350px;">
-                <MudTextField Label="Game Title" @bind-Value="Game.Title" Variant="Variant.Outlined"/>
-                <MudSelect Label="Genre" T="string" Variant="Variant.Outlined" @bind-Value="Game.Genre">
-                    @foreach (var g in Genres)
-                    {
-                        <MudSelectItem Value="@g">@g</MudSelectItem>
-                    }
-                </MudSelect>
-                
-                @*<MudSelect Label="Platform" T="string" Variant="Variant.Outlined" @bind-Value="Game.Platform">
+    <MudPaper Class="p-4">
+        <form @onsubmit="PredictGameRating">
+            <MudText Typo="Typo.h6">Game Information</MudText>
+            <MudGrid>
+                <MudItem Style="min-width: 350px;">
+                    <MudTextField Label="Game Title" @bind-Value="Game.Title" Variant="Variant.Outlined"/>
+                    <MudSelect Label="Genre" T="string" Variant="Variant.Outlined" @bind-Value="Game.Genre">
+                        @foreach (var g in Genres)
+                        {
+                            <MudSelectItem Value="@g">@g</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    @*<MudSelect Label="Platform" T="string" Variant="Variant.Outlined" @bind-Value="Game.Platform">
                     @foreach (var p in Platforms)
                     {
                         <MudSelectItem Value="@p">@p</MudSelectItem>
                     }
                 </MudSelect>*@
-                <MudSelect Label="Target Age Group" T="string" Variant="Variant.Outlined" @bind-Value="Game.TargetAgeGroup">
-                    @foreach (var g in AgeGroups)
-                    {
-                        <MudSelectItem Value="@g">@g</MudSelectItem>
-                    }
-                </MudSelect>
-                
-                <MudNumericField Label="Price" @bind-Value="Game.Price" Variant="Variant.Outlined" Min="0"
-                                 Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" />
-                
-                @*
+                    <MudSelect Label="Target Age Group" T="string" Variant="Variant.Outlined"
+                               @bind-Value="Game.TargetAgeGroup">
+                        @foreach (var g in AgeGroups)
+                        {
+                            <MudSelectItem Value="@g">@g</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    <MudNumericField Label="Price" @bind-Value="Game.Price" Variant="Variant.Outlined" Min="0"
+                                     Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney"/>
+
+                    @*
                 <MudSelect Label="Developer" T="string" Variant="Variant.Outlined" @bind-Value="Game.Developer">
                     @foreach (var dev in Developers)
                     {
@@ -51,57 +53,62 @@
                 <MudTextField Label="Year Published" @bind-Value="Game.Year" Variant="Variant.Outlined"/>*@
 
 
-                <MudNumericField Label="Hours Long" @bind-Value="Game.HoursLong" Variant="Variant.Outlined" Min="1"/>
+                    <MudNumericField Label="Hours Long" @bind-Value="Game.HoursLong" Variant="Variant.Outlined"
+                                     Min="1"/>
 
-                <MudNumericField Label="Minimum Players" @bind-Value="Game.MinPlayers" Variant="Variant.Outlined" Min="1" Max="16"/>
-            </MudItem>
-            <MudItem Style="min-width: 350px;">
-                <MudSelect Label="Graphics Quality" T="float" Variant="Variant.Outlined" @bind-Value="Game.Graphics">
-                    @foreach ((string rating, float value) in GraphicsRatings)
-                    {
-                        <MudSelectItem Value="@value">@rating</MudSelectItem>
-                    }
-                </MudSelect>
-                <MudSelect Label="Music Quality" T="float" Variant="Variant.Outlined" @bind-Value="Game.Music">
-                    @foreach ((string rating, float value) in MusicRatings)
-                    {
-                        <MudSelectItem Value="@value">@rating</MudSelectItem>
-                    }
-                </MudSelect>
-                <MudSelect Label="Story Quality" T="float" Variant="Variant.Outlined" @bind-Value="Game.Story">
-                    @foreach ((string rating, float value) in StoryRatings)
-                    {
-                        <MudSelectItem Value="@value">@rating</MudSelectItem>
-                    }
-                </MudSelect>
-                <MudCheckBox Label="Is Online?" @bind-Value="Game.IsOnline" Class="mt-8"/>
-                <MudCheckBox Label="Is Multiplayer?" @bind-Value="Game.Multiplayer"/>
-                <MudCheckBox Label="Requires Special Device?" @bind-Value="Game.RequiresSpecialDevice"/>
-            </MudItem>
-        </MudGrid>
+                    <MudNumericField Label="Minimum Players" @bind-Value="Game.MinPlayers" Variant="Variant.Outlined"
+                                     Min="1" Max="16"/>
+                </MudItem>
+                <MudItem Style="min-width: 350px;">
+                    <MudSelect Label="Graphics Quality" T="float" Variant="Variant.Outlined"
+                               @bind-Value="Game.Graphics">
+                        @foreach ((string rating, float value) in GraphicsRatings)
+                        {
+                            <MudSelectItem Value="@value">@rating</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudSelect Label="Music Quality" T="float" Variant="Variant.Outlined" @bind-Value="Game.Music">
+                        @foreach ((string rating, float value) in MusicRatings)
+                        {
+                            <MudSelectItem Value="@value">@rating</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudSelect Label="Story Quality" T="float" Variant="Variant.Outlined" @bind-Value="Game.Story">
+                        @foreach ((string rating, float value) in StoryRatings)
+                        {
+                            <MudSelectItem Value="@value">@rating</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudCheckBox Label="Is Online?" @bind-Value="Game.IsOnline" Class="mt-8"/>
+                    <MudCheckBox Label="Is Multiplayer?" @bind-Value="Game.Multiplayer"/>
+                    <MudCheckBox Label="Requires Special Device?" @bind-Value="Game.RequiresSpecialDevice"/>
+                </MudItem>
+            </MudGrid>
 
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" Class="mt-8"
-                   Disabled="IsBusy">
-            Predict Rating
-        </MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" Class="mt-8"
+                       Disabled="IsBusy">
+                Predict Rating
+            </MudButton>
 
-        @if (IsBusy)
-        {
-            <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-4"/>
-        }
+            @if (IsBusy)
+            {
+                <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-4"/>
+            }
 
-    </form>
-</MudPaper>
+        </form>
+    </MudPaper>
 
-@if (PredictedRating.HasValue)
-{
-    <MudAlert Severity="Severity.Success" Class="mt-8" Variant="Variant.Outlined">
-        <MudText Typo="Typo.h6">Predicted Rating</MudText>
-        <MudText Typo="Typo.subtitle1" Class="mb-4">
-            The predicted rating of @(Game.Title ?? "this untitled game") is a @PredictedRating.Value.ToString("F1"). The best released games get around 50!
-        </MudText>
-    </MudAlert>
-}
+    @if (PredictedRating.HasValue)
+    {
+        <MudAlert Severity="Severity.Success" Class="mt-8" Variant="Variant.Outlined">
+            <MudText Typo="Typo.h6">Predicted Rating</MudText>
+            <MudText Typo="Typo.subtitle1" Class="mb-4">
+                The predicted rating of @(Game.Title ?? "this untitled game") is
+                a @PredictedRating.Value.ToString("F1"). The best released games get around 50!
+            </MudText>
+        </MudAlert>
+    }
+</MudContainer>
 
 @code {
     private readonly MachineLearningService _mlService;
@@ -123,8 +130,9 @@
         Developer = "Nintendo",
         TargetAgeGroup = "All Ages"
     };
+
     public float? PredictedRating { get; set; }
-    
+
     public IEnumerable<string> Publishers { get; }
     public IEnumerable<string> Developers { get; }
     public IEnumerable<string> AgeGroups { get; }
@@ -138,7 +146,8 @@
         ("Meh", 3),
         ("Yeah, okay", 4),
         ("Ape-like in its gloriousness", 5)
-    ];    
+    ];
+
     public IEnumerable<(string, float)> MusicRatings { get; } =
     [
         ("Like nails on a chalkboard", 1),
@@ -146,7 +155,8 @@
         ("On par with a Matt / Sam Mix-Tape", 3),
         ("Skidibi Toilet 2.0?", 4),
         ("Crank that bass!", 5)
-    ];    
+    ];
+
     public IEnumerable<(string, float)> StoryRatings { get; } =
     [
         ("Wait, you forgot a story?", 1),
@@ -160,7 +170,7 @@
     {
         _mlService = mlService;
         DataFrame df = mlService.LoadDataFrame();
-        
+
         // Populate our select choices
         Publishers = ((IEnumerable<string>)df["Publisher"].ValueCounts()["Values"]).Distinct().Order();
         Developers = ((IEnumerable<string>)df["Developer"].ValueCounts()["Values"]).Distinct().Order();

@@ -3,6 +3,7 @@
 @inject AzureOpenAiChatService ChatService
 @inject SpeechService SpeechService
 
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mx-auto my-8">
 <MudText Typo="Typo.h4">Chatting with Images</MudText>
 <MudText Typo="Typo.subtitle1" Class="mb-8">
     Some LLMs can also interpret images and generate images of their own.
@@ -26,7 +27,7 @@
 <MudButton Class="mt-4" Disabled="IsBusy" @onclick="HandleDescribeClick" Variant="Variant.Filled" Color="Color.Primary">
     Describe This
 </MudButton>
-
+</MudContainer>
 
 @code {
     public Uri ImageSource { get; set; } = new Uri("https://www.danylkoweb.com/content/images/collection-codemash.jpg");

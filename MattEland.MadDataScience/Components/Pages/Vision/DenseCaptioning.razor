@@ -3,6 +3,7 @@
 @inject VisionService VisionService
 @inject ILogger<DenseCaptioning> Logger
 
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mx-auto my-8">
 <MudText Typo="Typo.h4">Dense Captioning</MudText>
 <MudText Typo="Typo.subtitle1" Class="mb-8">
     Detect and describe objects inside of an image
@@ -46,6 +47,7 @@
         }
     </ul>
 }
+</MudContainer>
 
 @code {
     public string ImageSource => "CodeMash.jpg";

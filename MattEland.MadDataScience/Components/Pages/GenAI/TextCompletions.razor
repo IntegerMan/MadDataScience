@@ -4,52 +4,54 @@
 @inject AzureOpenAiChatService ChatService
 @rendermode InteractiveServer
 
-<MudText Typo="Typo.h4">Text Completions</MudText>
-<MudText Typo="Typo.subtitle1" Class="mb-8">
-    The building blocks for Generative AI. Given a prompt, generate a response.
-</MudText>
-
-<form @onsubmit="HandleSubmit">
-    <MudSelect Label="Select a starting template"
-               T="string"
-               ValueChanged="v => OnTemplateChanged(v)"
-               Variant="Variant.Outlined"
-               HelperText="Changing this will set the text area below with an example prompt.">
-        @foreach (var template in Templates)
-        {
-            <MudSelectItem Value="@template">@template</MudSelectItem>
-        }
-    </MudSelect>
-    <br />
-
-    <MudTextField Lines="3" AutoGrow 
-                  Class="mt-4 mb-4"
-                  Label="Prompt Instructions"
-                  Variant="Variant.Filled"
-                  @bind-Value="Prompt"
-                  HelperText="This is what the Large Language Model (LLM) will respond to"/>
-    
-    <br />
-    
-    <MudButton Disabled="IsBusy" ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-        Generate
-    </MudButton>
-</form>
-
-@if (IsBusy)
-{
-    <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-4"/>
-}
-
-@if (!string.IsNullOrWhiteSpace(Preview))
-{
-    <MudText Typo="Typo.h6" Class="mt-4">
-        Generated Text
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mx-auto my-8">
+    <MudText Typo="Typo.h4">Text Completions</MudText>
+    <MudText Typo="Typo.subtitle1" Class="mb-8">
+        The building blocks for Generative AI. Given a prompt, generate a response.
     </MudText>
-    <MudText Typo="Typo.body1">
-        @((MarkupString) Preview)
-    </MudText>
-}
+
+    <form @onsubmit="HandleSubmit">
+        <MudSelect Label="Select a starting template"
+                   T="string"
+                   ValueChanged="v => OnTemplateChanged(v)"
+                   Variant="Variant.Outlined"
+                   HelperText="Changing this will set the text area below with an example prompt.">
+            @foreach (var template in Templates)
+            {
+                <MudSelectItem Value="@template">@template</MudSelectItem>
+            }
+        </MudSelect>
+        <br />
+
+        <MudTextField Lines="3" AutoGrow 
+                      Class="mt-4 mb-4"
+                      Label="Prompt Instructions"
+                      Variant="Variant.Filled"
+                      @bind-Value="Prompt"
+                      HelperText="This is what the Large Language Model (LLM) will respond to"/>
+    
+        <br />
+    
+        <MudButton Disabled="IsBusy" ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+            Generate
+        </MudButton>
+    </form>
+
+    @if (IsBusy)
+    {
+        <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-4"/>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Preview))
+    {
+        <MudText Typo="Typo.h6" Class="mt-4">
+            Generated Text
+        </MudText>
+        <MudText Typo="Typo.body1">
+            @((MarkupString) Preview)
+        </MudText>
+    }
+</MudContainer>
 
 @code {
     public bool IsBusy { get; set; }

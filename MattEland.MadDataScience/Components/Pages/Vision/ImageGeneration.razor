@@ -1,9 +1,8 @@
 @page "/Vision/ImageGeneration"
-
-@rendermode InteractiveServer
 @inject AzureOpenAiImageService ImageImageService
 @inject ILogger<ImageGeneration> Logger
 
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mx-auto my-8">
 <MudText Typo="Typo.h4">Image Generation</MudText>
 <MudText Typo="Typo.subtitle1" Class="mb-8">
     Generate an image from a prompt
@@ -33,6 +32,7 @@
     <MudText Typo="Typo.caption" Class="mb-4">@Caption</MudText>
     <br />
 }
+</MudContainer>
 
 @code {
 

@@ -10,4 +10,5 @@ public interface IGameActor
     public int TurnOrder { get; }
     public IBrain Brain { get; }
     public void HandleCollision(GameObject otherObject, GameWorld world);
+    public Queue<WorldPosition> PastPositions { get; }
 }

@@ -8,4 +8,5 @@ public class TilePerceptions
     public float SmellOfGorilla { get; set; }
     public float SmellOfRabbit { get; set; }
     public float SmellOfTree { get; set; }
+    public bool IsEdgeTile { get; set; }
 }

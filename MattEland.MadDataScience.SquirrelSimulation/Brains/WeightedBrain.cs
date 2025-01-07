@@ -10,9 +10,15 @@ public class WeightedBrain : IBrain
     {
         float bestScore = float.MinValue;
         WorldPosition? bestPosition = null;
-        
+
+        HashSet<WorldPosition> positionsToAvoid = new();
+        foreach (var pos in actor.PastPositions)
+        {
+            positionsToAvoid.Add(pos);
+        }
+
         // Random order here helps in cases of tie scores since the first with that value will win
-        foreach (TilePerceptions choice in choices.OrderBy(_ => random.Next()))
+        foreach (TilePerceptions choice in choices.Where(c => !positionsToAvoid.Contains(c.Position)).OrderBy(_ => random.Next()))
         {
             float score = GameWorld.CalculateTileAttractiveness(choice, Weights);
             

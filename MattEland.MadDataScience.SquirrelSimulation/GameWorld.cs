@@ -174,7 +174,8 @@ public class GameWorld(int width, int height, int maxTurns)
             SmellOfAcorn = CalculateTileSmell(actor, newPosition, typeof(Acorn)),
             SmellOfSquirrel = CalculateTileSmell(actor, newPosition, typeof(Squirrel)),
             SmellOfTree = CalculateTileSmell(actor, newPosition, typeof(Tree)),
-            SmellOfRabbit = CalculateTileSmell(actor, newPosition, typeof(Rabbit))
+            SmellOfRabbit = CalculateTileSmell(actor, newPosition, typeof(Rabbit)),
+            IsEdgeTile = newPosition.X == 0 || newPosition.Y == 0 || newPosition.X == Width - 1 || newPosition.Y == Height - 1
         };
 
     private float CalculateTileSmell(IGameActor? self, WorldPosition pos, Type type)
@@ -183,6 +184,12 @@ public class GameWorld(int width, int height, int maxTurns)
         foreach (var obj in Objects.Where(o => o.GetType() == type && o != self))
         {
             smell += 1 / (obj.Position.DistanceTo(pos) + 1);
+        }
+
+        // Trees are less interesting to squirrels without acorns. This is a demo hack
+        if (self is Squirrel {HasAcorn: false})
+        {
+            smell /= 2;
         }
 
         return smell;

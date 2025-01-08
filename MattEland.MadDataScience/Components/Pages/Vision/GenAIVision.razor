@@ -10,45 +10,66 @@
 </MudText>
 
 <img src="@ImageSource" alt="Sample Image" class="img-fluid"/>
-<br/>
 
 @if (Description is not null)
 {
-    <MudText Typo="Typo.h6" Class="mt-4">Image Description</MudText>
-    <MudText Typo="Typo.caption">@Description</MudText>
+    <MudAlert Severity="Severity.Info" Class="mt-8" Variant="Variant.Text">
+        <MudText Typo="Typo.h6">Image Description</MudText>
+        <MudText Typo="Typo.body1">@Description</MudText>
+    </MudAlert>
 }
-<br/>
+
+@if (!string.IsNullOrWhiteSpace(Error))
+{
+    <MudAlert Severity="Severity.Error" Class="mt-8">
+        <MudText Typo="Typo.h6">Error</MudText>
+        <MudText Typo="Typo.body1">@Error</MudText>
+    </MudAlert>
+}
 
 @if (IsBusy)
 {
-    <MudProgressLinear Indeterminate="true" Color="Color.Primary"/>
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-8"/>
 }
 
-<MudButton Class="mt-4" Disabled="IsBusy" @onclick="HandleDescribeClick" Variant="Variant.Filled" Color="Color.Primary">
+<div class="mt-8">
+<MudButton Disabled="IsBusy" @onclick="HandleDescribeClick" Variant="Variant.Filled" Color="Color.Primary">
     Describe This
 </MudButton>
+</div>
 </MudContainer>
 
 @code {
-    public Uri ImageSource { get; set; } = new Uri("https://www.danylkoweb.com/content/images/collection-codemash.jpg");
+    public Uri ImageSource { get; set; } = new("https://www.danylkoweb.com/content/images/collection-codemash.jpg");
     public string? Description { get; set; }
+    public string? Error { get; set; }
     public bool IsBusy { get; set; }
     public string VoiceName { get; set; } = "en-US-GuyNeural";
     
-    private async Task HandleDescribeClick()
+    private Task HandleDescribeClick()
     {
         IsBusy = true;
+        Description = null;
+        Error = null;
         StateHasChanged();
 
         string prompt = "You are DogOS, a cute and playful AI assistant at KidzMash conference at CodeMash. The user has given you an image to look at. Talk about what you see, from the perspective of a dog. Being silly is fine, but keep it to a few sentences. Please avoid emojis.";
-        string description = await ChatService.DescribeImageAsync(prompt, ImageSource);
-        
-        Logger.LogInformation("Described Image {ImageSource} as {Description}", ImageSource, description);
-        Description = description;
-        IsBusy = false;
-        
-        // Do not wait for voice
-        _ = SpeechService.SpeakAsync(description, VoiceName);
+        return ChatService.DescribeImageAsync(prompt, ImageSource).ContinueOnUIThread(
+            description =>
+            {
+                Logger.LogInformation("Described Image {ImageSource} as {Description}", ImageSource, description);
+                Description = description;
+                _ = SpeechService.SpeakAsync(description, VoiceName);
+            },
+            error =>
+            {
+                Error = error.Message;
+            },
+            () =>
+            {
+                IsBusy = false;
+                StateHasChanged();
+            });
     }
 
 }

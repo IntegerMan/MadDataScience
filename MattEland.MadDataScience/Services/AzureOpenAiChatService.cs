@@ -4,7 +4,6 @@ using Azure.AI.OpenAI;
 using MattEland.MadDataScience.Models;
 using Microsoft.Extensions.Options;
 using OpenAI.Chat;
-using OpenAI.Images;
 
 namespace MattEland.MadDataScience.Services;
 

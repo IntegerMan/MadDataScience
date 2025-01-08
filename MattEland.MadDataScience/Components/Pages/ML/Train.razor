@@ -68,32 +68,55 @@
             <span>@((MarkupString)Markdown.ToHtml(@TrainResult))</span>
         </MudAlert>
     }
+    
+    @if (!string.IsNullOrWhiteSpace(Error))
+    {
+        <MudAlert Severity="Severity.Error" Class="mt-8">
+            <MudText Typo="Typo.h6">Error</MudText>
+            <MudText Typo="Typo.body1">@Error</MudText>
+        </MudAlert>
+    }
 </MudContainer>
 
 @code {
     public bool IsBusy { get; set; }
     public string? TrainResult { get; set; }
     public bool SaveModel { get; set; }
+    public string? Error { get; set; }
 
     private Task HandleTrainClick(uint seconds)
     {
         Logger.LogInformation("Training Model for {Seconds} seconds", seconds);
         TrainResult = null;
         IsBusy = true;
+        Error = null;
         StateHasChanged();
 
         // ML .NET does synchronous training, so let's move to another thread so the UI can show busy
         return Task.Run(() =>
         {
-            string result = MachineLearningService.TrainModel(seconds, SaveModel);
-
-            // Get back on the UI Thread
-            InvokeAsync(() =>
+            try
             {
-                TrainResult = result;
-                IsBusy = false;
-                StateHasChanged();
-            });
+                string result = MachineLearningService.TrainModel(seconds, SaveModel);
+
+                // Get back on the UI Thread
+                InvokeAsync(() =>
+                {
+                    TrainResult = result;
+                    IsBusy = false;
+                    StateHasChanged();
+                });
+            }
+            catch (Exception ex)
+            {
+                InvokeAsync(() =>
+                {
+                    Logger.LogError(ex, "Failed to train model");
+                    Error = ex.Message;
+                    IsBusy = false;
+                    StateHasChanged();
+                });
+            }
         });
     }
 

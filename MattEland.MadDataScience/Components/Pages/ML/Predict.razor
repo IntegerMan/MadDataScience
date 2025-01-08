@@ -108,6 +108,14 @@
             </MudText>
         </MudAlert>
     }
+
+    @if (!string.IsNullOrWhiteSpace(Error))
+    {
+        <MudAlert Severity="Severity.Error" Class="mt-8">
+            <MudText Typo="Typo.h6">Error</MudText>
+            <MudText Typo="Typo.body1">@Error</MudText>
+        </MudAlert>
+    }
 </MudContainer>
 
 @code {
@@ -132,6 +140,7 @@
     };
 
     public float? PredictedRating { get; set; }
+    public string? Error { get; set; }
 
     public IEnumerable<string> Publishers { get; }
     public IEnumerable<string> Developers { get; }
@@ -183,17 +192,30 @@
     {
         IsBusy = true;
         PredictedRating = null;
+        Error = null;
         StateHasChanged();
 
         return Task.Run(() =>
         {
-            float rating = _mlService.PredictGameRating(Game);
-            InvokeAsync(() =>
+            try
             {
-                PredictedRating = rating;
-                IsBusy = false;
-                StateHasChanged();
-            });
+                float rating = _mlService.PredictGameRating(Game);
+                InvokeAsync(() =>
+                {
+                    PredictedRating = rating;
+                    IsBusy = false;
+                    StateHasChanged();
+                });
+            }
+            catch (Exception ex)
+            {
+                InvokeAsync(() =>
+                {
+                    IsBusy = false;
+                    Error = ex.Message;
+                    StateHasChanged();
+                });
+            }
         });
     }
 

@@ -3,7 +3,6 @@
 @using OpenAI.Chat
 @inject ILogger<Chat> Logger
 @inject AzureOpenAiChatService ChatService
-@rendermode InteractiveServer
 
 <div id="ChatContainer">
     <section id="PageHeader">
@@ -113,7 +112,7 @@
         new AssistantChatMessage("Hello! I'm the KidzMash AI Assistant. How can I help you today?")
     };
 
-    private async Task SendChatAsync()
+    private Task SendChatAsync()
     {
         string message = Prompt;
         Logger.LogInformation("Sending Chat Message: {Message}", message);
@@ -125,11 +124,20 @@
         ErrorMessage = string.Empty;
         StateHasChanged();
         
-        string response = await ChatService.ChatAsync(SystemPrompt, ChatMessages);
-        ChatMessages.Add(new AssistantChatMessage(response));
-        
-        IsBusy = false;
-        StateHasChanged();
+        return ChatService.ChatAsync(SystemPrompt, ChatMessages).ContinueOnUIThread(
+            onSuccess: response =>
+            {
+                ChatMessages.Add(new AssistantChatMessage(response));
+            },
+            onError: ex =>
+            {
+                ErrorMessage = ex.Message;
+            },
+            onFinally: () =>
+            {
+                IsBusy = false;
+                StateHasChanged();
+            });
     }
 
 }

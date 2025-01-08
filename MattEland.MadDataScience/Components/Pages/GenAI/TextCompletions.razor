@@ -41,6 +41,14 @@
     {
         <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-4"/>
     }
+    
+    @if (!string.IsNullOrWhiteSpace(Error))
+    {
+        <MudAlert Severity="Severity.Error" Class="mt-4">
+            <MudText Typo="Typo.h6">Error</MudText>
+            <MudText Typo="Typo.body1">@Error</MudText>
+        </MudAlert>
+    }
 
     @if (!string.IsNullOrWhiteSpace(Preview))
     {
@@ -55,13 +63,14 @@
 
 @code {
     public bool IsBusy { get; set; }
+    public string? Error { get; set; }
     public string Prompt { get; set; } = string.Empty;
     public string GeneratedText { get; set; } = string.Empty;
     
     public string Email => "Write a polite email to your boss at work protesting the lack of dogs in the workplace and suggesting an office doggo policy.";
     public string Batman => "Pretend you are Batman. Write a 5 sentence monologue about fighting crime at the KidzMash conference at CodeMash 2025. The crime fighting should occur at the Kalahari resort's water park.";
     public string Joke => "Tell me a kid-friendly joke that will make me laugh. Bonus points if it involves a dog, squirrel, gorilla, or programming.";
-    public string Story => "Tell me a 3 paragraph short story about a mad data scientist at a conference who accidentally creates a talking dog.";
+    public string Story => "Tell me a 5 sentence short story about a mad data scientist at the KidzMash conference who accidentally creates a talking dog.";
     public string Code => "Generate some simple code that will print 'Hello, World!' to the console using C#.";
 
     private string[] Templates =>
@@ -73,18 +82,26 @@
         "Code"
     ];
     
-    private async Task HandleSubmit()
+    private Task HandleSubmit()
     {
         Logger.LogDebug("Generating text from prompt {Prompt}", Prompt);
         
         IsBusy = true;
+        Error = null;
         StateHasChanged();
         
-        GeneratedText = await ChatService.GetTextCompletionsAsync(Prompt);
-        Preview = Markdown.ToHtml(GeneratedText);
-
-        IsBusy = false;
-        Logger.LogInformation("Generated text {Text} from prompt {Prompt}", GeneratedText, Prompt);
+        return ChatService.GetTextCompletionsAsync(Prompt).ContinueOnUIThread(
+            onSuccess: completions =>
+            {
+                GeneratedText = completions;
+                Logger.LogInformation("Generated text {Text} from prompt {Prompt}", GeneratedText, Prompt);
+                Preview = Markdown.ToHtml(GeneratedText);
+            },
+            onError: ex => Error = ex.Message,
+            onFinally: () =>
+            {
+                IsBusy = false;
+            });
     }
 
     public string? Preview { get; set; }

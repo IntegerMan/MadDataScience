@@ -4,7 +4,6 @@
 @inject ILogger<DogOS> Logger
 @inject AzureOpenAiChatService ChatService
 @inject SpeechService SpeechService
-@rendermode InteractiveServer
 
 <div id="ChatContainer">
     <section id="PageHeader">
@@ -70,12 +69,21 @@
             </div>
         }
 
+        @if (IsBusy)
+        {
+            <div class="chat assistant">
+                <div class="chat-participant-name">
+                    <b>AI Agent</b>
+                </div>
+                <div class="chat-message">
+                    <em>Retrieving response...</em>
+                    <br />
+                    <MudProgressLinear Indeterminate="true" Color="Color.Default" Class="mt-2" />
+                </div>
+            </div>
+        }
+
     </div>
-    
-    @if (IsBusy)
-    {
-        <MudProgressLinear Indeterminate="true" Color="Color.Default" Class="mt-2 mb-2" />
-    }
     
     <MudDivider Class="mt-4 mb-4" />
 
@@ -115,10 +123,10 @@
         new AssistantChatMessage("Hello! I'm DogOS! It's great to see you kids here at KidzMash!")
     };
 
-    private async Task SendChatAsync()
+    private Task SendChatAsync()
     {
         string message = Prompt;
-        if (string.IsNullOrWhiteSpace(message)) return;
+        if (string.IsNullOrWhiteSpace(message)) return Task.CompletedTask;
         
         Logger.LogInformation("Sending Chat Message: {Message}", message);
 
@@ -129,15 +137,24 @@
         ErrorMessage = string.Empty;
         StateHasChanged();
         
-        string response = await ChatService.ChatAsync(SystemPrompt, ChatMessages);
-        ChatMessages.Add(new AssistantChatMessage(response));
-
-        // Fire and forget speech synthesis
-        Logger.LogDebug("Speaking response: {Response}", response);
-        _ = SpeechService.SpeakAsync(response, VoiceName);
-        
-        IsBusy = false;
-        StateHasChanged();
+        return ChatService.ChatAsync(SystemPrompt, ChatMessages).ContinueOnUIThread(
+            onSuccess: response =>
+            {
+                ChatMessages.Add(new AssistantChatMessage(response));
+                
+                // Fire and forget speech synthesis
+                Logger.LogDebug("Speaking response: {Response}", response);
+                _ = SpeechService.SpeakAsync(response, VoiceName);
+            },
+            onError: ex =>
+            {
+                ErrorMessage = ex.Message;
+            },
+            onFinally: () =>
+            {
+                IsBusy = false;
+                StateHasChanged();
+            });
     }
 
     private async Task ListenAsync()

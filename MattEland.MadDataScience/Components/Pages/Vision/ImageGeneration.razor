@@ -25,30 +25,62 @@
     <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-4"/>
 }
 
+@if (!string.IsNullOrWhiteSpace(Error))
+{
+    <MudAlert Severity="Severity.Error" Class="mt-4">
+        <MudText Typo="Typo.h6">Error</MudText>
+        <MudText Typo="Typo.body1">@Error</MudText>
+    </MudAlert>
+}
+
 @if (ImageSource != null)
 {
-    <img class="mt-4" src="@ImageSource.ToString()" alt="Image" style="width: 800px; height: auto;">
-    <br />
-    <MudText Typo="Typo.caption" Class="mb-4">@Caption</MudText>
-    <br />
+    <MudAlert Severity="Severity.Info" Variant="Variant.Text" Class="mt-4">
+        <MudText Typo="Typo.h6">Generated Image</MudText>
+        <MudText Typo="Typo.body1">Image generated from prompt @Prompt</MudText>
+    </MudAlert>
+    
+    <img class="mt-4" src="@ImageSource.ToString()" alt="Image" style="width: 100%; height: auto;">
 }
 </MudContainer>
 
 @code {
 
-    private async Task GenerateImage()
+    public string? Error { get; set; }
+    
+    private Task GenerateImage()
     {
-        Logger.LogInformation("Generating Image from prompt {Prompt}", Prompt);
+        if (string.IsNullOrWhiteSpace(Prompt))
+        {
+            Error = "Please enter a prompt first";
+            StateHasChanged();
+            return Task.CompletedTask;
+        }
 
         IsBusy = true;
+        Error = null;
+        ImageSource = null;
+        Caption = null;
         StateHasChanged();
         
-        ImageGenerationResult result = await ImageImageService.GenerateImageAsync(Prompt);
-        ImageSource = result.ImageUri;
-        Caption = result.Caption;
-        IsBusy = false;
+        Logger.LogInformation("Generating Image from prompt {Prompt}", Prompt);
         
-        Logger.LogInformation("Generated Image from prompt {Prompt} at {ImageSource}", Caption, ImageSource);
+        return ImageImageService.GenerateImageAsync(Prompt).ContinueOnUIThread(
+            onSuccess: result =>
+            {
+                ImageSource = result.ImageUri;
+                Caption = result.Caption;
+                Logger.LogInformation("Generated Image from prompt {Prompt} at {ImageSource}", Caption, ImageSource);
+            },
+            onError: ex =>
+            {
+                Error = ex.Message;
+            },
+            onFinally: () =>
+            {
+                IsBusy = false;
+                StateHasChanged();
+            });
     }
 
     public string? Caption { get; set; }

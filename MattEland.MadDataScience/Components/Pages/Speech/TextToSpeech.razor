@@ -14,21 +14,57 @@
     
         @* TODO: Add a voice selection box *@
     
-        <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" Class="mt-4">Speak</MudButton>
+        <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" Class="mt-4" Disabled="IsBusy">Speak</MudButton>
     </form>
+    
+    @if (IsBusy)
+    {
+        <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-8"/>
+    }
+    
+    @if (!string.IsNullOrWhiteSpace(Error))
+    {
+        <MudAlert Severity="Severity.Error" Class="mt-8">
+            <MudText Typo="Typo.h6" Class="mt8">Error</MudText>
+            <MudText Typo="Typo.body1">@Error</MudText>
+        </MudAlert>
+    }
+    @if (Success)
+    {
+        <MudAlert Severity="Severity.Success" Class="mt-8">
+            <MudText Typo="Typo.h6" Class="mt8">Success</MudText>
+            <MudText Typo="Typo.body1">Message sent to generate speech</MudText>
+        </MudAlert>
+    }
 </MudContainer>
 
 @code {
     public string? Message { get; set; }
+    public bool IsBusy { get; set; }
+    public string? Error { get; set; }
+    public bool Success { get; set; }
     
     private async Task HandleSubmit()
     {
         if (Message == null)
         {
+            Error = "Please enter a message first";
+            StateHasChanged();
             return;
         }
         
-        Console.WriteLine("Sending message to speech service: " + Message);
-        await SpeechService.SpeakAsync(Message);
+        IsBusy = true;
+        Error = null;
+        Success = false;
+        StateHasChanged();
+        
+        await SpeechService.SpeakAsync(Message).ContinueOnUIThread(
+            onSuccess: () => { Success = true; },
+            onError: ex => { Error = ex.Message; },
+            onFinally: () =>
+            {
+                IsBusy = false;
+                StateHasChanged();
+            });
     }
 }

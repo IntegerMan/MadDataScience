@@ -8,32 +8,35 @@ public class SpeechService(IOptionsSnapshot<AzureAiServicesConfig> options, ILog
 {
     private readonly AzureAiServicesConfig _options = options.Value;
 
-    public Task SpeakAsync(string text, string? voiceName = null)
+    public async Task SpeakAsync(string text, string? voiceName = null)
     {
         voiceName ??= _options.SpeechVoiceName;
-        
+
         logger.LogInformation("Speaking: {Text} with voice {Voice}", text, voiceName);
 
         SpeechConfig config = SpeechConfig.FromSubscription(_options.Key, _options.Region);
         config.SpeechSynthesisVoiceName = voiceName;
-        
+
         SpeechSynthesizer synth = new(config);
 
-        return synth.SpeakTextAsync(text);
+        // Start speaking doesn't wait for it to complete speaking before returning to the UI
+        _ = synth.StartSpeakingTextAsync(text);
+        
+        await Task.CompletedTask; // keeping this async for consistency in error handling
     }
 
     public async Task<string?> ListenAsync()
     {
         SpeechConfig config = SpeechConfig.FromSubscription(_options.Key, _options.Region);
-        
+
         SpeechRecognizer recognizer = new(config);
 
         logger.LogDebug("Listening for speech...");
         SpeechRecognitionResult? result = await recognizer.RecognizeOnceAsync();
         logger.LogDebug("Speech recognition complete");
-        
-        logger.LogInformation("Recognized: {Text} with status {Status}", result?.Text,result?.Reason);
-        
+
+        logger.LogInformation("Recognized: {Text} with status {Status}", result?.Text, result?.Reason);
+
         return result?.Text;
     }
 }

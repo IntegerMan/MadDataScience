@@ -1,50 +1,61 @@
 @page "/Speech/SpeechToText"
-@rendermode InteractiveServer
 @inject SpeechService SpeechService
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="mx-auto my-8">
-<MudText Typo="Typo.h4">Speech to Text (Speech Recognition)</MudText>
-<MudText Typo="Typo.subtitle1" Class="mb-8">
-    AI can use neural networks to match audio to known words in supported languages, giving you real-time speech recognition.
-</MudText>
+    <MudText Typo="Typo.h4">Speech to Text (Speech Recognition)</MudText>
+    <MudText Typo="Typo.subtitle1" Class="mb-8">
+        AI can use neural networks to match audio to known words in supported languages, giving you real-time speech
+        recognition.
+    </MudText>
 
-<form @onsubmit="HandleSubmit">
-    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" Disabled="Listening">Start Listening</MudButton>
-</form>
+    <form @onsubmit="HandleSubmit">
+        <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" Disabled="Listening">
+            Start Listening
+        </MudButton>
+    </form>
 
-@if (Listening)
-{
-    <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-8"/>
-}
+    @if (Listening)
+    {
+        <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-8"/>
+    }
 
-@if (!string.IsNullOrWhiteSpace(Heard))
-{
-    <MudText Typo="Typo.h6" Class="mt8">Heard:</MudText>
-    <MudText Typo="Typo.body1" Class="mt8">@Heard</MudText>
-}
+    @if (!string.IsNullOrWhiteSpace(Heard))
+    {
+        <MudAlert Severity="Severity.Success" class="mt-8" Variant="Variant.Outlined">
+            <MudText Typo="Typo.h6" Class="mt8">Heard:</MudText>
+            <MudText Typo="Typo.body1" Class="mt8">@Heard</MudText>
+        </MudAlert>
+    }
+    @if (!string.IsNullOrWhiteSpace(Error))
+    {
+        <MudAlert Severity="Severity.Error" Class="mt-8">
+            <MudText Typo="Typo.h6" Class="mt8">Error:</MudText>
+            <MudText Typo="Typo.body1" Class="mt8">@Error</MudText>
+        </MudAlert>
+    }
 </MudContainer>
 
 @code {
 
+    public string? Error { get; set; }
     public string? Heard { get; set; }
     public bool Listening { get; set; }
-    
+
     private Task HandleSubmit()
     {
         Listening = true;
         Heard = null;
+        Error = null;
         StateHasChanged();
-        
-        return SpeechService.ListenAsync().ContinueWith(task =>
-        {
-            string heard = task.Result ?? "No speech detected";
-            InvokeAsync(() =>
+
+        return SpeechService.ListenAsync().ContinueOnUIThread(
+            onSuccess: result => { Heard = result ?? "No speech detected"; },
+            onError: ex => { Error = ex.Message; },
+            onFinally: () =>
             {
-                Heard = heard;
                 Listening = false;
                 StateHasChanged();
             });
-        });
     }
 
 }

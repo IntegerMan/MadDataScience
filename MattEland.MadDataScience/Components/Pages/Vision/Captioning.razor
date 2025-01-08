@@ -4,46 +4,76 @@
 @inject ILogger<Captioning> Logger
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="mx-auto my-8">
-<MudText Typo="Typo.h4">Image Captioning</MudText>
-<MudText Typo="Typo.subtitle1" Class="mb-8">
-    Describe the contents of an image
-</MudText>
+    <MudText Typo="Typo.h4">Image Captioning</MudText>
+    <MudText Typo="Typo.subtitle1" Class="mb-8">
+        Describe the contents of an image
+    </MudText>
 
-<img src="@ImageSource" alt="Sample Image" class="img-fluid"/>
-<br/>
+    <img src="@ImageSource" alt="Sample Image" style="height: 600px; width: auto;"/>
 
-<MudText Typo="Typo.caption">@Caption</MudText>
-<br/>
+    @if (!string.IsNullOrWhiteSpace(Error))
+    {
+        <MudAlert Severity="Severity.Error" Class="mt-8">
+            <MudText Typo="Typo.h6">Error</MudText>
+            <MudText Typo="Typo.body1">@Error</MudText>
+        </MudAlert>
+    }
+    
+    @if (!string.IsNullOrWhiteSpace(Caption))
+    {
+        <MudAlert Severity="Severity.Info" Class="mt-8">
+            <MudText Typo="Typo.body1">@Caption</MudText>
+        </MudAlert>
+    }
 
-@if (IsBusy)
-{
-    <MudProgressLinear Indeterminate="true" Color="Color.Primary"/>
-}
+    @if (IsBusy)
+    {
+        <MudProgressLinear Indeterminate="true" Color="Color.Primary" class="mt-8"/>
+    }
 
-<MudButton Class="mt-4" Disabled="IsBusy" @onclick="HandleCaptionClick" Variant="Variant.Filled" Color="Color.Primary">
-    Caption This
-</MudButton>
+    <div class="mt-8">
+    <MudButton Disabled="IsBusy" @onclick="HandleCaptionClick" Variant="Variant.Filled"
+               Color="Color.Primary">
+        Caption This
+    </MudButton>
+    </div>
 </MudContainer>
 
 @code {
     public string ImageSource { get; set; } = "CodeMash.jpg";
     public string? Caption { get; set; }
+    public string? Error { get; set; }
     public bool IsBusy { get; set; }
 
-    private async Task HandleCaptionClick()
+    private Task HandleCaptionClick()
     {
-        BinaryData data = await VisionService.LoadImageDataAsync(ImageSource);
-
+        BinaryData? data = VisionService.LoadImageData(ImageSource);
+        if (data == null)
+        {
+            Error = "Failed to load image data";
+            StateHasChanged();
+            return Task.CompletedTask;
+        }
+        
         Logger.LogDebug("Captioning Image");
 
-        Caption = "Generating caption...";
+        Caption = null;
+        Error = null;
         IsBusy = true;
         StateHasChanged();
 
-        Caption = await VisionService.GetImageCaptionAsync(data);
-        IsBusy = false;
-
-        Logger.LogInformation("Captioned Image {ImageSource} as {Caption}", ImageSource, Caption);
+        return VisionService.GetImageCaptionAsync(data).ContinueOnUIThread(
+            onSuccess: caption =>
+            {
+                Caption = caption ?? "No caption found";
+                Logger.LogInformation("Captioned Image {ImageSource} as {Caption}", ImageSource, Caption);
+            },
+            onError: ex => Error = ex.Message,
+            onFinally: () =>
+            {
+                IsBusy = false;
+                StateHasChanged();
+            });
     }
 
 }

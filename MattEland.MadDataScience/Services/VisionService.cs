@@ -8,27 +8,39 @@ namespace MattEland.MadDataScience.Services;
 
 public class VisionService
 {
-    private readonly Uri _endpoint;
-    private readonly AzureKeyCredential _credential;
     private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly ImageAnalysisClient _client;
 
     public VisionService(IOptionsSnapshot<AzureAiServicesConfig> config, IWebHostEnvironment webHostEnvironment)
     {
         _webHostEnvironment = webHostEnvironment;
-        _endpoint = new Uri(config.Value.Endpoint);
-        _credential = new AzureKeyCredential(config.Value.Key);
-        _client = new ImageAnalysisClient(_endpoint, _credential);
+        var endpoint = new Uri(config.Value.Endpoint);
+        var credential = new AzureKeyCredential(config.Value.Key);
+        _client = new ImageAnalysisClient(endpoint, credential);
     }
 
-    public async Task<BinaryData> LoadImageDataAsync(string imageSource)
+    public BinaryData? LoadImageData(string imageSource)
     {
-        string filePath = Path.Combine(_webHostEnvironment.WebRootPath, imageSource);
-        Console.WriteLine($"Reading Image Bytes from {filePath}");
+        try
+        {
+            string filePath = Path.Combine(_webHostEnvironment.WebRootPath, imageSource);
+            Console.WriteLine($"Reading Image Bytes from {filePath}");
 
-        // Get the bytes of the image from the server
-        Byte[] imageBytes = await File.ReadAllBytesAsync(filePath);
-        return BinaryData.FromBytes(imageBytes);
+            if (!File.Exists(filePath))
+            {
+                Console.WriteLine($"Image not found at {filePath}");
+                return null;
+            }
+            
+            // Get the bytes of the image from the server
+            byte[] imageBytes = File.ReadAllBytes(filePath);
+            return BinaryData.FromBytes(imageBytes);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"{ex.GetType().Name} Error loading image: {ex.Message}");
+            return null;
+        }   
     }
 
     public async Task<string?> GetImageCaptionAsync(BinaryData data)
@@ -37,30 +49,6 @@ public class VisionService
         Response<ImageAnalysisResult>? result = await _client.AnalyzeAsync(data, VisualFeatures.Caption);
 
         return result?.Value?.Caption?.Text;
-    }
-
-    public async Task<List<ObjectDetectionResult>> DetectObjectsAsync(BinaryData data)
-    {
-        List<ObjectDetectionResult> results = new();
-        Response<ImageAnalysisResult>? result = await _client.AnalyzeAsync(data, VisualFeatures.Objects);
-
-        if (result?.Value?.Objects is null)
-        {
-            return results;
-        }
-
-        foreach (DetectedObject obj in result.Value.Objects.Values)
-        {
-            Console.WriteLine($"Object: {string.Join(", ", obj.Tags.Select(t => t.Name))} at {obj.BoundingBox.X}, {obj.BoundingBox.Y}");
-            results.Add(new ObjectDetectionResult
-            {
-                Name = obj.Tags.Select(t => t.Name).FirstOrDefault() ?? "Unknown",
-                Confidence = obj.Tags.FirstOrDefault()?.Confidence ?? 0,
-                BoundingBox = new Rectangle(obj.BoundingBox.X, obj.BoundingBox.Y, obj.BoundingBox.Width, obj.BoundingBox.Height)
-            });
-        }
-
-        return results;
     }
     
     public async Task<List<ObjectDetectionResult>> CaptionObjectsAsync(BinaryData data)

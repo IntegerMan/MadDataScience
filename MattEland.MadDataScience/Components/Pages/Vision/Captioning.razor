@@ -1,16 +1,22 @@
 @page "/Vision/ImageCaptioning"
-@rendermode InteractiveServer
 @inject VisionService VisionService
 @inject ILogger<Captioning> Logger
 
-<MudContainer MaxWidth="MaxWidth.Medium" Class="mx-auto my-8">
+<MudContainer MaxWidth="MaxWidth.Large" Class="mx-auto my-8">
     <MudText Typo="Typo.h4">Image Captioning</MudText>
     <MudText Typo="Typo.subtitle1" Class="mb-8">
         Describe the contents of an image
     </MudText>
 
-    <img src="@ImageSource" alt="Sample Image" style="height: 600px; width: auto;"/>
-
+    <MudCarousel @bind-SelectedIndex="selectedIndex" TData="string" AutoCycle="false" Style="height: 800px;">
+        @foreach (var image in Images)
+        {
+            <MudCarouselItem>
+                <img src="@image" alt="Sample Image" style="height: 90%; width: auto; cursor: pointer; object-fit: contain;" />
+            </MudCarouselItem>
+        }
+    </MudCarousel>
+    
     @if (!string.IsNullOrWhiteSpace(Error))
     {
         <MudAlert Severity="Severity.Error" Class="mt-8">
@@ -40,14 +46,24 @@
 </MudContainer>
 
 @code {
-    public string ImageSource { get; set; } = "CodeMash.jpg";
     public string? Caption { get; set; }
     public string? Error { get; set; }
     public bool IsBusy { get; set; }
-
+    private int selectedIndex = 0;
+    private List<string> Images { get; set; } =
+    [
+        "CodeMash.jpg",
+        "SquirrelGorilla.png",
+        "Museum.png",
+        "Defrost.png",
+        "DieHard.png",
+        "DoctorWho.jpeg"
+    ];
+    
     private Task HandleCaptionClick()
     {
-        BinaryData? data = VisionService.LoadImageData(ImageSource);
+        string imageSource = Images[selectedIndex];
+        BinaryData? data = VisionService.LoadImageData(imageSource);
         if (data == null)
         {
             Error = "Failed to load image data";
@@ -55,7 +71,7 @@
             return Task.CompletedTask;
         }
         
-        Logger.LogDebug("Captioning Image");
+        Logger.LogDebug("Captioning Image {ImageSource}", imageSource);
 
         Caption = null;
         Error = null;
@@ -66,7 +82,7 @@
             onSuccess: caption =>
             {
                 Caption = caption ?? "No caption found";
-                Logger.LogInformation("Captioned Image {ImageSource} as {Caption}", ImageSource, Caption);
+                Logger.LogInformation("Captioned Image {ImageSource} as {Caption}", imageSource, Caption);
             },
             onError: ex => Error = ex.Message,
             onFinally: () =>

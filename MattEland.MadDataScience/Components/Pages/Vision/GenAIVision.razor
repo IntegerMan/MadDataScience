@@ -9,7 +9,14 @@
     Some LLMs can also interpret images and generate images of their own.
 </MudText>
 
-<img src="@ImageSource" alt="Sample Image" class="img-fluid"/>
+<MudCarousel @bind-SelectedIndex="selectedIndex" TData="string" AutoCycle="false" Style="height: 800px;">
+    @foreach (var image in Images)
+    {
+        <MudCarouselItem>
+            <img src="@image" alt="Sample Image" style="height: 90%; width: auto; cursor: pointer; object-fit: contain;" />
+        </MudCarouselItem>
+    }
+</MudCarousel>
 
 @if (Description is not null)
 {
@@ -40,7 +47,17 @@
 </MudContainer>
 
 @code {
-    public Uri ImageSource { get; set; } = new("https://www.danylkoweb.com/content/images/collection-codemash.jpg");
+    private int selectedIndex = 0;
+    private List<string> Images { get; set; } =
+    [
+        "CodeMash.jpg",
+        "SquirrelGorilla.png",
+        "Museum.png",
+        "Defrost.png",
+        "DieHard.png",
+        "DoctorWho.jpeg"
+    ];
+    
     public string? Description { get; set; }
     public string? Error { get; set; }
     public bool IsBusy { get; set; }
@@ -48,16 +65,18 @@
     
     private Task HandleDescribeClick()
     {
+        string imageSource = Images[selectedIndex];
+        
         IsBusy = true;
         Description = null;
         Error = null;
         StateHasChanged();
 
         string prompt = "You are DogOS, a cute and playful AI assistant at KidzMash conference at CodeMash. The user has given you an image to look at. Talk about what you see, from the perspective of a dog. Being silly is fine, but keep it to a few sentences. Please avoid emojis.";
-        return ChatService.DescribeImageAsync(prompt, ImageSource).ContinueOnUIThread(
+        return ChatService.DescribeImageAsync(prompt, imageSource).ContinueOnUIThread(
             description =>
             {
-                Logger.LogInformation("Described Image {ImageSource} as {Description}", ImageSource, description);
+                Logger.LogInformation("Described Image {ImageSource} as {Description}", imageSource, description);
                 Description = description;
                 _ = SpeechService.SpeakAsync(description, VoiceName);
             },

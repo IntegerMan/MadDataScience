@@ -7,7 +7,54 @@ namespace MattEland.MadDataScience.Services;
 public class SpeechService(IOptionsSnapshot<AzureAiServicesConfig> options, ILogger<SpeechService> logger)
 {
     private readonly AzureAiServicesConfig _options = options.Value;
+    public string[] DefaultVoices { get; } = 
+    [
+        "en-US-AvaMultilingualNeural",
+        "en-US-AndrewMultilingualNeural",
+        "en-US-EmmaMultilingualNeural",
+        "en-US-BrianMultilingualNeural",
+        "en-US-GuyNeural",
+        "en-GB-AlfieNeural",
+        "en-GB-MaisieNeural",
+        "en-AU-WilliamNeural",
+        "en-AU-FreyaNeural",
+        "es-MX-JorgeNeural",
+        "fr-FR-JosephineNeural",
+    ];
 
+    public async Task<IEnumerable<string>> GetSpeechVoiceNamesAsync()
+    {
+        SpeechConfig config = SpeechConfig.FromSubscription(_options.Key, _options.Region);
+        SpeechSynthesizer synth = new(config);
+
+        try
+        {
+            string[] locales =
+            [
+                "en-US",
+                "en-GB",
+                "en-AU",
+                "es-MX",
+                "fr-FR",
+            ];
+            
+            List<string> voices = new();
+            foreach (var locale in locales)
+            {
+                foreach (var voice in (await synth.GetVoicesAsync(locale: locale)).Voices)
+                {
+                    voices.Add(voice.ShortName);
+                }
+            }
+
+            return voices;
+        }
+        catch
+        {
+            return DefaultVoices;
+        }
+    }
+    
     public async Task SpeakAsync(string text, string? voiceName = null)
     {
         voiceName ??= _options.SpeechVoiceName;

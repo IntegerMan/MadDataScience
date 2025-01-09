@@ -9,7 +9,7 @@
     Some LLMs can also interpret images and generate images of their own.
 </MudText>
 
-<MudCarousel @bind-SelectedIndex="selectedIndex" TData="string" AutoCycle="false" Style="height: 800px;">
+<MudCarousel @bind-SelectedIndex="_selectedIndex" TData="string" AutoCycle="false" Style="height: 800px;">
     @foreach (var image in Images)
     {
         <MudCarouselItem>
@@ -47,7 +47,7 @@
 </MudContainer>
 
 @code {
-    private int selectedIndex = 0;
+    private int _selectedIndex = 0;
     private List<string> Images { get; set; } =
     [
         "CodeMash.jpg",
@@ -65,7 +65,7 @@
     
     private Task HandleDescribeClick()
     {
-        string imageSource = Images[selectedIndex];
+        string imageSource = Images[_selectedIndex];
         
         IsBusy = true;
         Description = null;

@@ -8,23 +8,32 @@
     <MudText Typo="Typo.subtitle1" Class="mb-8">
         Detect and describe objects inside of an image
     </MudText>
-
-    <div style="position: relative; display: inline-block;">
-        <img src="@ImageSource" alt="Sample Image" class="img-fluid"/>
-        @if (Objects.Any())
-        {
-            @foreach (var obj in Objects)
+    
+        <MudCarousel @bind-SelectedIndex="_selectedIndex" TData="string" AutoCycle="false" Style="height: 600px;">
+            @foreach (var image in Images)
             {
-                <div style="position: absolute; border: 2px solid red;
-                    top: @(obj.BoundingBox.Y)px;
-                left: @(obj.BoundingBox.X)px;
-                width: @(obj.BoundingBox.Width)px;
-                height: @(obj.BoundingBox.Height)px;"
-                     title="@obj.Name">
-                </div>
+                <MudCarouselItem>
+                    <div style="position: relative; display: inline-block; transform: scale(0.65); transform-origin: top left;">
+                        <img src="@image" alt="Sample Image" style="cursor: pointer;">
+                        @if (Objects.TryGetValue(_selectedIndex, out List<ObjectDetectionResult>? detectedObjs))
+                        {
+                            @foreach (var obj in detectedObjs)
+                            {
+                                <div style="position: absolute; border: 2px solid red;
+                                    z-index: @detectedObjs.IndexOf(obj);
+                                    top: @(obj.BoundingBox.Y)px;
+                                left: @(obj.BoundingBox.X)px;
+                                width: @(obj.BoundingBox.Width)px;
+                                height: @(obj.BoundingBox.Height)px;"
+                                     title="@obj.Name">
+                                </div>
+                            }
+                        }
+                    </div>
+                </MudCarouselItem>
             }
-        }
-    </div>
+        </MudCarousel>
+
 
     <div class="mt-8">
         <MudButton Disabled="IsBusy" @onclick="HandleCaptionClick" Variant="Variant.Filled" Color="Color.Primary">
@@ -37,12 +46,12 @@
         <MudProgressLinear class="mt-8" Indeterminate="true" Color="Color.Primary"/>
     }
 
-    @if (Objects.Any())
+    @if (Objects.TryGetValue(_selectedIndex, out List<ObjectDetectionResult>? objects))
     {
         <MudAlert Severity="Severity.Info" Variant="Variant.Text" class="mt-8">
             <MudText Typo="Typo.h6">Objects Detected</MudText>
             <ul>
-                @foreach (var obj in Objects)
+                @foreach (var obj in objects)
                 {
                     <li>@obj (@obj.BoundingBox.X , @obj.BoundingBox.Y, @obj.BoundingBox.Width, @obj.BoundingBox.Height)</li>
                 }
@@ -60,14 +69,24 @@
 </MudContainer>
 
 @code {
-    public string ImageSource => "CodeMash.jpg";
-    List<ObjectDetectionResult> Objects { get; set; } = new();
+    Dictionary<int, List<ObjectDetectionResult>> Objects { get; set; } = new();
     public bool IsBusy { get; set; }
     public string? Error { get; set; }
+    private int _selectedIndex = 0;
+    private List<string> Images { get; set; } =
+    [
+        "CodeMash.jpg",
+        "SquirrelGorilla.png",
+        "Museum.png",
+        "Defrost.png",
+        "DieHard.png",
+        "DoctorWho.jpeg"
+    ];
 
     private Task HandleCaptionClick()
     {
-        BinaryData? data = VisionService.LoadImageData(ImageSource);
+        string imageSource = Images[_selectedIndex];
+        BinaryData? data = VisionService.LoadImageData(imageSource);
         if (data == null)
         {
             Error = "Failed to load image data";
@@ -75,7 +94,7 @@
             return Task.CompletedTask;
         }
 
-        Logger.LogDebug("Dense Captioning Image {Image}", ImageSource);
+        Logger.LogDebug("Dense Captioning Image {Image}", imageSource);
 
         Error = null;
         Objects.Clear();
@@ -84,9 +103,12 @@
 
         return VisionService.CaptionObjectsAsync(data).ContinueOnUIThread(
             onSuccess: objects =>
-            {
-                Objects = objects;
-                Logger.LogInformation("Detected {Count} objects in {Image}", Objects.Count, ImageSource);
+            { 
+                Objects[_selectedIndex] = objects.OrderByDescending(o => o.BoundingBox.Width)
+                    .ThenByDescending(o => o.BoundingBox.Height)
+                    .ToList();
+                
+                Logger.LogInformation("Detected {Count} objects in {Image}", objects.Count, imageSource);
             },
             onError: ex => Error = ex.Message,
             onFinally: () =>

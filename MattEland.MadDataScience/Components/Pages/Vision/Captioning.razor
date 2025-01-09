@@ -8,7 +8,7 @@
         Describe the contents of an image
     </MudText>
 
-    <MudCarousel @bind-SelectedIndex="selectedIndex" TData="string" AutoCycle="false" Style="height: 800px;">
+    <MudCarousel @bind-SelectedIndex="_selectedIndex" TData="string" AutoCycle="false" Style="height: 800px;">
         @foreach (var image in Images)
         {
             <MudCarouselItem>
@@ -49,7 +49,7 @@
     public string? Caption { get; set; }
     public string? Error { get; set; }
     public bool IsBusy { get; set; }
-    private int selectedIndex = 0;
+    private int _selectedIndex = 0;
     private List<string> Images { get; set; } =
     [
         "CodeMash.jpg",
@@ -62,7 +62,7 @@
     
     private Task HandleCaptionClick()
     {
-        string imageSource = Images[selectedIndex];
+        string imageSource = Images[_selectedIndex];
         BinaryData? data = VisionService.LoadImageData(imageSource);
         if (data == null)
         {

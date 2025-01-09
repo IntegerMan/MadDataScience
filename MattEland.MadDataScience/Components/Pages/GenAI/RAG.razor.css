@@ -1,0 +1,20 @@
+#ChatContainer {
+    display: flex;
+    flex-direction: column;
+    height: 98vh;
+}
+
+#ChatMessages {
+    flex-grow: 1;
+}
+
+#UserTextEntry {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+#UserTextEntry > .mud-input-control {
+    flex-grow: 1;
+}

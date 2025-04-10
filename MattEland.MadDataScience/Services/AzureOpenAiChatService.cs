@@ -68,7 +68,7 @@ public class AzureOpenAiChatService
             new SystemChatMessage(prompt),
             new UserChatMessage([
                 ChatMessageContentPart.CreateTextPart("Here's the image I'd like you to describe:"),
-                ChatMessageContentPart.CreateImagePart(_visionService.LoadImageData(image), "image/png") // TODO: Ensure consistent image format
+                ChatMessageContentPart.CreateImagePart(_visionService.LoadImageData(image), "image/png")
             ])
         ];
         

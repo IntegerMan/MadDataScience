@@ -4,52 +4,59 @@
 @inject SpeechService SpeechService
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="mx-auto my-8">
-<MudText Typo="Typo.h4">Chatting with Images</MudText>
-<MudText Typo="Typo.subtitle1" Class="mb-8">
-    Some LLMs can also interpret images and generate images of their own.
-</MudText>
+    <MudText Typo="Typo.h4">Chatting with Images</MudText>
+    <MudText Typo="Typo.subtitle1" Class="mb-8">
+        Some LLMs can also interpret images and generate images of their own.
+    </MudText>
 
-<MudCarousel @bind-SelectedIndex="_selectedIndex" TData="string" AutoCycle="false" Style="height: 800px;">
-    @foreach (var image in Images)
-    {
-        <MudCarouselItem>
-            <img src="@image" alt="Sample Image" style="height: 90%; width: auto; cursor: pointer; object-fit: contain;" />
-        </MudCarouselItem>
-    }
-</MudCarousel>
+    <MudTabs>
+        <MudTabPanel Text="Analyze">
+            <MudCarousel @bind-SelectedIndex="_selectedIndex" TData="string" AutoCycle="false" Style="height: 800px;">
+                @foreach (var image in Images)
+                {
+                    <MudCarouselItem>
+                        <img src="@image" alt="Sample Image" style="height: 90%; width: auto; cursor: pointer; object-fit: contain;" />
+                    </MudCarouselItem>
+                }
+            </MudCarousel>
 
-@if (Description is not null)
-{
-    <MudAlert Severity="Severity.Info" Class="mt-8" Variant="Variant.Text">
-        <MudText Typo="Typo.h6">Image Description</MudText>
-        <MudText Typo="Typo.body1">@Description</MudText>
-    </MudAlert>
-}
+            @if (Description is not null)
+            {
+                <MudAlert Severity="Severity.Info" Class="mt-8" Variant="Variant.Text">
+                    <MudText Typo="Typo.h6">Image Description</MudText>
+                    <MudText Typo="Typo.body1">@Description</MudText>
+                </MudAlert>
+            }
 
-@if (!string.IsNullOrWhiteSpace(Error))
-{
-    <MudAlert Severity="Severity.Error" Class="mt-8">
-        <MudText Typo="Typo.h6">Error</MudText>
-        <MudText Typo="Typo.body1">@Error</MudText>
-    </MudAlert>
-}
+            @if (!string.IsNullOrWhiteSpace(Error))
+            {
+                <MudAlert Severity="Severity.Error" Class="mt-8">
+                    <MudText Typo="Typo.h6">Error</MudText>
+                    <MudText Typo="Typo.body1">@Error</MudText>
+                </MudAlert>
+            }
 
-@if (IsBusy)
-{
-    <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-8"/>
-}
+            @if (IsBusy)
+            {
+                <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-8" />
+            }
 
-<div class="mt-8">
-<MudButton Disabled="IsBusy" @onclick="HandleDescribeClick" Variant="Variant.Filled" Color="Color.Primary">
-    Describe This
-</MudButton>
-</div>
+            <div class="mt-8">
+                <MudButton Disabled="IsBusy" @onclick="HandleDescribeClick" Variant="Variant.Filled" Color="Color.Primary">
+                    Describe This
+                </MudButton>
+            </div>
+        </MudTabPanel>
+        <MudTabPanel Text="Code">
+            <img src="CodeImageAnalysis.png" alt="Image Analysis Code" />
+        </MudTabPanel>
+    </MudTabs>
 </MudContainer>
 
 @code {
     private int _selectedIndex = 0;
     private List<string> Images { get; } =
-    [
+        [
         "CM1.jpg",
         "CM2.jpg",
         "CM3.jpg",
@@ -65,16 +72,16 @@
         "CM13.jpg",
         "CM14.jpg"
     ];
-    
+
     public string? Description { get; set; }
     public string? Error { get; set; }
     public bool IsBusy { get; set; }
     public string VoiceName { get; set; } = "en-US-GuyNeural";
-    
+
     private Task HandleDescribeClick()
     {
         string imageSource = Images[_selectedIndex];
-        
+
         IsBusy = true;
         Description = null;
         Error = null;

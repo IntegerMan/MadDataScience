@@ -3,51 +3,58 @@
 @inject ILogger<ImageGeneration> Logger
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="mx-auto my-8">
-<MudText Typo="Typo.h4">Image Generation</MudText>
-<MudText Typo="Typo.subtitle1" Class="mb-8">
-    Generate an image from a prompt
-</MudText>
+    <MudText Typo="Typo.h4">Image Generation</MudText>
+    <MudText Typo="Typo.subtitle1" Class="mb-8">
+        Generate an image from a prompt
+    </MudText>
 
-<form @onsubmit="GenerateImage">
-    <MudTextField Label="Prompt" 
-                  Variant="Variant.Outlined" 
-                  Lines="3"
-                  AutoGrow
-                  AutoFocus="true"
-                  HelperText="Describe the image you'd like to generate"
-                  @bind-Value="Prompt" />
-        
-    <MudButton Disabled="IsBusy" Class="mt-4" Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Generate</MudButton>
-</form>
+    <MudTabs>
+        <MudTabPanel Text="Generate">
+            <form @onsubmit="GenerateImage">
+                <MudTextField Label="Prompt"
+                              Variant="Variant.Outlined"
+                              Lines="3"
+                              AutoGrow
+                              AutoFocus="true"
+                              HelperText="Describe the image you'd like to generate"
+                              @bind-Value="Prompt" />
 
-@if (IsBusy)
-{
-    <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-4"/>
-}
+                <MudButton Disabled="IsBusy" Class="mt-4" Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Generate</MudButton>
+            </form>
 
-@if (!string.IsNullOrWhiteSpace(Error))
-{
-    <MudAlert Severity="Severity.Error" Class="mt-4">
-        <MudText Typo="Typo.h6">Error</MudText>
-        <MudText Typo="Typo.body1">@Error</MudText>
-    </MudAlert>
-}
+            @if (IsBusy)
+            {
+                <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-4" />
+            }
 
-@if (ImageSource != null)
-{
-    <MudAlert Severity="Severity.Info" Variant="Variant.Text" Class="mt-4">
-        <MudText Typo="Typo.h6">Generated Image</MudText>
-        <MudText Typo="Typo.body1">Image generated from prompt @Prompt</MudText>
-    </MudAlert>
-    
-    <img class="mt-4" src="@ImageSource.ToString()" alt="Image" style="width: 100%; height: auto;">
-}
+            @if (!string.IsNullOrWhiteSpace(Error))
+            {
+                <MudAlert Severity="Severity.Error" Class="mt-4">
+                    <MudText Typo="Typo.h6">Error</MudText>
+                    <MudText Typo="Typo.body1">@Error</MudText>
+                </MudAlert>
+            }
+
+            @if (ImageSource != null)
+            {
+                <MudAlert Severity="Severity.Info" Variant="Variant.Text" Class="mt-4">
+                    <MudText Typo="Typo.h6">Generated Image</MudText>
+                    <MudText Typo="Typo.body1">Image generated from prompt @Prompt</MudText>
+                </MudAlert>
+
+                <img class="mt-4" src="@ImageSource.ToString()" alt="Image" style="width: 100%; height: auto;">
+            }
+        </MudTabPanel>
+        <MudTabPanel Text="Code">
+            <img src="CodeImageGen.png" alt="Image Gen Code" />
+        </MudTabPanel>
+    </MudTabs>
 </MudContainer>
 
 @code {
 
     public string? Error { get; set; }
-    
+
     private Task GenerateImage()
     {
         if (string.IsNullOrWhiteSpace(Prompt))
@@ -62,9 +69,9 @@
         ImageSource = null;
         Caption = null;
         StateHasChanged();
-        
+
         Logger.LogInformation("Generating Image from prompt {Prompt}", Prompt);
-        
+
         return ImageImageService.GenerateImageAsync(Prompt).ContinueOnUIThread(
             onSuccess: result =>
             {

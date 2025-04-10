@@ -11,94 +11,103 @@
             A step up from text completions, chat completions includes the conversation history as a series of messages.
         </MudText>
     </section>
-    
-    <section id="SystemPrompt">
-        <MudTextField Lines="1"
-                      AutoGrow
-                      @bind-Value="SystemPrompt"
-                      Variant="Variant.Filled"
-                      Class="mb-4"
-                      Label="System Prompt"
-                      HelperText="The System Prompt governs how the AI agent responds"/>
-    </section>
 
-    <div id="ChatMessages">
-        @foreach (var item in ChatMessages)
-        {
-            @if (item is UserChatMessage ucm)
-            {
-                <div class="chat user">
-                    <div class="chat-participant-name">
-                        <b>You</b>
-                    </div>
-                    <div class="chat-message">
-                        @foreach (var part in ucm.Content)
-                        {
-                            <span>@part.Text</span>
-                        }
-                    </div>
-                </div>
-            }
 
-            @if (item is AssistantChatMessage acm)
-            {
-                <div class="chat assistant">
-                    <div class="chat-participant-name">
-                        <b>AI Agent</b>
-                    </div>
-                    <div class="chat-message">
-                        @foreach (var part in acm.Content)
-                        {
-                            <span>@((MarkupString)Markdown.ToHtml(part.Text))</span>
-                        }
-                    </div>
-                </div>
-            }
-        }
+    <MudTabs>
 
-        @if (IsBusy)
-        {
-            <div class="chat assistant">
-                <div class="chat-participant-name">
-                    <b>AI Agent</b>
-                </div>
-                <div class="chat-message">
-                    <em>Retrieving response...</em>
-                    <br />
-                    <MudProgressLinear Indeterminate="true" Color="Color.Default" Class="mt-2" />
-                </div>
+        <MudTabPanel Text="Chat">
+            <section id="SystemPrompt">
+                <MudTextField Lines="1"
+                              AutoGrow
+                              @bind-Value="SystemPrompt"
+                              Variant="Variant.Filled"
+                              Class="mb-4"
+                              Label="System Prompt"
+                              HelperText="The System Prompt governs how the AI agent responds" />
+            </section>
+
+            <div id="ChatMessages">
+                @foreach (var item in ChatMessages)
+                {
+                    @if (item is UserChatMessage ucm)
+                    {
+                        <div class="chat user">
+                            <div class="chat-participant-name">
+                                <b>You</b>
+                            </div>
+                            <div class="chat-message">
+                                @foreach (var part in ucm.Content)
+                                {
+                                    <span>@part.Text</span>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    @if (item is AssistantChatMessage acm)
+                    {
+                        <div class="chat assistant">
+                            <div class="chat-participant-name">
+                                <b>AI Agent</b>
+                            </div>
+                            <div class="chat-message">
+                                @foreach (var part in acm.Content)
+                                {
+                                    <span>@((MarkupString)Markdown.ToHtml(part.Text))</span>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+
+                @if (IsBusy)
+                {
+                    <div class="chat assistant">
+                        <div class="chat-participant-name">
+                            <b>AI Agent</b>
+                        </div>
+                        <div class="chat-message">
+                            <em>Retrieving response...</em>
+                            <br />
+                            <MudProgressLinear Indeterminate="true" Color="Color.Default" Class="mt-2" />
+                        </div>
+                    </div>
+                }
+                @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+                {
+                    <div class="chat error">
+                        <div class="chat-participant-name">
+                            <b>Error</b>
+                        </div>
+                        <div class="chat-message">
+                            @ErrorMessage
+                        </div>
+                    </div>
+                }
+
             </div>
-        }
-        @if (!string.IsNullOrWhiteSpace(ErrorMessage))
-        {
-            <div class="chat error">
-                <div class="chat-participant-name">
-                    <b>Error</b>
-                </div>
-                <div class="chat-message">
-                    @ErrorMessage
-                </div>
-            </div>
-        }
 
-    </div>
-    
-    <MudDivider Class="mt-4 mb-4" />
+            <MudDivider Class="mt-4 mb-4" />
 
-    <form @onsubmit="SendChatAsync" id="UserTextEntry" class="mb-4">
-        <MudTextField @bind-Value="Prompt" 
-                      Variant="Variant.Text" 
-                      Class="mr-4"
-                      Immediate="true"
-                      TextUpdateSuppression="false"
-                      Label="Enter your message"/>
-        <MudButton ButtonType="ButtonType.Submit"
-                   Disabled="IsBusy"
-                   Variant="Variant.Filled"
-                   Color="Color.Primary">
-            Send
-        </MudButton>
-    </form>
+            <form @onsubmit="SendChatAsync" id="UserTextEntry" class="mb-4">
+                <MudTextField @bind-Value="Prompt"
+                              Variant="Variant.Text"
+                              Class="mr-4"
+                              Immediate="true"
+                              TextUpdateSuppression="false"
+                              Label="Enter your message" />
+                <MudButton ButtonType="ButtonType.Submit"
+                           Disabled="IsBusy"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary">
+                    Send
+                </MudButton>
+            </form>
+        </MudTabPanel>
+        <MudTabPanel Text="Code">
+            <img src="CodeChat.png" alt="Chat Code" />
+        </MudTabPanel>
+    </MudTabs>
 </div>
 
 @code {
@@ -123,7 +132,7 @@
         IsBusy = true;
         ErrorMessage = string.Empty;
         StateHasChanged();
-        
+
         return ChatService.ChatAsync(SystemPrompt, ChatMessages).ContinueOnUIThread(
             onSuccess: response =>
             {

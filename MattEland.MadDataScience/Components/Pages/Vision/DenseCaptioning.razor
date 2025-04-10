@@ -9,6 +9,8 @@
         Detect and describe objects inside of an image
     </MudText>
     
+    <MudTabs>
+    <MudTabPanel Text="Dense Caption">
         <MudCarousel @bind-SelectedIndex="_selectedIndex" TData="string" AutoCycle="false" Style="height: 600px;">
             @foreach (var image in Images)
             {
@@ -35,37 +37,42 @@
         </MudCarousel>
 
 
-    <div class="mt-8">
-        <MudButton Disabled="IsBusy" @onclick="HandleCaptionClick" Variant="Variant.Filled" Color="Color.Primary">
-            Detect Objects
-        </MudButton>
-    </div>
+        <div class="mt-8">
+            <MudButton Disabled="IsBusy" @onclick="HandleCaptionClick" Variant="Variant.Filled" Color="Color.Primary">
+                Detect Objects
+            </MudButton>
+        </div>
 
-    @if (IsBusy)
-    {
-        <MudProgressLinear class="mt-8" Indeterminate="true" Color="Color.Primary"/>
-    }
+        @if (IsBusy)
+        {
+            <MudProgressLinear class="mt-8" Indeterminate="true" Color="Color.Primary"/>
+        }
 
-    @if (Objects.TryGetValue(_selectedIndex, out List<ObjectDetectionResult>? objects))
-    {
-        <MudAlert Severity="Severity.Info" Variant="Variant.Text" class="mt-8">
-            <MudText Typo="Typo.h6">Objects Detected</MudText>
-            <ul>
-                @foreach (var obj in objects)
-                {
-                    <li>@obj (@obj.BoundingBox.X , @obj.BoundingBox.Y, @obj.BoundingBox.Width, @obj.BoundingBox.Height)</li>
-                }
-            </ul>
-        </MudAlert>
-    }
+        @if (Objects.TryGetValue(_selectedIndex, out List<ObjectDetectionResult>? objects))
+        {
+            <MudAlert Severity="Severity.Info" Variant="Variant.Text" class="mt-8">
+                <MudText Typo="Typo.h6">Objects Detected</MudText>
+                <ul>
+                    @foreach (var obj in objects)
+                    {
+                        <li>@obj (@obj.BoundingBox.X , @obj.BoundingBox.Y, @obj.BoundingBox.Width, @obj.BoundingBox.Height)</li>
+                    }
+                </ul>
+            </MudAlert>
+        }
     
-    @if (!string.IsNullOrWhiteSpace(Error))
-    {
-        <MudAlert Severity="Severity.Error" Class="mt-8">
-            <MudText Typo="Typo.h6">Error</MudText>
-            <MudText Typo="Typo.body1">@Error</MudText>
-        </MudAlert>
-    }
+        @if (!string.IsNullOrWhiteSpace(Error))
+        {
+            <MudAlert Severity="Severity.Error" Class="mt-8">
+                <MudText Typo="Typo.h6">Error</MudText>
+                <MudText Typo="Typo.body1">@Error</MudText>
+            </MudAlert>
+        }
+    </MudTabPanel>
+    <MudTabPanel Text="Code">
+        <img src="CodeDenseCaption.png" alt="Code">
+    </MudTabPanel>
+    </MudTabs>
 </MudContainer>
 
 @code {

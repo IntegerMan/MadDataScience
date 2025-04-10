@@ -8,41 +8,48 @@
         Describe the contents of an image
     </MudText>
 
-    <MudCarousel @bind-SelectedIndex="_selectedIndex" TData="string" AutoCycle="false" Style="height: 800px;">
-        @foreach (var image in Images)
-        {
-            <MudCarouselItem>
-                <img src="@image" alt="Sample Image" style="height: 90%; width: auto; cursor: pointer; object-fit: contain;" />
-            </MudCarouselItem>
-        }
-    </MudCarousel>
-    
-    @if (!string.IsNullOrWhiteSpace(Error))
-    {
-        <MudAlert Severity="Severity.Error" Class="mt-8">
-            <MudText Typo="Typo.h6">Error</MudText>
-            <MudText Typo="Typo.body1">@Error</MudText>
-        </MudAlert>
-    }
-    
-    @if (!string.IsNullOrWhiteSpace(Caption))
-    {
-        <MudAlert Severity="Severity.Info" Class="mt-8">
-            <MudText Typo="Typo.body1">@Caption</MudText>
-        </MudAlert>
-    }
+    <MudTabs>
+        <MudTabPanel Text="Caption">
+            <MudCarousel @bind-SelectedIndex="_selectedIndex" TData="string" AutoCycle="false" Style="height: 800px;">
+                @foreach (var image in Images)
+                {
+                    <MudCarouselItem>
+                        <img src="@image" alt="Sample Image" style="height: 90%; width: auto; cursor: pointer; object-fit: contain;" />
+                    </MudCarouselItem>
+                }
+            </MudCarousel>
 
-    @if (IsBusy)
-    {
-        <MudProgressLinear Indeterminate="true" Color="Color.Primary" class="mt-8"/>
-    }
+            @if (!string.IsNullOrWhiteSpace(Error))
+            {
+                <MudAlert Severity="Severity.Error" Class="mt-8">
+                    <MudText Typo="Typo.h6">Error</MudText>
+                    <MudText Typo="Typo.body1">@Error</MudText>
+                </MudAlert>
+            }
 
-    <div class="mt-8">
-    <MudButton Disabled="IsBusy" @onclick="HandleCaptionClick" Variant="Variant.Filled"
-               Color="Color.Primary">
-        Caption This
-    </MudButton>
-    </div>
+            @if (!string.IsNullOrWhiteSpace(Caption))
+            {
+                <MudAlert Severity="Severity.Info" Class="mt-8">
+                    <MudText Typo="Typo.body1">@Caption</MudText>
+                </MudAlert>
+            }
+
+            @if (IsBusy)
+            {
+                <MudProgressLinear Indeterminate="true" Color="Color.Primary" class="mt-8" />
+            }
+
+            <div class="mt-8">
+                <MudButton Disabled="IsBusy" @onclick="HandleCaptionClick" Variant="Variant.Filled"
+                           Color="Color.Primary">
+                    Caption This
+                </MudButton>
+            </div>
+        </MudTabPanel>
+        <MudTabPanel Text="Code">
+            <img src="CodeImageCaption.png" alt="Code">
+        </MudTabPanel>
+    </MudTabs>
 </MudContainer>
 
 @code {
@@ -51,7 +58,7 @@
     public bool IsBusy { get; set; }
     private int _selectedIndex = 0;
     private List<string> Images { get; } =
-    [
+        [
         "CM1.jpg",
         "CM2.jpg",
         "CM3.jpg",
@@ -67,7 +74,7 @@
         "CM13.jpg",
         "CM14.jpg"
     ];
-    
+
     private Task HandleCaptionClick()
     {
         string imageSource = Images[_selectedIndex];
@@ -78,7 +85,7 @@
             StateHasChanged();
             return Task.CompletedTask;
         }
-        
+
         Logger.LogDebug("Captioning Image {ImageSource}", imageSource);
 
         Caption = null;

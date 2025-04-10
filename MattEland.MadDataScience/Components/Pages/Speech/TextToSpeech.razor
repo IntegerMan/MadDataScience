@@ -8,38 +8,50 @@
         AI can use neural networks to emulate the patterns of speech by converting text to spoken words.
     </MudText>
 
-    <form @onsubmit="HandleSubmit">
-        <MudTextField @bind-Value="Message" Label="Message" Variant="Variant.Outlined" HelperText="Enter some text you want the AI to say" />
-    
-        <MudSelect T="string" @bind-Value="SelectedVoice" Class="mt-8" Label="Voice" Variant="Variant.Outlined" HelperText="The voice to speak the message in" Dense="true">
-            @foreach (var voice in Voices)
+    <MudTabs>
+        <MudTabPanel Text="Speak">
+            <form @onsubmit="HandleSubmit">
+                <MudTextField @bind-Value="Message" Label="Message" Variant="Variant.Outlined"
+                              HelperText="Enter some text you want the AI to say"/>
+
+                <MudSelect T="string" @bind-Value="SelectedVoice" Class="mt-8" Label="Voice" Variant="Variant.Outlined"
+                           HelperText="The voice to speak the message in" Dense="true">
+                    @foreach (var voice in Voices)
+                    {
+                        <MudSelectItem Value="@voice">@voice</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" Class="mt-8"
+                           Disabled="IsBusy">Speak
+                </MudButton>
+            </form>
+
+            @if (IsBusy)
             {
-                <MudSelectItem Value="@voice">@voice</MudSelectItem>
+                <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-8"/>
             }
-        </MudSelect>
-        
-        <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" Class="mt-8" Disabled="IsBusy">Speak</MudButton>
-    </form>
-    
-    @if (IsBusy)
-    {
-        <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-8"/>
-    }
-    
-    @if (!string.IsNullOrWhiteSpace(Error))
-    {
-        <MudAlert Severity="Severity.Error" Class="mt-8">
-            <MudText Typo="Typo.h6" Class="mt8">Error</MudText>
-            <MudText Typo="Typo.body1">@Error</MudText>
-        </MudAlert>
-    }
-    @if (Success)
-    {
-        <MudAlert Severity="Severity.Success" Class="mt-8">
-            <MudText Typo="Typo.h6" Class="mt8">Success</MudText>
-            <MudText Typo="Typo.body1">Message sent to generate speech</MudText>
-        </MudAlert>
-    }
+
+            @if (!string.IsNullOrWhiteSpace(Error))
+            {
+                <MudAlert Severity="Severity.Error" Class="mt-8">
+                    <MudText Typo="Typo.h6" Class="mt8">Error</MudText>
+                    <MudText Typo="Typo.body1">@Error</MudText>
+                </MudAlert>
+            }
+            @if (Success)
+            {
+                <MudAlert Severity="Severity.Success" Class="mt-8">
+                    <MudText Typo="Typo.h6" Class="mt8">Success</MudText>
+                    <MudText Typo="Typo.body1">Message sent to generate speech</MudText>
+                </MudAlert>
+            }
+        </MudTabPanel>
+        <MudTabPanel Text="Code">
+            <MudText typography="Typo.body1">This code takes a string and a voice name and generates audio which is then played through the speakers.</MudText>
+            <img src="CodeTextToSpeech.png" alt="Code">
+        </MudTabPanel>
+    </MudTabs>
 </MudContainer>
 
 @code {
@@ -75,12 +87,12 @@
             StateHasChanged();
             return;
         }
-        
+
         IsBusy = true;
         Error = null;
         Success = false;
         StateHasChanged();
-        
+
         await _speechService.SpeakAsync(Message, SelectedVoice).ContinueOnUIThread(
             onSuccess: () => { Success = true; },
             onError: ex => { Error = ex.Message; },
@@ -90,4 +102,5 @@
                 StateHasChanged();
             });
     }
+
 }

@@ -8,31 +8,47 @@
         recognition.
     </MudText>
 
-    <form @onsubmit="HandleSubmit">
-        <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" Disabled="Listening">
-            Start Listening
-        </MudButton>
-    </form>
+    <MudTabs>
+        <MudTabPanel Text="Listen">
 
-    @if (Listening)
-    {
-        <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-8"/>
-    }
+            <form @onsubmit="HandleSubmit">
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled"
+                           Disabled="Listening">
+                    Start Listening
+                </MudButton>
+            </form>
 
-    @if (!string.IsNullOrWhiteSpace(Heard))
-    {
-        <MudAlert Severity="Severity.Success" class="mt-8" Variant="Variant.Outlined">
-            <MudText Typo="Typo.h6" Class="mt8">Heard:</MudText>
-            <MudText Typo="Typo.body1" Class="mt8">@Heard</MudText>
-        </MudAlert>
-    }
-    @if (!string.IsNullOrWhiteSpace(Error))
-    {
-        <MudAlert Severity="Severity.Error" Class="mt-8">
-            <MudText Typo="Typo.h6" Class="mt8">Error:</MudText>
-            <MudText Typo="Typo.body1" Class="mt8">@Error</MudText>
-        </MudAlert>
-    }
+            @if (Listening)
+            {
+                <MudProgressLinear Indeterminate="true" Color="Color.Primary" Class="mt-8"/>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Heard))
+            {
+                <MudAlert Severity="Severity.Success" class="mt-8" Variant="Variant.Outlined">
+                    <MudText Typo="Typo.h6" Class="mt8">Heard:</MudText>
+                    <MudText Typo="Typo.body1" Class="mt8">@Heard</MudText>
+                </MudAlert>
+            }
+            @if (!string.IsNullOrWhiteSpace(Error))
+            {
+                <MudAlert Severity="Severity.Error" Class="mt-8">
+                    <MudText Typo="Typo.h6" Class="mt8">Error:</MudText>
+                    <MudText Typo="Typo.body1" Class="mt8">@Error</MudText>
+                </MudAlert>
+            }
+            @if (IsNoMatch)
+            {
+                <MudAlert Severity="Severity.Warning" class="mt-8" Variant="Variant.Outlined">
+                    <MudText Typo="Typo.h6" Class="mt8">No Speech Detected</MudText>
+                </MudAlert>
+            }
+        </MudTabPanel>
+        <MudTabPanel Text="Code">
+            <MudText typography="Typo.body1">This code listens to the user speaking and extracts a string</MudText>
+            <img src="CodeSpeechToText.png" alt="Code">
+        </MudTabPanel>
+    </MudTabs>
 </MudContainer>
 
 @code {
@@ -40,16 +56,28 @@
     public string? Error { get; set; }
     public string? Heard { get; set; }
     public bool Listening { get; set; }
+    public bool IsNoMatch { get; set; }
 
     private Task HandleSubmit()
     {
         Listening = true;
         Heard = null;
         Error = null;
+        IsNoMatch = false;
         StateHasChanged();
 
         return SpeechService.ListenAsync().ContinueOnUIThread(
-            onSuccess: result => { Heard = result ?? "No speech detected"; },
+            onSuccess: result =>
+            {
+                if (string.IsNullOrWhiteSpace(Heard))
+                {
+                    IsNoMatch = true;
+                }
+                else
+                {
+                    Heard = result;
+                }
+            },
             onError: ex => { Error = ex.Message; },
             onFinally: () =>
             {

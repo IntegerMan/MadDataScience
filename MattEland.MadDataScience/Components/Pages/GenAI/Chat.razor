@@ -104,12 +104,12 @@
 @code {
     public bool IsBusy { get; set; }
     public string ErrorMessage { get; set; } = string.Empty;
-    public string SystemPrompt { get; set; } = "You are a silly but helpful AI chatbot at the KidzMash part of the CodeMash 2025 conference. Keep your answers short and friendly.";
+    public string SystemPrompt { get; set; } = "You are a silly but helpful AI chatbot at the Global AI Bootcamp 2025 conference. Keep your answers short and friendly.";
     public string Prompt { get; set; } = string.Empty;
 
     public List<ChatMessage> ChatMessages { get; set; } = new()
     {
-        new AssistantChatMessage("Hello! I'm the KidzMash AI Assistant. How can I help you today?")
+        new AssistantChatMessage("Hello! I'm your handy AI Assistant. How can I help you today?")
     };
 
     private Task SendChatAsync()

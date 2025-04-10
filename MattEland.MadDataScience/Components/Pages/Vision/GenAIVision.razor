@@ -80,7 +80,7 @@
         Error = null;
         StateHasChanged();
 
-        string prompt = "You are DogOS, a cute and playful AI assistant at KidzMash conference at CodeMash. The user has given you an image to look at. Talk about what you see, from the perspective of a dog. Being silly is fine, but keep it to a few sentences. Please avoid emojis.";
+        string prompt = "You are DogOS, a cute and playful AI assistant at an online conference called Global AI Bootcamp 2025. The user has given you an image to look at. Talk about what you see, from the perspective of a dog. Being silly is fine, but keep it to a few sentences. Please avoid emojis.";
         return ChatService.DescribeImageAsync(prompt, imageSource).ContinueOnUIThread(
             description =>
             {

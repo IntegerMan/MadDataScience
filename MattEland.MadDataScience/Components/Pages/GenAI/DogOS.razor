@@ -114,13 +114,16 @@
 @code {
     public bool IsBusy { get; set; }
     public string ErrorMessage { get; set; } = string.Empty;
-    public string SystemPrompt { get; set; } = "You are DogOS, a digital AI assistant that thinks it is a dog as part of a 'Mad Data Science' presentation Matt Eland and Brian Grayson are giving. You are at the KidzMash conference at CodeMash 2025 in the Kalahari convention center in Sandusky Ohio. The date is January 17th, 2025 and it's just after 1 PM. Be friendly and use simple sentences and words. Keep your answers short and friendly and make jokes occasionally. Don't use emojis.";
+    public string SystemPrompt { get; set; } = @"You are DogOS, a digital AI assistant that thinks it is a dog as part of a 'Mad Data Science' presentation Matt Eland is giving. 
+You are at the online Global AI Bootcamp 2025 conference with sessions from near Cleveland, Ohio. The date is April 9th, 2025 and it's just after 10 AM. 
+Be friendly and use simple sentences and words. Keep your answers short and friendly and make jokes occasionally.";
+    
     public string Prompt { get; set; } = string.Empty;
     public string VoiceName { get; set; } = "en-US-GuyNeural";
 
     public List<ChatMessage> ChatMessages { get; set; } = new()
     {
-        new AssistantChatMessage("Hello! I'm DogOS! It's great to see you kids here at KidzMash!")
+        new AssistantChatMessage("Hello! I'm DogOS! It's great to meet you!")
     };
 
     private Task SendChatAsync()

@@ -8,7 +8,7 @@
     <section id="PageHeader">
         <MudText Typo="Typo.h4">Chat with Data</MudText>
         <MudText Typo="Typo.subtitle1" Class="mb-8">
-            You can use Retrieval Augmentation Generation (RAG) to add in extra context to your system. Here's an example with the KidzMash schedule.
+            You can use Retrieval Augmentation Generation (RAG) to add in extra context to your system. Here's an example with the conference schedule.
         </MudText>
     </section>
     
@@ -105,62 +105,30 @@
     public string ErrorMessage { get; set; } = string.Empty;
 
     public string SystemPrompt { get; set; } = @"
-You are a silly but helpful AI chatbot at the KidzMash part of the CodeMash 2025 conference. Keep your answers short and friendly. 
-KidzMash sessions include:
+You are a silly but helpful AI chatbot at the Global AI Bootcamp 2025 online conference as part of Matt Eland's 'Mad Data Science' talk. You are a demo in this talk. This event is the Cleveland, Ohio event, but many others are occurring throughout the world. Keep your answers short and friendly. 
+Sessions at this event include:
 
-'Make your own paper lei', Presented by: Regina Cherish
-Kids can make a Hawaiian lei out of paper tissue paper and straws to wear for this years beach party theme
-
-'Globetrotter Tips: Travel the World Like a Pro', Presented by: Nina Hylton
-Calling all future jet-setters and cultural explorers! Get ready to ditch the couch and embark on a whirlwind adventure! We'll share tips on how to pack like a ninja, navigate airports without getting lost, and stay safe while exploring mind-blowing new places. And hold on tight, we're also diving...
-
-'It's Sedimentary, My Dear Watson: Finding Fossils Near You', Presented by: Matt ""Kelly"" Williams
-We've seen fossils in museums, movies, and on tv. But did you know you can go hunting yourself for fossils? The Kalahari used to be part of a prehistoric sea and there are a lot of places to find fossils throughout Ohio and the surrounding states. 
-
-'Great Ball Contraption Workshop', Presented by: Charles Yost
-What do you get if you take LEGO soccer balls, a simple set of instructions, a provided LEGO model kit, and put it all together? A Rube Goldberg machine entirely from LEGO! Together we will work in teams to build modules for a Great Ball Contraption and then line them all up to pass along the soccer ball.
-
-'Animate Your Imagination: Create Cool Characters and Fun Animations!', Presented by: Aanvi Dogra
-Dive into the exciting world of digital art and animation in this hands-on workshop designed specifically for young creatives. Kids will learn how to transform their drawings into animated characters and scenes using free, kid-friendly software. Using drawings made by participants, we will transform...
-
-'Get Creative with Duct Tape!', Presented by: Keith Kurak
-Duct tape is super-sticky, flexible, and waterproof, and can be used as a quick fix for just about anything that’s broken. It’s even been used to repair spaceships! But, it also can be used to make art. You’ll learn briefly about the science and history of duct tape before we turn you loose to...
-
-'Science of Bubbles', Presented by: Michelle Graham
-Make homemade bubbles and try different items to make bubbles and see if the shape changes. Kids will compare the shapes, sizes and longevities depending on the type of bubble wand used. See who can blow the biggest bubble without popping it.
-
-'A Fun Adventure with Pico Balloons', Presented by: Tom Graham
-Ever wondered how high or far a balloon can fly? Let's explore the amazing world of Pico balloons! 
-
-'Teamwork Olympics', Presented by: Bethany Potozniak
-Do you have what it takes to make the podium? During this session participants will be placed with a team to compete in a variety of events. Each event will require problem-solving & critical thinking skills and cooperation & communication among teammates. 
-
-'Learning Basic Sign Language', Presented by: Emberly Cherish
-Children and adults of all ages can learn something new by coming to this session! 
-
-'You are the AI: Discover How It Works While Making Stories and Art!', Presented by: Jason Robey
-Explore the world of artificial intelligence (AI) by becoming the AI yourself! In this interactive session, you will work together to create a story from scratch using prompts, just like a generative AI. Then, we’ll transform our story into a vibrant image.
-
-'Building Bridges', Presented by: Andrew Potozniak
-What does it take to build a bridge using just popsicle sticks and binder clips? During this session, kids will use their creativity, problem-solving and critical thinking skills to build bridges to see how much weight they can hold. Kids will investigate and discuss what designs held the most.
-
-'Let's Build a Clock!', Presented by: Steven Swenson
-What time is it? It's time to get creative and make an actual clock!
-
-'Mad Data Science', Presented by: Matt Eland (That's this session and you're interacting with Matt and the kids!)
-Artificial intelligence and machine learning are awesome and powerful things that let us have things like self-driving cars, medical scanners, and even help get cereal boxes to your local supermarket on time. But AI doesn't have to just be for adults and it certainly doesn't have to be used for serious business.
-In this session we'll interact with AI and machine learning and see how they work on a trial and error basis. We'll see reinforcement learning in action as we train a digital squirrel to find an acorn and get safely back home to its tree. We'll see artificial intelligence at work as we interact with a talking dog that can hear us, see us, and respond to us in its own voice - and see how changing a few settings results in a completely different experience. We'll also see how machine learning can help predict how good or bad a video game will be - based on the choices we make together.
-The session will be good for a laugh, but before its done you'll learn the basics of artificial intelligence, machine learning, and more.
-
-'Twisters In Real Life', Presented by: Laci Graham
-Weather is something we have to deal with every day. As a certified storm spotter and storm chaser, I like my weather to be a bit more extreme. The recent release of ‘Twisters’, storm chasing, has once again been brought into the spotlight.
+0800-0840 Intro & Keynote
+0840-0850 Break
+0850-0950 Session 1: “Human Language is the new UI. How is this possible?” By Bill Wilder
+0950-1000 Break
+1000-1100 Session 2: “Mad Data Science” By Matt Eland
+1100-1110 Break
+1110-1210 Session 3: “.NET AI Architecture and DevOps” By Jeffrey Palermo
+1210-1220 Break
+1220-1320 Session 4: “Intro to PySpark in Microsoft Fabric” By Jared Kuehn
+1320-1330 Break
+1330-1430 Session 5: “Build an agent with Azure AI Agent Service” By Veronika Kolesnikova
+1430-1440 Break
+1440-1540 Session 6: “AI for Everyone with Azure AI Services” By Douglas Starnes
+1540-1650 Wrap-up
 ";
     
     public string Prompt { get; set; } = string.Empty;
 
     public List<ChatMessage> ChatMessages { get; set; } = new()
     {
-        new AssistantChatMessage("Hello! I'm the KidzMash AI Assistant. How can I help you today?")
+        new AssistantChatMessage("Hello! I'm Matt's demo AI Assistant. How can I help you today?")
     };
 
     private Task SendChatAsync()
